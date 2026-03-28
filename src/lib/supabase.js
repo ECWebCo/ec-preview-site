@@ -1,0 +1,46 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// ── Fetch all data for a restaurant by slug ──
+export async function getRestaurantData(slug) {
+  const { data: restaurant, error } = await supabase
+    .from('restaurants')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (error || !restaurant) return null
+
+  const id = restaurant.id
+
+  const [sectionsRes, itemsRes, hoursRes, linksRes, photosRes] = await Promise.all([
+    supabase.from('menu_sections').select('*').eq('restaurant_id', id).order('sort_order'),
+    supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order'),
+    supabase.from('hours').select('*').eq('restaurant_id', id).order('day_of_week'),
+    supabase.from('links').select('*').eq('restaurant_id', id).single(),
+    supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),
+  ])
+
+  const sections = (sectionsRes.data || []).map(s => ({
+    ...s,
+    items: (itemsRes.data || []).filter(i => i.section_id === s.id)
+  }))
+
+  return {
+    restaurant,
+    sections,
+    hours: hoursRes.data || [],
+    links: linksRes.data || {},
+    photos: photosRes.data || [],
+    heroPhoto: (photosRes.data || []).find(p => p.is_hero)
+  }
+}
+
+// ── Track analytics event ──
+export async function trackEvent(restaurantId, eventType) {
+  await supabase.from('analytics_events').insert({ restaurant_id: restaurantId, event_type: eventType })
+}
