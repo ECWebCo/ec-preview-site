@@ -12,7 +12,7 @@ import Footer from './components/Footer'
 import StickyButtons from './components/StickyButtons'
 
 // ── SET THIS TO THE RESTAURANT'S SLUG ──
-const RESTAURANT_SLUG = import.meta.env.VITE_RESTAURANT_SLUG || 'la-bella-cucina'
+const RESTAURANT_SLUG = window.location.pathname.replace(/^\\//, "").split("/")[0] || "ec-web-co"
 
 export default function App() {
   const [data, setData] = useState(null)
