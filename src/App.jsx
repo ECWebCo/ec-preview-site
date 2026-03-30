@@ -9,6 +9,7 @@ import GallerySection from './components/GallerySection'
 import LocationSection from './components/LocationSection'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
+import StickyButtons from './components/StickyButtons'
 
 const RESTAURANT_SLUG = window.location.pathname.replace(/^\//, '').split('/')[0] || 'ec-web-co'
 
@@ -70,7 +71,8 @@ export default function App() {
       <GallerySection photos={photos} restaurant={restaurant} />
       <LocationSection restaurant={restaurant} hours={hours} links={links} />
       <ContactSection restaurant={restaurant} links={links} />
-      <Footer restaurant={restaurant} />
+       <Footer restaurant={restaurant} />
+      <StickyButtons restaurant={restaurant} links={links} />
     </>
   )
 }
