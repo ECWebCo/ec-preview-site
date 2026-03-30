@@ -21,8 +21,7 @@ export async function getRestaurantData(slug) {
     supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order'),
     supabase.from('hours').select('*').eq('restaurant_id', id).order('day_of_week'),
     supabase.from('links').select('*').eq('restaurant_id', id).limit(1),
-    supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),
-    supabase.from('locations').select('*, location_hours(*), location_links(*)').eq('restaurant_id', id).order('sort_order'),
+    supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),    
   ])
 
   const sections = (sectionsRes.data || []).map(s => ({
@@ -37,7 +36,6 @@ export async function getRestaurantData(slug) {
     links: linksRes.data?.[0] || {},
     photos: photosRes.data || [],
     heroPhoto: (photosRes.data || []).find(p => p.is_hero),
-    locations: locationsRes.data || []
   }
 }
 
