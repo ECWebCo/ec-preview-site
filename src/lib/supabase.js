@@ -5,7 +5,6 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// ── Fetch all data for a restaurant by slug ──
 export async function getRestaurantData(slug) {
   const { data: restaurant, error } = await supabase
     .from('restaurants')
@@ -17,12 +16,13 @@ export async function getRestaurantData(slug) {
 
   const id = restaurant.id
 
-  const [sectionsRes, itemsRes, hoursRes, linksRes, photosRes] = await Promise.all([
+  const [sectionsRes, itemsRes, hoursRes, linksRes, photosRes, locationsRes] = await Promise.all([
     supabase.from('menu_sections').select('*').eq('restaurant_id', id).order('sort_order'),
     supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order'),
     supabase.from('hours').select('*').eq('restaurant_id', id).order('day_of_week'),
     supabase.from('links').select('*').eq('restaurant_id', id).single(),
     supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),
+    supabase.from('locations').select('*, location_hours(*), location_links(*)').eq('restaurant_id', id).order('sort_order'),
   ])
 
   const sections = (sectionsRes.data || []).map(s => ({
@@ -36,11 +36,11 @@ export async function getRestaurantData(slug) {
     hours: hoursRes.data || [],
     links: linksRes.data || {},
     photos: photosRes.data || [],
-    heroPhoto: (photosRes.data || []).find(p => p.is_hero)
+    heroPhoto: (photosRes.data || []).find(p => p.is_hero),
+    locations: locationsRes.data || []
   }
 }
 
-// ── Track analytics event ──
 export async function trackEvent(restaurantId, eventType) {
   await supabase.from('analytics_events').insert({ restaurant_id: restaurantId, event_type: eventType })
 }
