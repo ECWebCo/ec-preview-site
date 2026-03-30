@@ -34,7 +34,7 @@ export async function getRestaurantData(slug) {
     restaurant,
     sections,
     hours: hoursRes.data || [],
-    links: linksRes.data || {},
+    links: linksRes.data?.[0] || {},
     photos: photosRes.data || [],
     heroPhoto: (photosRes.data || []).find(p => p.is_hero),
     locations: locationsRes.data || []
