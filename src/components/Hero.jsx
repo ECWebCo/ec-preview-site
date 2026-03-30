@@ -23,11 +23,11 @@ export default function Hero({ restaurant, heroPhoto, links }) {
       {/* Overlay */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.15) 100%)'
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.2) 100%)'
       }} />
 
       {/* Content */}
-      <div style={{ position: 'relative', padding: '0 48px 80px', width: '100%' }} className="hero-content">
+      <div style={{ position: 'relative', padding: '120px 48px 80px', width: '100%' }} className="hero-content" id="hero-content">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
           <div style={{ width: 28, height: 1, background: 'var(--gold)' }} />
           <span style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--gold)', fontFamily: 'DM Sans, sans-serif' }}>
@@ -45,7 +45,7 @@ export default function Hero({ restaurant, heroPhoto, links }) {
           </em>
         </h1>
 
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }} className="hero-row">
           <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', maxWidth: 400, lineHeight: 1.7, fontWeight: 300 }}>
             {restaurant.description || 'Handmade pasta, wood-fired meats, and old-world recipes passed down through generations.'}
           </p>
@@ -67,7 +67,12 @@ export default function Hero({ restaurant, heroPhoto, links }) {
 
       <style>{`
         @media (max-width: 768px) {
-          .hero-content { padding: 0 24px 56px !important; }
+          #hero-content { padding: 96px 24px 48px !important; }
+          #hero-content h1 { font-size: 38px !important; line-height: 1.05 !important; margin-bottom: 16px !important; }
+          #hero-content p { font-size: 14px !important; margin-bottom: 24px !important; }
+          #hero-content > div:first-child { margin-bottom: 16px !important; }
+          .hero-row { flex-direction: column !important; gap: 20px !important; }
+          .hero-btn-p, .hero-btn-s { padding: 14px 28px !important; font-size: 11px !important; }
         }
       `}</style>
     </div>
