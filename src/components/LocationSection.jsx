@@ -58,7 +58,7 @@ export default function LocationSection({ restaurant, hours, links }) {
           </span>
         </div>
         <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, color: 'var(--ink)', lineHeight: 1.05, marginBottom: 48 }}>
-          Come Find<br /><em style={{ fontWeight: 400 }}>Your Table</em>
+          Where to<br /><em style={{ fontWeight: 400 }}>Find Us</em>
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(locations.length, 2)}, 1fr)`, gap: 24 }}>
