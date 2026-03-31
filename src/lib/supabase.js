@@ -16,14 +16,25 @@ export async function getRestaurantData(slug) {
 
   const id = restaurant.id
 
-  const [sectionsRes, itemsRes, hoursRes, linksRes, photosRes, locationsRes] = await Promise.all([
+  const [sectionsRes, itemsRes, hoursRes, linksRes, photosRes] = await Promise.all([
     supabase.from('menu_sections').select('*').eq('restaurant_id', id).order('sort_order'),
     supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order'),
     supabase.from('hours').select('*').eq('restaurant_id', id).order('day_of_week'),
     supabase.from('links').select('*').eq('restaurant_id', id).limit(1),
-    supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),    
+    supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),
   ])
 
+  let locations = []
+  try {
+    const { data: locData } = await supabase
+      .from('locations')
+      .select('*, location_hours(*), location_links(*)')
+      .eq('restaurant_id', id)
+      .order('sort_order')
+    locations = locData || []
+  } catch (e) {
+    locations = []
+  }
   const sections = (sectionsRes.data || []).map(s => ({
     ...s,
     items: (itemsRes.data || []).filter(i => i.section_id === s.id)
