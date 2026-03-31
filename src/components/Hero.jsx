@@ -4,8 +4,8 @@ export default function Hero({ restaurant, heroPhoto, links }) {
   return (
     <div style={{
       minHeight: '100vh', position: 'relative',
-      display: 'flex', alignItems: 'flex-start', overflow: 'hidden',
-      background: 'var(--stone)'
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      overflow: 'hidden', background: 'var(--stone)'
     }}>
       {heroPhoto?.url ? (
         <img src={heroPhoto.url} alt={restaurant.name} style={{
@@ -18,21 +18,22 @@ export default function Hero({ restaurant, heroPhoto, links }) {
 
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%)'
+        background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.6) 100%)'
       }} />
 
-      <div style={{ position: 'relative', padding: '110px 48px 48px', width: '100%', maxWidth: 680 }} id="hero-content">
+      <div style={{ position: 'relative', textAlign: 'center', padding: '120px 48px 80px', width: '100%', maxWidth: 800, margin: '0 auto' }} id="hero-content">
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 20 }}>
           <div style={{ width: 28, height: 1, background: 'var(--gold)' }} />
           <span style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--gold)', fontFamily: 'DM Sans, sans-serif' }}>
             {restaurant.city || 'Houston, Texas'}{restaurant.est ? ` · Est. ${restaurant.est}` : ''}
           </span>
+          <div style={{ width: 28, height: 1, background: 'var(--gold)' }} />
         </div>
 
         <h1 style={{
           fontFamily: 'Playfair Display, serif', fontWeight: 900, color: '#fff',
-          lineHeight: 1, marginBottom: 12, fontSize: 'clamp(36px, 5.5vw, 76px)'
+          lineHeight: 1.0, marginBottom: 16, fontSize: 'clamp(42px, 7vw, 96px)'
         }}>
           {restaurant.hero_headline || restaurant.name}
         </h1>
@@ -40,22 +41,22 @@ export default function Hero({ restaurant, heroPhoto, links }) {
         {(restaurant.hero_subheadline || restaurant.tagline) && (
           <p style={{
             fontFamily: 'Playfair Display, serif', fontStyle: 'italic', fontWeight: 400,
-            color: 'var(--gold)', fontSize: 'clamp(20px, 3vw, 40px)', marginBottom: 28, lineHeight: 1.2
+            color: 'var(--gold)', fontSize: 'clamp(18px, 2.5vw, 36px)', marginBottom: 36, lineHeight: 1.3
           }}>
             {restaurant.hero_subheadline || restaurant.tagline}
           </p>
         )}
 
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           {links?.reservation_url && (
             <a href={links.reservation_url} target="_blank" rel="noreferrer"
               onClick={() => trackEvent(restaurant.id, 'reserve_click')}
-              style={{ padding: '13px 26px', background: 'var(--gold)', color: '#fff', border: 'none', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: 'DM Sans, sans-serif', fontWeight: 500, textDecoration: 'none' }}>
+              style={{ padding: '14px 28px', background: 'var(--gold)', color: '#fff', border: 'none', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: 'DM Sans, sans-serif', fontWeight: 500, textDecoration: 'none' }}>
               Reserve a Table
             </a>
           )}
           <button onClick={() => document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth' })}
-            style={{ padding: '13px 26px', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.6)', color: '#fff', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>
+            style={{ padding: '14px 28px', background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.6)', color: '#fff', fontSize: 12, letterSpacing: 1.5, textTransform: 'uppercase', fontFamily: 'DM Sans, sans-serif', cursor: 'pointer' }}>
             View Menu
           </button>
         </div>
@@ -63,9 +64,9 @@ export default function Hero({ restaurant, heroPhoto, links }) {
 
       <style>{`
         @media (max-width: 768px) {
-          #hero-content { padding: 86px 24px 40px !important; max-width: 100% !important; }
-          #hero-content h1 { font-size: 32px !important; margin-bottom: 8px !important; }
-          #hero-content p { font-size: 18px !important; margin-bottom: 22px !important; }
+          #hero-content { padding: 100px 24px 60px !important; }
+          #hero-content h1 { font-size: 36px !important; }
+          #hero-content p { font-size: 20px !important; margin-bottom: 28px !important; }
         }
       `}</style>
     </div>
