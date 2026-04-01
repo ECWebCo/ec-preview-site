@@ -4,7 +4,7 @@ export default function Hero({ restaurant, heroPhoto, links }) {
   return (
     <div style={{
       minHeight: '100vh', position: 'relative',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
       overflow: 'hidden', background: 'var(--stone)'
     }}>
       {heroPhoto?.url ? (
