@@ -2,7 +2,7 @@ import { trackEvent } from '../lib/supabase'
 
 export default function Hero({ restaurant, heroPhoto, links }) {
   return (
-    <div style={{
+    <div id="hero-wrap" style={{
       minHeight: '100vh', position: 'relative',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       overflow: 'hidden', background: 'var(--stone)'
@@ -64,7 +64,8 @@ export default function Hero({ restaurant, heroPhoto, links }) {
 
       <style>{`
         @media (max-width: 768px) {
-          #hero-content { padding: 100px 24px 60px !important; }
+          #hero-wrap { min-height: calc(100vh - 68px) !important; }
+          #hero-content { padding: 100px 24px 40px !important; }
           #hero-content h1 { font-size: 36px !important; }
           #hero-content p { font-size: 20px !important; margin-bottom: 28px !important; }
         }
