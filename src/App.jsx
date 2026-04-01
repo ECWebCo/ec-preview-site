@@ -4,7 +4,6 @@ import Nav from './components/Nav'
 import Hero from './components/Hero'
 import StatusBar from './components/StatusBar'
 import MenuSection from './components/MenuSection'
-import HoursSection from './components/HoursSection'
 import GallerySection from './components/GallerySection'
 import LocationSection from './components/LocationSection'
 import ContactSection from './components/ContactSection'
@@ -70,16 +69,15 @@ export default function App() {
 
   return (
     <>
-      <Nav restaurant={restaurant} links={activeLinks} />
+      <Nav restaurant={restaurant} links={activeLinks} locations={locations} />
       <Hero restaurant={restaurant} heroPhoto={heroPhoto} links={activeLinks} />
       <StatusBar hours={activeHours} links={activeLinks} />
       <MenuSection sections={sections} />
-      <HoursSection hours={activeHours} links={activeLinks} />
       <GallerySection photos={photos} restaurant={restaurant} />
       <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
       <ContactSection restaurant={restaurant} links={activeLinks} />
       <Footer restaurant={restaurant} />
-      <StickyButtons restaurant={restaurant} links={activeLinks} />
+      <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
     </>
   )
 }
