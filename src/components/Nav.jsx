@@ -70,7 +70,7 @@ export default function Nav({ restaurant, links, locations }) {
 
         <div style={{ fontFamily: 'Playfair Display, serif', fontSize: 22, color: '#fff', fontStyle: 'italic', letterSpacing: 1 }}>
           {restaurant.logo_url
-            ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height: 36, objectFit: 'contain' }} />
+            ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height: 72, objectFit: 'contain' }} />
             : restaurant.name}
         </div>
 
