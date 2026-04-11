@@ -18,8 +18,8 @@ export default function ContactSection({ restaurant, links, photos }) {
   const contactPhoto = photos?.[3]?.url || photos?.[1]?.url || photos?.[0]?.url
 
   return (
-    <section id="contact-section" style={{ background:'#fff' }}>
-      <div className="section-rule"/>
+    <section id="contact-section" style={{ background:'#fff', paddingTop:80 }}>
+      
 
       {/* Header */}
       <div style={{ padding:'72px 64px 64px',maxWidth:1100,margin:'0 auto' }}>
@@ -34,10 +34,10 @@ export default function ContactSection({ restaurant, links, photos }) {
       </div>
 
       {/* Full-width grid: photo | info | brand card */}
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1.1fr 0.9fr',borderTop:'6px solid #141412',minHeight:560 }} className="contact-grid">
+      <div style={{ display:'grid',gridTemplateColumns:'1fr 1.1fr 0.9fr',borderTop:'none',minHeight:560 }} className="contact-grid">
 
         {/* Photo column */}
-        <div className="photo-card" style={{ overflow:'hidden',background:'#e0dbd0',borderRight:'6px solid #141412' }}>
+        <div className="photo-card" style={{ overflow:'hidden',background:'#e0dbd0',borderRight:'1px solid #E4E0D8' }}>
           {contactPhoto
             ? <img src={contactPhoto} alt="restaurant" style={{ width:'100%',height:'100%',objectFit:'cover',minHeight:560 }}/>
             : <div style={{ width:'100%',height:'100%',minHeight:560,background:'linear-gradient(135deg,#ede9e0,#d8d3c8)' }}/>
@@ -45,7 +45,7 @@ export default function ContactSection({ restaurant, links, photos }) {
         </div>
 
         {/* Contact info column */}
-        <div ref={leftRef} className="reveal-left" style={{ padding:'64px 52px',borderRight:'6px solid #141412',display:'flex',flexDirection:'column',justifyContent:'center' }}>
+        <div ref={leftRef} className="reveal-left" style={{ padding:'64px 52px',borderRight:'1px solid #E4E0D8',display:'flex',flexDirection:'column',justifyContent:'center' }}>
           <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#888480',marginBottom:32 }}>Reach Out</p>
 
           {[
@@ -88,8 +88,8 @@ export default function ContactSection({ restaurant, links, photos }) {
         @media(max-width:900px){
           #contact-section>div:nth-child(2){padding:56px 24px 48px!important}
           .contact-grid{grid-template-columns:1fr!important}
-          .contact-grid>div:first-child{min-height:280px!important;border-right:none!important;border-bottom:6px solid #141412}
-          .contact-grid>div:nth-child(2){padding:48px 24px!important;border-right:none!important;border-bottom:6px solid #141412}
+          .contact-grid>div:first-child{min-height:280px!important;border-right:none!important;border-bottom:1px solid #E4E0D8}
+          .contact-grid>div:nth-child(2){padding:48px 24px!important;border-right:none!important;border-bottom:1px solid #E4E0D8}
           .contact-grid>div:nth-child(3){padding:48px 24px!important}
         }
       `}</style>

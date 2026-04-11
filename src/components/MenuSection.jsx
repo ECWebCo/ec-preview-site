@@ -47,15 +47,15 @@ export default function MenuSection({ sections, photos }) {
   const menuPhoto = photos?.[1]?.url || photos?.[0]?.url
 
   return (
-    <section id="menu-section" style={{ background:'#fff' }}>
+    <section id="menu-section" style={{ background:'#fff', paddingTop:80 }}>
 
       {/* ── Section rule ── */}
-      <div className="section-rule" />
+      
 
       {/* ── Intro: split — headline left, photo right ── */}
       <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',minHeight:480 }} className="menu-intro-grid">
         {/* Text left */}
-        <div ref={introRef} className="reveal-left" style={{ padding:'72px 64px',display:'flex',flexDirection:'column',justifyContent:'center',borderRight:'6px solid #141412' }}>
+        <div ref={introRef} className="reveal-left" style={{ padding:'72px 64px',display:'flex',flexDirection:'column',justifyContent:'center',borderRight:'1px solid #E4E0D8' }}>
           <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
             <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>The Menu
           </p>
@@ -79,7 +79,7 @@ export default function MenuSection({ sections, photos }) {
       </div>
 
       {/* ── Section rule ── */}
-      <div className="section-rule" />
+      
 
       {/* ── Tabs ── */}
       {sections.length>1&&(
@@ -121,7 +121,7 @@ export default function MenuSection({ sections, photos }) {
       <style>{`
         @media(max-width:900px){
           .menu-intro-grid{grid-template-columns:1fr!important}
-          .menu-intro-grid>div:last-child{min-height:300px!important;border-right:none!important;border-top:6px solid #141412}
+          .menu-intro-grid>div:last-child{min-height:300px!important;border-right:none!important;border-top:1px solid #E4E0D8}
           .menu-intro-grid>div:first-child{padding:56px 24px!important;border-right:none!important}
           .menu-items-grid{grid-template-columns:1fr!important}
           #menu-section>div[style*="sticky"]>div{padding:0 16px!important}

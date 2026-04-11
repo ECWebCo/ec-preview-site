@@ -120,8 +120,8 @@ a { color: inherit; text-decoration: none; }
 .ticker-inner:hover { animation-play-state: paused; }
 
 /* ── Section divider — thick black bar ── */
-.section-rule { height: 6px; background: var(--ink); }
-.section-rule-gold { height: 4px; background: var(--gold); }
+.section-rule { height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 0; }
+.section-rule-gold { height: 1px; background: var(--gold); }
 
 /* ── Menu item ── */
 .menu-item {

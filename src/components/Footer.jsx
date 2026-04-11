@@ -2,7 +2,7 @@ export default function Footer({ restaurant }) {
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({behavior:'smooth'})
   const year = new Date().getFullYear()
   return (
-    <footer style={{ background:'#141412',borderTop:'6px solid #C9A84C',padding:'56px 64px 40px' }}>
+    <footer style={{ background:'#141412',borderTop:'3px solid #C9A84C',padding:'56px 64px 40px' }}>
       <div style={{ maxWidth:1100,margin:'0 auto' }}>
         <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:44,paddingBottom:44,borderBottom:'1px solid rgba(255,255,255,0.08)',flexWrap:'wrap',gap:32 }}>
           <div>

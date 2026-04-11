@@ -15,8 +15,8 @@ export default function GallerySection({ photos, restaurant }) {
   const [p0,p1,p2,p3,p4,p5]=photos
 
   return (
-    <section id="gallery-section" style={{ background:'#fff' }}>
-      <div className="section-rule"/>
+    <section id="gallery-section" style={{ background:'#fff', paddingTop:80 }}>
+      
 
       {/* Header */}
       <div style={{ padding:'72px 64px 64px',maxWidth:1100,margin:'0 auto' }}>
@@ -36,7 +36,7 @@ export default function GallerySection({ photos, restaurant }) {
       </div>
 
       {/* Full-bleed photo masonry */}
-      <div style={{ display:'grid',gridTemplateColumns:'repeat(12,1fr)',gap:5,borderTop:'6px solid #141412' }}>
+      <div style={{ display:'grid',gridTemplateColumns:'repeat(12,1fr)',gap:5,borderTop:none }}>
         {p0&&(
           <div className="g-cell reveal-left" style={{ gridColumn:'span 7',gridRow:'span 2',minHeight:520,background:'#e0dbd0' }}
             ref={el=>{if(el){const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('visible');obs.disconnect()}},{threshold:0.04});obs.observe(el)}}}>
@@ -44,19 +44,19 @@ export default function GallerySection({ photos, restaurant }) {
           </div>
         )}
         {[p1,p2].filter(Boolean).map((p,i)=>(
-          <div key={i} className="g-cell reveal" style={{ gridColumn:'span 5',minHeight:257,background:'#e0dbd0',borderLeft:'5px solid #141412' }}
+          <div key={i} className="g-cell reveal" style={{ gridColumn:'span 5',minHeight:257,background:'#e0dbd0',borderLeft:'1px solid #E4E0D8' }}
             ref={el=>{if(el){el.style.transitionDelay=`${i*0.1}s`;const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('visible');obs.disconnect()}},{threshold:0.04});obs.observe(el)}}}>
             <img src={p.url} alt={restaurant.name} style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
           </div>
         ))}
         {[p3,p4].filter(Boolean).map((p,i)=>(
-          <div key={i+2} className="g-cell reveal" style={{ gridColumn:'span 4',minHeight:260,background:'#e0dbd0',borderTop:'5px solid #141412',borderLeft:i>0?'5px solid #141412':'none' }}
+          <div key={i+2} className="g-cell reveal" style={{ gridColumn:'span 4',minHeight:260,background:'#e0dbd0',borderTop:'1px solid #E4E0D8',borderLeft:i>0?'1px solid #E4E0D8':'none' }}
             ref={el=>{if(el){el.style.transitionDelay=`${(i+2)*0.08}s`;const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('visible');obs.disconnect()}},{threshold:0.04});obs.observe(el)}}}>
             <img src={p.url} alt={restaurant.name} style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
           </div>
         ))}
         {p5&&(
-          <div className="g-cell reveal" style={{ gridColumn:'span 4',minHeight:260,background:'#e0dbd0',borderTop:'5px solid #141412',borderLeft:'5px solid #141412',position:'relative' }}
+          <div className="g-cell reveal" style={{ gridColumn:'span 4',minHeight:260,background:'#e0dbd0',borderTop:'1px solid #E4E0D8',borderLeft:'1px solid #E4E0D8',position:'relative' }}
             ref={el=>{if(el){el.style.transitionDelay='0.4s';const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('visible');obs.disconnect()}},{threshold:0.04});obs.observe(el)}}}>
             <img src={p5.url} alt={restaurant.name} style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
             {photos.length>6&&(

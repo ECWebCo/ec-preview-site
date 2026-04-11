@@ -22,10 +22,10 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
   const addr = loc.address
 
   return (
-    <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',borderTop:'6px solid #141412' }} className="loc-card">
+    <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',borderTop:'none' }} className="loc-card">
 
       {/* Info column */}
-      <div ref={infoRef} className="reveal-left" style={{ padding:'72px 56px',borderRight:'6px solid #141412' }}>
+      <div ref={infoRef} className="reveal-left" style={{ padding:'72px 56px',borderRight:'1px solid #E4E0D8' }}>
         <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
           <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>{index===0?'Location & Hours':`Location ${index+1}`}
         </p>
@@ -70,7 +70,7 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
       <div ref={mapRef} className="reveal-right" style={{ display:'flex',flexDirection:'column' }}>
         {/* Food photo top half */}
         {photos?.length > 0 && (
-          <div className="photo-card" style={{ flex:1,minHeight:280,background:'#e0dbd0',borderBottom:'6px solid #141412',overflow:'hidden' }}>
+          <div className="photo-card" style={{ flex:1,minHeight:280,background:'#e0dbd0',borderBottom:'1px solid #E4E0D8',overflow:'hidden' }}>
             <img src={(photos[index+2]||photos[0])?.url} alt="restaurant" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
           </div>
         )}
@@ -98,8 +98,8 @@ export default function LocationSection({ restaurant, hours, links, locations, p
   const locs=locations?.length>0?locations:restaurant.locations?.length>0?restaurant.locations:[{name:restaurant.name,address:restaurant.address,phone:links?.phone,location_hours:[],location_links:[links]}]
 
   return (
-    <section id="location-section" style={{ background:'#fff' }}>
-      <div className="section-rule"/>
+    <section id="location-section" style={{ background:'#fff', paddingTop:80 }}>
+      
 
       {/* Header */}
       <div style={{ padding:'72px 64px 56px',maxWidth:1100,margin:'0 auto' }}>
@@ -127,7 +127,7 @@ export default function LocationSection({ restaurant, hours, links, locations, p
           #location-section>div:nth-child(2){padding:56px 24px 40px!important}
           .loc-card{grid-template-columns:1fr!important}
           .loc-card>div:first-child{padding:48px 24px!important;border-right:none!important}
-          .loc-card>div:last-child{border-top:6px solid #141412}
+          .loc-card>div:last-child{border-top:1px solid #E4E0D8}
         }
       `}</style>
     </section>
