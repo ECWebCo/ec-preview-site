@@ -53,7 +53,7 @@ export default function Nav({ restaurant, links, locations }) {
     <>
       {picker && <Picker locations={locations} type={picker} onClose={()=>setPicker(null)} />}
 
-      <header style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,background:'#fff',borderBottom:'6px solid #141412' }}>
+      <header style={{ position:'fixed',top:0,left:0,right:0,zIndex:100,background:'#fff',borderBottom:'1px solid #E4E0D8' }}>
         {/* Row 1 */}
         <div style={{ position:'relative',height:64,display:'flex',alignItems:'center',padding:'0 32px' }}>
           {/* Hamburger - mobile */}
