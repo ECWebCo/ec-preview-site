@@ -8,36 +8,25 @@ function LocationPicker({ locations, type, onClose }) {
     if (type === 'reserve') return links.reservation_url
     if (type === 'call') return `tel:${links.phone || loc.phone}`
   }
-
-  const getLabel = (loc) => loc.name || loc.address || 'Location'
-
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 300,
-      background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'flex-end'
-    }} onClick={onClose}>
-      <div style={{
-        width: '100%', background: '#fff', borderRadius: '16px 16px 0 0',
-        padding: '20px 0 32px', maxHeight: '60vh', overflowY: 'auto'
-      }} onClick={e => e.stopPropagation()}>
-        <div style={{ padding: '0 20px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E8E2D9' }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#1A1A1A' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'flex-end' }} onClick={onClose}>
+      <div style={{ width: '100%', background: '#fff', borderRadius: '14px 14px 0 0', padding: '20px 0 36px', maxHeight: '60vh', overflowY: 'auto', boxShadow: '0 -8px 40px rgba(0,0,0,0.12)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: '0 20px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee' }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: '#1a1a1a', fontFamily: 'DM Sans' }}>
             {type === 'order' ? 'Order from which location?' : type === 'reserve' ? 'Reserve at which location?' : 'Call which location?'}
           </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#999' }}>✕</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa' }}>✕</button>
         </div>
         {locations.map((loc, i) => {
           const url = getUrl(loc)
           if (!url) return null
           return (
-            <a key={i} href={url}
-              target={type !== 'call' ? '_blank' : '_self'}
-              rel="noreferrer"
-              onClick={onClose}
-              style={{ display: 'flex', flexDirection: 'column', padding: '16px 20px', borderBottom: '1px solid #F5F2ED', textDecoration: 'none' }}
-            >
-              <span style={{ fontSize: 15, fontWeight: 500, color: '#1A1A1A', marginBottom: 4 }}>{getLabel(loc)}</span>
-              {loc.address && <span style={{ fontSize: 13, color: '#999' }}>{loc.address}</span>}
+            <a key={i} href={url} target={type !== 'call' ? '_blank' : '_self'} rel="noreferrer" onClick={onClose}
+              style={{ display: 'flex', flexDirection: 'column', padding: '16px 20px', borderBottom: '1px solid #f8f8f6', textDecoration: 'none' }}
+              onMouseOver={e => e.currentTarget.style.background = '#fafafa'}
+              onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a', fontFamily: 'DM Sans' }}>{loc.name || loc.address || 'Location'}</span>
+              {loc.address && <span style={{ fontSize: 12, color: '#aaa', fontFamily: 'DM Sans', marginTop: 2 }}>{loc.address}</span>}
             </a>
           )
         })}
@@ -49,14 +38,6 @@ function LocationPicker({ locations, type, onClose }) {
 export default function StickyButtons({ restaurant, links, locations }) {
   const [picker, setPicker] = useState(null)
   const isMulti = locations?.length > 1
-
-  function handleClick(type, url, event) {
-    if (isMulti) {
-      setPicker(type)
-    } else {
-      trackEvent(restaurant.id, `${type}_click`)
-    }
-  }
 
   const hasOrder = isMulti ? locations.some(l => l.location_links?.[0]?.order_url) : links?.order_url
   const hasReserve = isMulti ? locations.some(l => l.location_links?.[0]?.reservation_url) : links?.reservation_url
@@ -75,31 +56,21 @@ export default function StickyButtons({ restaurant, links, locations }) {
     if (type === 'reserve' && !hasReserve) return null
     if (type === 'call' && !hasCall) return null
 
-    const commonStyle = {
+    const style = {
       flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'center', gap: 4, padding: '10px 8px',
-      background: primary ? 'var(--gold)' : '#fff',
-      color: primary ? '#fff' : 'var(--stone)',
+      justifyContent: 'center', gap: 4, padding: '11px 8px',
+      background: primary ? '#C9A84C' : '#ffffff',
+      color: primary ? '#ffffff' : '#1C1C1A',
       textDecoration: 'none', fontFamily: 'DM Sans, sans-serif',
-      fontSize: 11, fontWeight: 500, letterSpacing: 0.3, cursor: 'pointer',
-      border: 'none', borderRight: '1px solid #E8E2D9'
+      fontSize: 10, fontWeight: 600, letterSpacing: '0.5px',
+      textTransform: 'uppercase', cursor: 'pointer',
+      border: 'none', borderRight: '1px solid #eee',
     }
 
-    if (isMulti) {
-      return (
-        <button onClick={() => setPicker(type)} style={commonStyle}>
-          {icon}{label}
-        </button>
-      )
-    }
-
+    if (isMulti) return <button onClick={() => setPicker(type)} style={style}>{icon}{label}</button>
     return (
-      <a href={singleUrl(type)}
-        target={type !== 'call' ? '_blank' : '_self'}
-        rel="noreferrer"
-        onClick={() => trackEvent(restaurant.id, `${type}_click`)}
-        style={commonStyle}
-      >
+      <a href={singleUrl(type)} target={type !== 'call' ? '_blank' : '_self'} rel="noreferrer"
+        onClick={() => trackEvent(restaurant.id, `${type}_click`)} style={style}>
         {icon}{label}
       </a>
     )
@@ -108,12 +79,12 @@ export default function StickyButtons({ restaurant, links, locations }) {
   return (
     <>
       {picker && <LocationPicker locations={locations} type={picker} onClose={() => setPicker(null)} />}
-
       <div className="sticky-mobile-bar" style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
         display: 'none', background: '#fff',
-        borderTop: '1px solid #E8E2D9',
-        paddingBottom: 'env(safe-area-inset-bottom)'
+        borderTop: '1px solid #eee',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
       }}>
         <BtnItem type="order" label="Order" primary
           icon={<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2h2l2.5 8h7l1.5-5H5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="8" cy="14" r="1" fill="currentColor"/><circle cx="13" cy="14" r="1" fill="currentColor"/></svg>}
@@ -125,15 +96,7 @@ export default function StickyButtons({ restaurant, links, locations }) {
           icon={<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3.5a1 1 0 011-1h2l1.5 3.5-1.5 1.5c.8 1.6 2 2.8 3.5 3.5L11 9.5l3.5 1.5v2a1 1 0 01-1 1C5.5 14.5 3 7 3 3.5z" stroke="currentColor" strokeWidth="1.5"/></svg>}
         />
       </div>
-
       <div className="sticky-mobile-spacer" style={{ display: 'none', height: 68 }} />
-
-      <style>{`
-        @media (max-width: 768px) {
-          .sticky-mobile-bar { display: flex !important; }
-          .sticky-mobile-spacer { display: block !important; }
-        }
-      `}</style>
     </>
   )
 }
