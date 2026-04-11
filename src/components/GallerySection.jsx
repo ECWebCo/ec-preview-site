@@ -36,7 +36,7 @@ export default function GallerySection({ photos, restaurant }) {
       </div>
 
       {/* Full-bleed photo masonry */}
-      <div style={{ display:'grid',gridTemplateColumns:'repeat(12,1fr)',gap:5,borderTop:none }}>
+      <div style={{ display:'grid',gridTemplateColumns:'repeat(12,1fr)',gap:5,borderTop:'none' }}>
         {p0&&(
           <div className="g-cell reveal-left" style={{ gridColumn:'span 7',gridRow:'span 2',minHeight:520,background:'#e0dbd0' }}
             ref={el=>{if(el){const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('visible');obs.disconnect()}},{threshold:0.04});obs.observe(el)}}}>
