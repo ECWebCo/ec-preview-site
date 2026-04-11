@@ -22,9 +22,9 @@ function useScrollReveal() {
   useEffect(() => {
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }),
-      { threshold: 0.05, rootMargin: '0px 0px -24px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
     )
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => obs.observe(el))
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => obs.observe(el))
     return () => obs.disconnect()
   }, [])
 }
@@ -42,10 +42,10 @@ function AppContent({ data }) {
       <Nav restaurant={restaurant} links={activeLinks} locations={locations} />
       <Hero restaurant={restaurant} heroPhoto={heroPhoto} />
       <InfoCarousel hours={activeHours} links={activeLinks} restaurant={restaurant} />
-      <MenuSection sections={sections} />
+      <MenuSection sections={sections} photos={photos} />
       <GallerySection photos={photos} restaurant={restaurant} />
-      <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
-      <ContactSection restaurant={restaurant} links={activeLinks} />
+      <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} photos={photos} />
+      <ContactSection restaurant={restaurant} links={activeLinks} photos={photos} />
       <Footer restaurant={restaurant} />
       <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
     </>
@@ -68,7 +68,7 @@ export default function App() {
 
   if (loading) return (
     <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#fff' }}>
-      <div style={{ fontFamily:"'Playfair Display',serif", fontSize:22, fontStyle:'italic', color:'#C9A84C' }}>Loading…</div>
+      <span className="syne" style={{ fontSize:22, fontWeight:800, color:'#C9A84C', letterSpacing:'-0.5px' }}>Loading…</span>
     </div>
   )
   if (error) return (

@@ -13,7 +13,7 @@ function MenuItem({ item, index }) {
   const ref = useRef(null)
   useEffect(()=>{
     const el=ref.current; if(!el) return
-    el.style.transitionDelay=`${Math.min(index*0.055,0.4)}s`
+    el.style.transitionDelay=`${Math.min(index*0.05,0.35)}s`
     const obs=new IntersectionObserver(([e])=>{
       if(e.isIntersecting){ el.style.opacity=item.available===false?'0.35':'1'; el.style.transform='translateY(0)'; obs.disconnect() }
     },{threshold:0.04})
@@ -21,108 +21,111 @@ function MenuItem({ item, index }) {
   },[index])
 
   return (
-    <div ref={ref} className="menu-item" style={{ opacity:0, transform:'translateY(14px)', transition:'opacity 0.5s ease, transform 0.5s ease, padding-left 0.35s ease' }}>
+    <div ref={ref} className="menu-item" style={{ opacity:0,transform:'translateY(14px)',transition:'opacity 0.5s ease,transform 0.5s ease,padding-left 0.3s ease' }}>
       <div>
-        <div style={{ display:'flex', alignItems:'baseline', gap:10, marginBottom:item.description?6:0 }}>
-          <h3 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:18, fontWeight:700, fontStyle:'italic', color:'#1A1A18', margin:0, lineHeight:1.2 }}>
-            {item.name}
-          </h3>
-          {item.available===false && <span style={{ fontSize:9, padding:'2px 8px', background:'#f5f0ea', color:'#bbb', fontFamily:'DM Sans', fontWeight:600, letterSpacing:1.5, textTransform:'uppercase', whiteSpace:'nowrap' }}>Sold Out</span>}
+        <div style={{ display:'flex',alignItems:'center',gap:10,marginBottom:item.description?5:0 }}>
+          <span className="syne" style={{ fontSize:16,fontWeight:700,color:'#141412',letterSpacing:'-0.2px' }}>{item.name}</span>
+          {item.available===false&&<span style={{ fontSize:9,padding:'2px 8px',background:'#f0ede6',color:'#bbb',fontFamily:'DM Sans',fontWeight:700,letterSpacing:1.5,textTransform:'uppercase',whiteSpace:'nowrap' }}>Sold Out</span>}
         </div>
-        {item.description && <p style={{ fontSize:13, color:'#8A8680', lineHeight:1.65, margin:0, fontFamily:'DM Sans', fontWeight:400, maxWidth:440 }}>{item.description}</p>}
+        {item.description&&<p style={{ fontSize:13,color:'#888480',lineHeight:1.6,margin:0,fontFamily:'DM Sans',fontWeight:400,maxWidth:420 }}>{item.description}</p>}
       </div>
-      {item.price && <div style={{ fontFamily:"'Playfair Display',serif", fontSize:17, fontWeight:400, fontStyle:'italic', color:'#C9A84C', flexShrink:0, paddingTop:3, whiteSpace:'nowrap' }}>${Number(item.price).toFixed(2)}</div>}
+      {item.price&&<div className="syne" style={{ fontSize:16,fontWeight:700,color:'#C9A84C',flexShrink:0,paddingTop:1,whiteSpace:'nowrap' }}>${Number(item.price).toFixed(2)}</div>}
     </div>
   )
 }
 
-// Decorative SVG divider
-function WaveDivider({ flip=false }) {
-  return (
-    <div style={{ lineHeight:0, overflow:'hidden', background: flip ? '#1A1A18' : '#fff' }}>
-      <svg viewBox="0 0 1440 48" preserveAspectRatio="none" style={{ width:'100%', height:48, display:'block', transform: flip ? 'scaleY(-1)' : 'none' }}>
-        <path d="M0,0 C360,48 1080,48 1440,0 L1440,48 L0,48 Z" fill={flip ? '#fff' : '#1A1A18'} />
-      </svg>
-    </div>
-  )
-}
-
-export default function MenuSection({ sections }) {
+export default function MenuSection({ sections, photos }) {
   const [activeTab, setActiveTab] = useState(0)
-  const leftRef = useRef(null); useReveal(leftRef)
-  const rightRef = useRef(null); useReveal(rightRef, 0.15)
+  const introRef = useRef(null); useReveal(introRef)
+  const textRef = useRef(null); useReveal(textRef, 0.12)
 
   if(!sections?.length) return null
   const active = sections[activeTab]
-  const items = [...(active?.items?.filter(i=>i.available!==false)||[]), ...(active?.items?.filter(i=>i.available===false)||[])]
+  const items = [...(active?.items?.filter(i=>i.available!==false)||[]),...(active?.items?.filter(i=>i.available===false)||[])]
+
+  // Pick a food photo for the menu intro (2nd photo avoids hero repeat)
+  const menuPhoto = photos?.[1]?.url || photos?.[0]?.url
 
   return (
-    <section id="menu-section">
+    <section id="menu-section" style={{ background:'#fff' }}>
 
-      {/* ── DARK INTRO BAND with grain texture ── */}
-      <div className="grain" style={{ background:'#1A1A18', padding:'88px 0 80px', position:'relative', overflow:'hidden' }}>
-        {/* Decorative large circle */}
-        <div style={{ position:'absolute', right:-120, top:'50%', transform:'translateY(-50%)', width:500, height:500, border:'1px solid rgba(201,168,76,0.08)', borderRadius:'50%', pointerEvents:'none' }} />
-        <div style={{ position:'absolute', right:-60, top:'50%', transform:'translateY(-50%)', width:320, height:320, border:'1px solid rgba(201,168,76,0.05)', borderRadius:'50%', pointerEvents:'none' }} />
+      {/* ── Section rule ── */}
+      <div className="section-rule" />
 
-        <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 64px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:96, alignItems:'center' }} className="menu-intro-grid">
-          <div ref={leftRef} className="reveal-left">
-            <div className="eyebrow" style={{ color:'#C9A84C' }}>
-              <span className="eyebrow-line" style={{ background:'#C9A84C' }} />
-              Our Menu
-            </div>
-            <h2 style={{ fontFamily:"'Playfair Display',Georgia,serif", fontSize:'clamp(48px,6vw,80px)', fontWeight:700, fontStyle:'italic', color:'#fff', lineHeight:0.95, margin:0, letterSpacing:'-0.5px' }}>
-              Made with<br /><span style={{ color:'#C9A84C' }}>Heart.</span>
-            </h2>
-          </div>
-          <div ref={rightRef} className="reveal-right">
-            <p style={{ fontSize:16, color:'rgba(255,255,255,0.45)', lineHeight:1.9, fontFamily:'DM Sans', fontWeight:300, margin:'0 0 32px' }}>
-              Every dish is crafted fresh to order. Quality ingredients, real cooking — no shortcuts, ever.
-            </p>
-            <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-              <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.08)' }} />
-              <svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,2 13.5,8.5 20,8.5 14.5,13 16.5,20 11,15.5 5.5,20 7.5,13 2,8.5 8.5,8.5" fill="#C9A84C" opacity="0.4"/></svg>
-              <div style={{ flex:1, height:1, background:'rgba(255,255,255,0.08)' }} />
-            </div>
+      {/* ── Intro: split — headline left, photo right ── */}
+      <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',minHeight:480 }} className="menu-intro-grid">
+        {/* Text left */}
+        <div ref={introRef} className="reveal-left" style={{ padding:'72px 64px',display:'flex',flexDirection:'column',justifyContent:'center',borderRight:'6px solid #141412' }}>
+          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
+            <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>The Menu
+          </p>
+          <h2 className="syne" style={{ fontSize:'clamp(44px,5.5vw,76px)',fontWeight:800,color:'#141412',lineHeight:0.92,margin:'0 0 28px',letterSpacing:'-2px' }}>
+            MADE<br />FRESH<br /><span style={{ color:'#C9A84C' }}>DAILY.</span>
+          </h2>
+          <p ref={textRef} className="reveal" style={{ fontSize:15,color:'#888480',lineHeight:1.85,fontFamily:'DM Sans',fontWeight:300,maxWidth:340,margin:'0 0 36px' }}>
+            Everything is prepared fresh to order using quality ingredients. Real cooking, no shortcuts.
+          </p>
+          <div style={{ display:'flex',gap:12,flexWrap:'wrap' }}>
+            <button onClick={()=>document.getElementById('menu-items')?.scrollIntoView({behavior:'smooth'})} className="btn-ink">See Full Menu</button>
           </div>
         </div>
-      </div>
-
-      {/* Wave from dark to white */}
-      <WaveDivider />
-
-      {/* ── WHITE MENU CONTENT ── */}
-      <div style={{ background:'#fff' }}>
-        {/* Tabs */}
-        {sections.length>1 && (
-          <div style={{ position:'sticky', top:112, background:'#fff', zIndex:10, borderBottom:'1px solid #E4E0D8' }}>
-            <div style={{ maxWidth:1100, margin:'0 auto', padding:'0 64px', display:'flex', overflowX:'auto' }}>
-              {sections.map((s,i)=>(
-                <button key={s.id} onClick={()=>setActiveTab(i)} style={{ padding:'16px 28px', fontSize:11, border:'none', background:'none', fontFamily:'DM Sans', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', color:activeTab===i?'#1A1A18':'#C8C4BE', borderBottom:`2px solid ${activeTab===i?'#C9A84C':'transparent'}`, marginBottom:-1, transition:'all 0.25s' }}
-                  onMouseOver={e=>{if(activeTab!==i)e.target.style.color='#888'}} onMouseOut={e=>{if(activeTab!==i)e.target.style.color='#C8C4BE'}}
-                >{s.name}</button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Items — two column */}
-        <div style={{ maxWidth:1100, margin:'0 auto', padding:'16px 64px 100px' }}>
-          {items.length===0
-            ? <p style={{ color:'#bbb', fontSize:14, padding:'56px 0', textAlign:'center', fontFamily:'DM Sans', fontStyle:'italic' }}>Menu coming soon.</p>
-            : <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0 64px' }} className="menu-items-grid">
-                {items.map((item,i)=><MenuItem key={item.id} item={item} index={i} />)}
-              </div>
+        {/* Photo right */}
+        <div style={{ position:'relative',minHeight:480,background:'#e8e4dc',overflow:'hidden' }}>
+          {menuPhoto
+            ? <img src={menuPhoto} alt="Menu" style={{ width:'100%',height:'100%',objectFit:'cover',objectPosition:'center',transition:'transform 0.6s ease' }} onMouseOver={e=>e.target.style.transform='scale(1.03)'} onMouseOut={e=>e.target.style.transform='scale(1)'}/>
+            : <div style={{ width:'100%',height:'100%',background:'linear-gradient(135deg,#ede9e0,#d8d3c8)' }}/>
           }
         </div>
       </div>
 
+      {/* ── Section rule ── */}
+      <div className="section-rule" />
+
+      {/* ── Tabs ── */}
+      {sections.length>1&&(
+        <div style={{ position:'sticky',top:116,background:'#fff',zIndex:10,borderBottom:'1px solid #DEDAD2' }}>
+          <div style={{ maxWidth:1100,margin:'0 auto',padding:'0 64px',display:'flex',overflowX:'auto' }}>
+            {sections.map((s,i)=>(
+              <button key={s.id} onClick={()=>setActiveTab(i)} style={{ padding:'16px 28px',fontSize:10,border:'none',background:'none',fontFamily:'DM Sans',fontWeight:700,letterSpacing:'2.5px',textTransform:'uppercase',whiteSpace:'nowrap',cursor:'pointer',color:activeTab===i?'#141412':'#bbb',borderBottom:`3px solid ${activeTab===i?'#C9A84C':'transparent'}`,marginBottom:-1,transition:'all 0.25s' }}
+                onMouseOver={e=>{if(activeTab!==i)e.target.style.color='#888'}} onMouseOut={e=>{if(activeTab!==i)e.target.style.color='#bbb'}}
+              >{s.name}</button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Items ── */}
+      <div id="menu-items" style={{ maxWidth:1100,margin:'0 auto',padding:'8px 64px 96px' }}>
+        {items.length===0
+          ? <p style={{ color:'#bbb',fontSize:14,padding:'56px 0',textAlign:'center',fontFamily:'DM Sans' }}>Menu coming soon.</p>
+          : <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 64px' }} className="menu-items-grid">
+              {items.map((item,i)=><MenuItem key={item.id} item={item} index={i}/>)}
+            </div>
+        }
+      </div>
+
+      {/* ── Photo strip at bottom of menu ── */}
+      {photos?.length >= 3 && (
+        <>
+          <div className="section-rule"/>
+          <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr 1fr',height:320 }}>
+            {[photos[2],photos[3],photos[4]].filter(Boolean).map((p,i)=>(
+              <div key={i} className="g-cell" style={{ borderRight:i<2?'4px solid #141412':'none',background:'#e8e4dc' }}>
+                <img src={p.url} alt="food" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       <style>{`
         @media(max-width:900px){
-          .menu-intro-grid{grid-template-columns:1fr!important;gap:32px!important;padding:48px 24px!important}
+          .menu-intro-grid{grid-template-columns:1fr!important}
+          .menu-intro-grid>div:last-child{min-height:300px!important;border-right:none!important;border-top:6px solid #141412}
+          .menu-intro-grid>div:first-child{padding:56px 24px!important;border-right:none!important}
           .menu-items-grid{grid-template-columns:1fr!important}
-          #menu-section>div:last-child>div:nth-child(2)>div{padding:8px 24px 72px!important}
-          #menu-section div[style*="sticky"]>div{padding:0 16px!important}
+          #menu-section>div[style*="sticky"]>div{padding:0 16px!important}
+          #menu-items{padding:8px 24px 72px!important}
         }
       `}</style>
     </section>
