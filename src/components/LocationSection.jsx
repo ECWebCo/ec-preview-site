@@ -26,15 +26,15 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
 
       {/* Info column */}
       <div ref={infoRef} className="reveal-left" style={{ padding:'72px 56px',borderRight:'1px solid #E4E0D8' }}>
-        <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
-          <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>{index===0?'Location & Hours':`Location ${index+1}`}
+        <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
+          <span style={{ display:'inline-block',width:32,height:1,background:'#C0392B' }}/>{index===0?'Location & Hours':`Location ${index+1}`}
         </p>
         <h3 className="syne" style={{ fontSize:'clamp(32px,4vw,52px)',fontWeight:800,color:'#141412',lineHeight:0.9,margin:'0 0 28px',letterSpacing:'-1.5px' }}>
           {(loc.name||restaurant.name).toUpperCase()}
         </h3>
 
-        {addr&&<div style={{ fontSize:15,color:'#888480',marginBottom:10,fontFamily:'DM Sans',lineHeight:1.6,display:'flex',gap:10 }}><span style={{ color:'#C9A84C',flexShrink:0,fontWeight:700 }}>→</span><span>{addr}</span></div>}
-        {(loc.phone||locLinks.phone)&&<div style={{ fontSize:15,color:'#888480',marginBottom:32,fontFamily:'DM Sans',display:'flex',gap:10 }}><span style={{ color:'#C9A84C',flexShrink:0,fontWeight:700 }}>✆</span><a href={`tel:${loc.phone||locLinks.phone}`} style={{ color:'#888480',textDecoration:'none' }}>{loc.phone||locLinks.phone}</a></div>}
+        {addr&&<div style={{ fontSize:15,color:'#888480',marginBottom:10,fontFamily:'DM Sans',lineHeight:1.6,display:'flex',gap:10 }}><span style={{ color:'#C0392B',flexShrink:0,fontWeight:700 }}>→</span><span>{addr}</span></div>}
+        {(loc.phone||locLinks.phone)&&<div style={{ fontSize:15,color:'#888480',marginBottom:32,fontFamily:'DM Sans',display:'flex',gap:10 }}><span style={{ color:'#C0392B',flexShrink:0,fontWeight:700 }}>✆</span><a href={`tel:${loc.phone||locLinks.phone}`} style={{ color:'#888480',textDecoration:'none' }}>{loc.phone||locLinks.phone}</a></div>}
 
         <div style={{ display:'flex',gap:10,flexWrap:'wrap',marginBottom:48 }}>
           {locLinks.order_url&&<a href={locLinks.order_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'order_click')} className="btn-gold" style={{ padding:'11px 24px',fontSize:12 }}>Order Online</a>}
@@ -52,9 +52,9 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
                 const isToday=di===today
                 return(
                   <div key={di} style={{ display:'flex',justifyContent:'space-between',alignItems:'center',padding:'13px 18px',borderBottom:di<6?'1px solid #DEDAD2':'none',background:isToday?'rgba(201,168,76,0.06)':'#fff',position:'relative' }}>
-                    {isToday&&<div style={{ position:'absolute',left:0,top:0,bottom:0,width:3,background:'#C9A84C' }}/>}
+                    {isToday&&<div style={{ position:'absolute',left:0,top:0,bottom:0,width:3,background:'#C0392B' }}/>}
                     <span style={{ fontSize:13,fontFamily:'DM Sans',color:isToday?'#141412':'#888480',fontWeight:isToday?700:400 }}>{day}</span>
-                    <span className="syne" style={{ fontSize:13,color:isToday?'#C9A84C':(!h||h.closed?'#D8D5CF':'#888480'),fontWeight:700 }}>
+                    <span className="syne" style={{ fontSize:13,color:isToday?'#C0392B':(!h||h.closed?'#D8D5CF':'#888480'),fontWeight:700 }}>
                       {!h||h.closed?'CLOSED':`${fmt(h.open_time)} — ${fmt(h.close_time)}`}
                     </span>
                   </div>
@@ -84,7 +84,7 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
               src={`https://maps.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`}/>
             <div style={{ position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(to top,rgba(20,20,18,0.75),transparent)',padding:'16px 20px',display:'flex',justifyContent:'space-between',alignItems:'flex-end' }}>
               <span style={{ fontSize:13,color:'rgba(255,255,255,0.85)',fontFamily:'DM Sans',maxWidth:'75%',lineHeight:1.4 }}>{addr}</span>
-              <span className="syne" style={{ fontSize:11,color:'#C9A84C',fontWeight:800,letterSpacing:1,textTransform:'uppercase',whiteSpace:'nowrap' }}>DIRECTIONS →</span>
+              <span className="syne" style={{ fontSize:11,color:'#C0392B',fontWeight:800,letterSpacing:1,textTransform:'uppercase',whiteSpace:'nowrap' }}>DIRECTIONS →</span>
             </div>
           </a>
         )}
@@ -105,8 +105,8 @@ export default function LocationSection({ restaurant, hours, links, locations, p
       <div style={{ padding:'72px 64px 56px',maxWidth:1100,margin:'0 auto' }}>
         <div ref={headRef} className="reveal" style={{ display:'flex',alignItems:'flex-end',justifyContent:'space-between',flexWrap:'wrap',gap:24 }}>
           <div>
-            <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:16,display:'flex',alignItems:'center',gap:12 }}>
-              <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>{locs.length>1?'Our Locations':'Location & Hours'}
+            <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:16,display:'flex',alignItems:'center',gap:12 }}>
+              <span style={{ display:'inline-block',width:32,height:1,background:'#C0392B' }}/>{locs.length>1?'Our Locations':'Location & Hours'}
             </p>
             <h2 className="syne" style={{ fontSize:'clamp(40px,5.5vw,72px)',fontWeight:800,color:'#141412',lineHeight:0.9,margin:0,letterSpacing:'-2px' }}>
               COME<br />SEE US.

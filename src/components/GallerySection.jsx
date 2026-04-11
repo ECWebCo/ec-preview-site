@@ -22,8 +22,8 @@ export default function GallerySection({ photos, restaurant }) {
       <div style={{ padding:'72px 64px 64px',maxWidth:1100,margin:'0 auto' }}>
         <div ref={headRef} className="reveal" style={{ display:'flex',alignItems:'flex-end',justifyContent:'space-between',flexWrap:'wrap',gap:24 }}>
           <div>
-            <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:16,display:'flex',alignItems:'center',gap:12 }}>
-              <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>Gallery
+            <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:16,display:'flex',alignItems:'center',gap:12 }}>
+              <span style={{ display:'inline-block',width:32,height:1,background:'#C0392B' }}/>Gallery
             </p>
             <h2 className="syne" style={{ fontSize:'clamp(40px,5.5vw,72px)',fontWeight:800,color:'#141412',lineHeight:0.9,margin:0,letterSpacing:'-2px' }}>
               SEE FOR<br />YOURSELF.

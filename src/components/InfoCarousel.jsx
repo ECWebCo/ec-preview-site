@@ -26,7 +26,7 @@ function getTodayHours(hours) {
 
 const Dot = () => (
   <svg width="5" height="5" viewBox="0 0 5 5" style={{ flexShrink:0, margin:'0 24px' }}>
-    <circle cx="2.5" cy="2.5" r="2.5" fill="#C9A84C" opacity="0.5"/>
+    <circle cx="2.5" cy="2.5" r="2.5" fill="#C0392B" opacity="0.5"/>
   </svg>
 )
 
@@ -54,7 +54,7 @@ export default function InfoCarousel({ hours, links, restaurant }) {
   ].filter(Boolean)
 
   return (
-    <div style={{ background:'#1A1A18', borderTop:'3px solid #C9A84C', borderBottom:'3px solid #C9A84C', height:52, overflow:'hidden', display:'flex', alignItems:'center' }}>
+    <div style={{ background:'#1A1A18', borderTop:'3px solid #C0392B', borderBottom:'3px solid #C0392B', height:52, overflow:'hidden', display:'flex', alignItems:'center' }}>
       <div className="ticker-outer" style={{ flex:1 }}>
         <div className="ticker-inner">
           {items.map((item, i) => (
@@ -70,7 +70,7 @@ export default function InfoCarousel({ hours, links, restaurant }) {
               )}
               {item.type==='link' && (
                 <a href={item.href} target={item.external?'_blank':undefined} rel={item.external?'noreferrer':undefined}
-                  style={{ fontSize:11, color:'#C9A84C', fontFamily:'DM Sans', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', textDecoration:'none', whiteSpace:'nowrap', transition:'opacity 0.2s' }}
+                  style={{ fontSize:11, color:'#C0392B', fontFamily:'DM Sans', fontWeight:700, letterSpacing:'1px', textTransform:'uppercase', textDecoration:'none', whiteSpace:'nowrap', transition:'opacity 0.2s' }}
                   onMouseOver={e=>e.target.style.opacity='0.65'} onMouseOut={e=>e.target.style.opacity='1'}>
                   {item.text}
                 </a>

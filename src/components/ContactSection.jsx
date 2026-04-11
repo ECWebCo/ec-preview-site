@@ -24,8 +24,8 @@ export default function ContactSection({ restaurant, links, photos }) {
       {/* Header */}
       <div style={{ padding:'72px 64px 64px',maxWidth:1100,margin:'0 auto' }}>
         <div ref={headRef} className="reveal" style={{ textAlign:'center' }}>
-          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:20,display:'flex',alignItems:'center',justifyContent:'center',gap:16 }}>
-            <span style={{ display:'inline-block',width:40,height:1,background:'#C9A84C' }}/>Contact Us<span style={{ display:'inline-block',width:40,height:1,background:'#C9A84C' }}/>
+          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:20,display:'flex',alignItems:'center',justifyContent:'center',gap:16 }}>
+            <span style={{ display:'inline-block',width:40,height:1,background:'#C0392B' }}/>Contact Us<span style={{ display:'inline-block',width:40,height:1,background:'#C0392B' }}/>
           </p>
           <h2 className="syne" style={{ fontSize:'clamp(44px,6vw,82px)',fontWeight:800,color:'#141412',lineHeight:0.9,margin:0,letterSpacing:'-2.5px' }}>
             LET'S<br />TALK.
@@ -55,7 +55,7 @@ export default function ContactSection({ restaurant, links, photos }) {
           ].filter(Boolean).map(({href,icon,label,value,onClick,ext})=>(
             <a key={label} href={href} target={ext?'_blank':undefined} rel={ext?'noreferrer':undefined} onClick={onClick}
               style={{ display:'flex',alignItems:'center',gap:18,padding:'20px 0',borderBottom:'1px solid #DEDAD2',textDecoration:'none',transition:'padding-left 0.3s ease' }}
-              onMouseOver={e=>{e.currentTarget.style.paddingLeft='8px';e.currentTarget.querySelector('.cv').style.color='#C9A84C'}}
+              onMouseOver={e=>{e.currentTarget.style.paddingLeft='8px';e.currentTarget.querySelector('.cv').style.color='#C0392B'}}
               onMouseOut={e=>{e.currentTarget.style.paddingLeft='0';e.currentTarget.querySelector('.cv').style.color='#141412'}}>
               <div style={{ width:48,height:48,background:'#f8f5f0',border:'2px solid #141412',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18 }}>{icon}</div>
               <div>
@@ -73,7 +73,7 @@ export default function ContactSection({ restaurant, links, photos }) {
 
         {/* Brand card column */}
         <div ref={rightRef} className="reveal-right" style={{ padding:'64px 48px',display:'flex',flexDirection:'column',justifyContent:'center',background:'#141412' }}>
-          <div style={{ width:40,height:4,background:'#C9A84C',marginBottom:36 }}/>
+          <div style={{ width:40,height:4,background:'#C0392B',marginBottom:36 }}/>
           <span className="syne" style={{ fontSize:'clamp(28px,3.5vw,46px)',fontWeight:800,color:'#fff',letterSpacing:'-1.5px',lineHeight:0.9,marginBottom:16,display:'block' }}>
             {restaurant.name.toUpperCase()}
           </span>

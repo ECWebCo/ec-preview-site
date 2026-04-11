@@ -96,7 +96,7 @@ export default function Nav({ restaurant, links, locations }) {
       {open&&(
         <div style={{ position:'fixed',inset:0,background:'#fff',zIndex:99,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center' }}>
           {navLinks.map(({label,id})=>(
-            <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none',border:'none',borderBottom:'1px solid #f0f0f0',width:'100%',padding:'22px 0',textAlign:'center',fontSize:'clamp(28px,7vw,40px)',color:'#141412',fontFamily:'Syne,sans-serif',cursor:'pointer',fontWeight:800,letterSpacing:'-0.5px',transition:'color 0.2s' }} onMouseOver={e=>e.target.style.color='#C9A84C'} onMouseOut={e=>e.target.style.color='#141412'}>{label}</button>
+            <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none',border:'none',borderBottom:'1px solid #f0f0f0',width:'100%',padding:'22px 0',textAlign:'center',fontSize:'clamp(28px,7vw,40px)',color:'#141412',fontFamily:'Syne,sans-serif',cursor:'pointer',fontWeight:800,letterSpacing:'-0.5px',transition:'color 0.2s' }} onMouseOver={e=>e.target.style.color='#C0392B'} onMouseOut={e=>e.target.style.color='#141412'}>{label}</button>
           ))}
           <div style={{ display:'flex',gap:12,marginTop:36,flexWrap:'wrap',justifyContent:'center' }}>
             {links?.order_url&&<button onClick={()=>{setOpen(false);cta('order',links.order_url)}} className="btn-gold">Order Online</button>}

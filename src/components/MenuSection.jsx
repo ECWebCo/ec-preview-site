@@ -29,7 +29,7 @@ function MenuItem({ item, index }) {
         </div>
         {item.description&&<p style={{ fontSize:13,color:'#888480',lineHeight:1.6,margin:0,fontFamily:'DM Sans',fontWeight:400,maxWidth:420 }}>{item.description}</p>}
       </div>
-      {item.price&&<div className="syne" style={{ fontSize:16,fontWeight:700,color:'#C9A84C',flexShrink:0,paddingTop:1,whiteSpace:'nowrap' }}>${Number(item.price).toFixed(2)}</div>}
+      {item.price&&<div className="syne" style={{ fontSize:16,fontWeight:700,color:'#C0392B',flexShrink:0,paddingTop:1,whiteSpace:'nowrap' }}>${Number(item.price).toFixed(2)}</div>}
     </div>
   )
 }
@@ -56,11 +56,11 @@ export default function MenuSection({ sections, photos }) {
       <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',minHeight:480 }} className="menu-intro-grid">
         {/* Text left */}
         <div ref={introRef} className="reveal-left" style={{ padding:'72px 64px',display:'flex',flexDirection:'column',justifyContent:'center',borderRight:'1px solid #E4E0D8' }}>
-          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C9A84C',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
-            <span style={{ display:'inline-block',width:32,height:1,background:'#C9A84C' }}/>The Menu
+          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
+            <span style={{ display:'inline-block',width:32,height:1,background:'#C0392B' }}/>The Menu
           </p>
           <h2 className="syne" style={{ fontSize:'clamp(44px,5.5vw,76px)',fontWeight:800,color:'#141412',lineHeight:0.92,margin:'0 0 28px',letterSpacing:'-2px' }}>
-            MADE<br />FRESH<br /><span style={{ color:'#C9A84C' }}>DAILY.</span>
+            MADE<br />FRESH<br /><span style={{ color:'#C0392B' }}>DAILY.</span>
           </h2>
           <p ref={textRef} className="reveal" style={{ fontSize:15,color:'#888480',lineHeight:1.85,fontFamily:'DM Sans',fontWeight:300,maxWidth:340,margin:'0 0 36px' }}>
             Everything is prepared fresh to order using quality ingredients. Real cooking, no shortcuts.
@@ -86,7 +86,7 @@ export default function MenuSection({ sections, photos }) {
         <div style={{ position:'sticky',top:116,background:'#fff',zIndex:10,borderBottom:'1px solid #DEDAD2' }}>
           <div style={{ maxWidth:1100,margin:'0 auto',padding:'0 64px',display:'flex',overflowX:'auto' }}>
             {sections.map((s,i)=>(
-              <button key={s.id} onClick={()=>setActiveTab(i)} style={{ padding:'16px 28px',fontSize:10,border:'none',background:'none',fontFamily:'DM Sans',fontWeight:700,letterSpacing:'2.5px',textTransform:'uppercase',whiteSpace:'nowrap',cursor:'pointer',color:activeTab===i?'#141412':'#bbb',borderBottom:`3px solid ${activeTab===i?'#C9A84C':'transparent'}`,marginBottom:-1,transition:'all 0.25s' }}
+              <button key={s.id} onClick={()=>setActiveTab(i)} style={{ padding:'16px 28px',fontSize:10,border:'none',background:'none',fontFamily:'DM Sans',fontWeight:700,letterSpacing:'2.5px',textTransform:'uppercase',whiteSpace:'nowrap',cursor:'pointer',color:activeTab===i?'#141412':'#bbb',borderBottom:`3px solid ${activeTab===i?'#C0392B':'transparent'}`,marginBottom:-1,transition:'all 0.25s' }}
                 onMouseOver={e=>{if(activeTab!==i)e.target.style.color='#888'}} onMouseOut={e=>{if(activeTab!==i)e.target.style.color='#bbb'}}
               >{s.name}</button>
             ))}

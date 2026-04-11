@@ -59,7 +59,7 @@ export default function StickyButtons({ restaurant, links, locations }) {
     const style = {
       flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
       justifyContent: 'center', gap: 4, padding: '11px 8px',
-      background: primary ? '#C9A84C' : '#ffffff',
+      background: primary ? '#C0392B' : '#ffffff',
       color: primary ? '#ffffff' : '#1C1C1A',
       textDecoration: 'none', fontFamily: 'DM Sans, sans-serif',
       fontSize: 10, fontWeight: 600, letterSpacing: '0.5px',
