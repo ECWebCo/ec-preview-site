@@ -15,18 +15,18 @@ function LocationPicker({ locations, type, onClose }) {
           <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1a1a', fontFamily: 'DM Sans' }}>
             {type === 'order' ? 'Order from' : type === 'reserve' ? 'Reserve at' : 'Call'}
           </span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa', lineHeight: 1 }}>✕</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#aaa' }}>✕</button>
         </div>
         {locations.map((loc, i) => {
           const url = getUrl(loc)
           if (!url) return null
           return (
             <a key={i} href={url} target={type !== 'call' ? '_blank' : '_self'} rel="noreferrer" onClick={onClose}
-              style={{ display: 'flex', flexDirection: 'column', padding: '16px 24px', borderBottom: '1px solid #f8f8f8', textDecoration: 'none', transition: 'background 0.15s' }}
+              style={{ display: 'flex', flexDirection: 'column', padding: '16px 24px', borderBottom: '1px solid #f8f8f6', textDecoration: 'none', transition: 'background 0.15s' }}
               onMouseOver={e => e.currentTarget.style.background = '#fafafa'}
               onMouseOut={e => e.currentTarget.style.background = 'transparent'}>
               <span style={{ fontSize: 15, fontWeight: 600, color: '#1a1a1a', fontFamily: 'DM Sans' }}>{loc.name || loc.address}</span>
-              {loc.address && <span style={{ fontSize: 12, color: '#999', marginTop: 3, fontFamily: 'DM Sans' }}>{loc.address}</span>}
+              {loc.address && <span style={{ fontSize: 12, color: '#aaa', marginTop: 3, fontFamily: 'DM Sans' }}>{loc.address}</span>}
             </a>
           )
         })}
@@ -63,118 +63,84 @@ export default function Nav({ restaurant, links, locations }) {
     <>
       {picker && <LocationPicker locations={locations} type={picker} onClose={() => setPicker(null)} />}
 
-      {/* WHITE HEADER — fully separated, not floating */}
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        background: '#fff',
-        borderBottom: '1px solid var(--border)',
-      }}>
-        {/* Top row — logo centered, CTAs right */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '14px 48px',
-        }}>
-          {/* Left spacer / hamburger */}
-          <div style={{ minWidth: 120 }}>
-            <button className="nav-ham" onClick={() => setMenuOpen(!menuOpen)} style={{
-              display: 'none', background: 'none', border: 'none',
-              flexDirection: 'column', gap: 5, cursor: 'pointer', padding: 4
-            }}>
-              {[0, 1, 2].map(i => (
-                <span key={i} style={{
-                  display: 'block', width: 22, height: 1.5, background: '#1a1a1a', transition: '0.3s',
-                  transform: i === 0 && menuOpen ? 'rotate(45deg) translate(4px,4px)' : i === 2 && menuOpen ? 'rotate(-45deg) translate(4px,-4px)' : 'none',
-                  opacity: i === 1 && menuOpen ? 0 : 1
-                }} />
-              ))}
-            </button>
-          </div>
+      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: '#fff', borderBottom: '1px solid #eee' }}>
 
-          {/* Centered logo */}
-          <div style={{ textAlign: 'center', flex: 1 }}>
+        {/* TOP ROW — hamburger left, logo absolutely centered, CTAs right */}
+        <div style={{ position: 'relative', height: 64, display: 'flex', alignItems: 'center', padding: '0 24px' }}>
+
+          {/* Hamburger — left, mobile only */}
+          <button className="nav-ham" onClick={() => setMenuOpen(!menuOpen)}
+            style={{ display: 'none', background: 'none', border: 'none', flexDirection: 'column', gap: 5, cursor: 'pointer', padding: 4, zIndex: 2 }}>
+            {[0, 1, 2].map(i => (
+              <span key={i} style={{
+                display: 'block', width: 22, height: 1.5, background: '#1a1a1a', transition: '0.3s',
+                transform: i === 0 && menuOpen ? 'rotate(45deg) translate(4px,5px)' : i === 2 && menuOpen ? 'rotate(-45deg) translate(4px,-5px)' : 'none',
+                opacity: i === 1 && menuOpen ? 0 : 1
+              }} />
+            ))}
+          </button>
+
+          {/* Logo — absolutely centered, ignores everything else */}
+          <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 1 }}>
             {restaurant.logo_url ? (
               <img src={restaurant.logo_url} alt={restaurant.name}
-                style={{ height: 56, width: 'auto', objectFit: 'contain', margin: '0 auto', display: 'block' }} />
+                style={{ height: 50, width: 'auto', objectFit: 'contain', display: 'block' }} />
             ) : (
-              <span style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
-                fontSize: 24, fontStyle: 'italic', fontWeight: 700,
-                color: '#1a1a1a', letterSpacing: '-0.3px'
-              }}>
+              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontStyle: 'italic', fontWeight: 700, color: '#1a1a1a', whiteSpace: 'nowrap' }}>
                 {restaurant.name}
               </span>
             )}
           </div>
 
-          {/* Right — CTAs */}
-          <div className="nav-cta-d" style={{ display: 'flex', gap: 8, alignItems: 'center', minWidth: 120, justifyContent: 'flex-end' }}>
+          {/* CTAs — right side, desktop only */}
+          <div className="nav-cta-d" style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center', zIndex: 2 }}>
             {(links?.phone || (isMulti && locations.some(l => l.location_links?.[0]?.phone))) && (
-              <button onClick={() => handleCta('call', `tel:${links?.phone}`)} style={{
-                padding: '7px 14px', background: 'none', border: '1px solid #ddd',
-                color: '#555', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500,
-                cursor: 'pointer', transition: 'all 0.2s', letterSpacing: '0.3px'
-              }}
+              <button onClick={() => handleCta('call', `tel:${links?.phone}`)}
+                style={{ padding: '7px 16px', background: 'none', border: '1px solid #ddd', color: '#666', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s', letterSpacing: '0.3px' }}
                 onMouseOver={e => { e.currentTarget.style.borderColor = '#aaa'; e.currentTarget.style.color = '#1a1a1a' }}
-                onMouseOut={e => { e.currentTarget.style.borderColor = '#ddd'; e.currentTarget.style.color = '#555' }}
-              >Call</button>
+                onMouseOut={e => { e.currentTarget.style.borderColor = '#ddd'; e.currentTarget.style.color = '#666' }}>
+                Call
+              </button>
             )}
             {(links?.reservation_url || (isMulti && locations.some(l => l.location_links?.[0]?.reservation_url))) && (
-              <button onClick={() => handleCta('reserve', links?.reservation_url)} style={{
-                padding: '7px 14px', background: 'none', border: '1px solid #ddd',
-                color: '#555', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500,
-                cursor: 'pointer', transition: 'all 0.2s', letterSpacing: '0.3px'
-              }}
+              <button onClick={() => handleCta('reserve', links?.reservation_url)}
+                style={{ padding: '7px 16px', background: 'none', border: '1px solid #ddd', color: '#666', fontSize: 11, fontFamily: 'DM Sans', fontWeight: 500, cursor: 'pointer', transition: 'all 0.2s', letterSpacing: '0.3px' }}
                 onMouseOver={e => { e.currentTarget.style.borderColor = '#aaa'; e.currentTarget.style.color = '#1a1a1a' }}
-                onMouseOut={e => { e.currentTarget.style.borderColor = '#ddd'; e.currentTarget.style.color = '#555' }}
-              >Reserve</button>
+                onMouseOut={e => { e.currentTarget.style.borderColor = '#ddd'; e.currentTarget.style.color = '#666' }}>
+                Reserve
+              </button>
             )}
             {(links?.order_url || (isMulti && locations.some(l => l.location_links?.[0]?.order_url))) && (
-              <button onClick={() => handleCta('order', links?.order_url)} className="btn-gold" style={{ padding: '7px 18px', fontSize: 11 }}>
+              <button onClick={() => handleCta('order', links?.order_url)} className="btn-gold" style={{ padding: '7px 20px', fontSize: 11 }}>
                 Order
               </button>
             )}
           </div>
         </div>
 
-        {/* Bottom row — nav links centered */}
-        <div className="nav-links-d" style={{
-          display: 'flex', justifyContent: 'center', gap: 40,
-          padding: '10px 48px',
-          borderTop: '1px solid var(--border)',
-        }}>
+        {/* BOTTOM ROW — nav links centered, desktop only */}
+        <div className="nav-links-d" style={{ borderTop: '1px solid #f0f0f0', display: 'flex', justifyContent: 'center', gap: 40, padding: '9px 24px' }}>
           {navLinks.map(({ label, id }) => (
-            <button key={id} onClick={() => scrollTo(id)} style={{
-              background: 'none', border: 'none', fontSize: 11,
-              letterSpacing: '2px', textTransform: 'uppercase',
-              color: '#888', cursor: 'pointer', fontFamily: 'DM Sans',
-              fontWeight: 500, transition: 'color 0.2s', padding: '2px 0',
-              position: 'relative'
-            }}
+            <button key={id} onClick={() => scrollTo(id)}
+              style={{ background: 'none', border: 'none', fontSize: 10, letterSpacing: '2.5px', textTransform: 'uppercase', color: '#999', cursor: 'pointer', fontFamily: 'DM Sans', fontWeight: 600, transition: 'color 0.2s', padding: '2px 0' }}
               onMouseOver={e => e.target.style.color = '#1a1a1a'}
-              onMouseOut={e => e.target.style.color = '#888'}
-            >{label}</button>
+              onMouseOut={e => e.target.style.color = '#999'}>
+              {label}
+            </button>
           ))}
         </div>
       </header>
 
       {/* Mobile full-screen menu */}
       {menuOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, background: '#fff', zIndex: 99,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0,
-          paddingTop: 80
-        }}>
+        <div style={{ position: 'fixed', inset: 0, background: '#fff', zIndex: 99, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: 64 }}>
           {navLinks.map(({ label, id }) => (
-            <button key={id} onClick={() => scrollTo(id)} style={{
-              background: 'none', border: 'none', borderBottom: '1px solid #f0f0f0',
-              width: '100%', padding: '20px 0', textAlign: 'center',
-              fontSize: 26, color: '#1a1a1a',
-              fontFamily: "'Playfair Display', serif", fontStyle: 'italic',
-              cursor: 'pointer', fontWeight: 700, transition: 'color 0.2s'
-            }}
-              onMouseOver={e => e.target.style.color = 'var(--accent)'}
-              onMouseOut={e => e.target.style.color = '#1a1a1a'}
-            >{label}</button>
+            <button key={id} onClick={() => scrollTo(id)}
+              style={{ background: 'none', border: 'none', borderBottom: '1px solid #f5f5f5', width: '100%', padding: '22px 0', textAlign: 'center', fontSize: 28, color: '#1a1a1a', fontFamily: "'Playfair Display', serif", fontStyle: 'italic', cursor: 'pointer', fontWeight: 700, transition: 'color 0.2s' }}
+              onMouseOver={e => e.target.style.color = '#C9A84C'}
+              onMouseOut={e => e.target.style.color = '#1a1a1a'}>
+              {label}
+            </button>
           ))}
           <div style={{ display: 'flex', gap: 12, marginTop: 36, flexWrap: 'wrap', justifyContent: 'center' }}>
             {links?.order_url && <button onClick={() => { setMenuOpen(false); handleCta('order', links.order_url) }} className="btn-gold">Order Online</button>}
@@ -188,9 +154,6 @@ export default function Nav({ restaurant, links, locations }) {
           .nav-links-d { display: none !important; }
           .nav-cta-d { display: none !important; }
           .nav-ham { display: flex !important; }
-        }
-        @media (max-width: 600px) {
-          header > div:first-child { padding: 12px 20px !important; }
         }
       `}</style>
     </>
