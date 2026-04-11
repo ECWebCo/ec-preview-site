@@ -1,150 +1,153 @@
-import { useEffect, useRef } from 'react'
 import { trackEvent } from '../lib/supabase'
 
 export default function Hero({ restaurant, heroPhoto, links }) {
-  const name = restaurant.hero_headline || restaurant.name || 'Great Food'
-
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--black)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <div style={{
+      minHeight: '100vh',
+      position: 'relative',
+      overflow: 'hidden',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#1a1a1a'
+    }}>
+      {/* Full bleed photo — this IS the hero */}
+      {heroPhoto?.url ? (
+        <img
+          src={heroPhoto.url}
+          alt={restaurant.name}
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center'
+          }}
+        />
+      ) : (
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(135deg, #2a1a08 0%, #1a1208 50%, #0d0805 100%)'
+        }} />
+      )}
 
-      {/* Big orange circle bg glow */}
-      <div style={{ position: 'absolute', top: '20%', right: '15%', width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,92,0,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+      {/* Subtle dark gradient so text is readable — bottom-heavy like Burger Joint */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.15) 100%)'
+      }} />
 
-      {/* Rotating decorative ring */}
-      <div style={{ position: 'absolute', bottom: -100, left: -100, width: 400, height: 400, border: '1px solid rgba(255,92,0,0.08)', borderRadius: '50%', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: -60, left: -60, width: 280, height: 280, border: '1px solid rgba(255,92,0,0.05)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-      {/* Main content */}
-      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '100vh', position: 'relative', zIndex: 1 }} className="hero-grid">
-
-        {/* LEFT — Text */}
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '140px 56px 80px 72px' }}>
-
-          {/* Tag */}
-          <div className="h-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 32, width: 'fit-content' }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--orange)', animation: 'pulse 2s infinite' }} />
-            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
-              {restaurant.city || 'Houston'}{restaurant.est ? ` · Est. ${restaurant.est}` : ''}
-            </span>
-          </div>
-
-          {/* Massive headline */}
-          <h1 className="h-title" style={{
-            fontFamily: "'Syne', 'DM Sans', sans-serif",
-            fontSize: 'clamp(52px, 7vw, 110px)',
-            fontWeight: 800,
-            lineHeight: 0.88,
-            letterSpacing: '-3px',
-            color: 'var(--white)',
-            marginBottom: 28,
+      {/* Content — centered, clean */}
+      <div style={{
+        position: 'relative',
+        textAlign: 'center',
+        padding: '0 24px',
+        width: '100%',
+        maxWidth: 900,
+        zIndex: 1
+      }}>
+        {/* Restaurant name — big, script-style if logo, else big serif */}
+        {restaurant.logo_url ? (
+          <img
+            src={restaurant.logo_url}
+            alt={restaurant.name}
+            style={{
+              height: 180, width: 'auto', objectFit: 'contain',
+              margin: '0 auto 32px',
+              filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))'
+            }}
+          />
+        ) : (
+          <h1 style={{
+            fontFamily: "'Playfair Display', 'Georgia', serif",
+            fontSize: 'clamp(52px, 9vw, 120px)',
+            fontWeight: 700,
+            fontStyle: 'italic',
+            color: '#fff',
+            lineHeight: 1,
+            marginBottom: 24,
+            textShadow: '0 4px 32px rgba(0,0,0,0.5)',
+            letterSpacing: '-1px'
           }}>
-            {name.split(' ').map((word, i) => (
-              <span key={i} style={{ display: 'block', color: i % 3 === 1 ? 'var(--orange)' : 'var(--white)' }}>
-                {word}
-              </span>
-            ))}
+            {restaurant.name}
           </h1>
+        )}
 
-          {/* Subline */}
-          {(restaurant.hero_subheadline || restaurant.tagline) && (
-            <p className="h-sub" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: 44, maxWidth: 380, fontWeight: 300 }}>
-              {restaurant.hero_subheadline || restaurant.tagline}
-            </p>
-          )}
-
-          {/* CTAs */}
-          <div className="h-ctas" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
-            {links?.order_url && (
-              <a href={links.order_url} target="_blank" rel="noreferrer"
-                onClick={() => trackEvent(restaurant.id, 'order_click')}
-                className="btn-orange">
-                Order Now →
-              </a>
-            )}
-            {links?.reservation_url && (
-              <a href={links.reservation_url} target="_blank" rel="noreferrer"
-                onClick={() => trackEvent(restaurant.id, 'reserve_click')}
-                className="btn-outline">
-                Reserve
-              </a>
-            )}
-            <button onClick={() => document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth' })}
-              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.4)', fontSize: 13, fontFamily: 'DM Sans', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 4, transition: 'color 0.2s' }}
-              onMouseOver={e => e.target.style.color = 'var(--orange)'}
-              onMouseOut={e => e.target.style.color = 'rgba(255,255,255,0.4)'}>
-              See the menu
-            </button>
-          </div>
-
-          {/* Stats row */}
-          <div className="h-ctas" style={{ display: 'flex', gap: 40, marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--border)' }}>
-            {[['5★', 'Rated'], ['10+', 'Years open'], ['100%', 'Fresh daily']].map(([num, label]) => (
-              <div key={label}>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 28, fontWeight: 800, color: 'var(--orange)', lineHeight: 1 }}>{num}</div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, color: 'rgba(255,255,255,0.3)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 4 }}>{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT — Photo */}
-        <div className="h-img" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 56px 80px 0' }}>
-
-          {/* Orange block behind photo */}
-          <div style={{ position: 'absolute', bottom: '15%', right: '10%', width: '70%', height: '65%', background: 'var(--orange)', borderRadius: 4, zIndex: 0 }} />
-
-          {/* Photo */}
-          <div style={{ position: 'relative', zIndex: 1, width: '85%', aspectRatio: '4/5', overflow: 'hidden', borderRadius: 4, boxShadow: '0 40px 100px rgba(0,0,0,0.6)' }}>
-            {heroPhoto?.url ? (
-              <img src={heroPhoto.url} alt={restaurant.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, #1a1a1a, #2a1a08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontFamily: 'DM Sans', fontSize: 64, color: 'rgba(255,92,0,0.3)' }}>🍽</span>
-              </div>
-            )}
-          </div>
-
-          {/* Floating badge */}
-          <div style={{
-            position: 'absolute', top: '18%', left: '8%', zIndex: 2,
-            width: 100, height: 100, borderRadius: '50%',
-            background: 'var(--orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
+        {/* Tagline */}
+        {(restaurant.hero_subheadline || restaurant.tagline) && (
+          <p style={{
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: 'clamp(15px, 2vw, 20px)',
+            color: 'rgba(255,255,255,0.85)',
+            marginBottom: 40,
+            fontWeight: 400,
+            letterSpacing: '0.3px',
+            textShadow: '0 2px 12px rgba(0,0,0,0.4)'
           }}>
-            <svg className="spin-badge" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} viewBox="0 0 100 100">
-              <path id="circle" d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="none" />
-              <text fontSize="9.5" fill="white" letterSpacing="3" fontFamily="DM Sans">
-                <textPath href="#circle">ORDER NOW • FRESH DAILY • </textPath>
-              </text>
-            </svg>
-            <span style={{ fontSize: 28 }}>🔥</span>
-          </div>
+            {restaurant.hero_subheadline || restaurant.tagline}
+          </p>
+        )}
 
-          {/* Phone number pill */}
-          {links?.phone && (
-            <a href={`tel:${links.phone}`} style={{
-              position: 'absolute', bottom: '18%', left: '4%', zIndex: 2,
-              background: 'var(--card)', border: '1px solid var(--border)',
-              padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 10,
-              borderRadius: 40
-            }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#4CAF50', animation: 'pulse 2s infinite' }} />
-              <span style={{ fontFamily: 'DM Sans', fontSize: 13, color: 'var(--cream)', fontWeight: 600 }}>{links.phone}</span>
+        {/* CTAs */}
+        <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+          {links?.order_url && (
+            <a
+              href={links.order_url}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => trackEvent(restaurant.id, 'order_click')}
+              className="btn-primary"
+              style={{ fontSize: 15, padding: '18px 48px' }}
+            >
+              Order Online
             </a>
+          )}
+          {links?.reservation_url && (
+            <a
+              href={links.reservation_url}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => trackEvent(restaurant.id, 'reserve_click')}
+              style={{
+                display: 'inline-block',
+                padding: '17px 48px',
+                background: 'rgba(255,255,255,0.15)',
+                backdropFilter: 'blur(8px)',
+                border: '2px solid rgba(255,255,255,0.7)',
+                color: '#fff',
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: 15,
+                fontWeight: 600,
+                textDecoration: 'none',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.25)' }}
+              onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)' }}
+            >
+              Reserve a Table
+            </a>
+          )}
+          {!links?.order_url && !links?.reservation_url && (
+            <button
+              onClick={() => document.getElementById('menu-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="btn-primary"
+              style={{ fontSize: 15, padding: '18px 48px' }}
+            >
+              View Menu
+            </button>
           )}
         </div>
       </div>
 
+      {/* Scroll indicator */}
+      <div style={{
+        position: 'absolute', bottom: 36, left: '50%', transform: 'translateX(-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8
+      }}>
+        <span style={{ fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', fontFamily: 'DM Sans' }}>Scroll</span>
+        <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, rgba(255,255,255,0.4), transparent)' }} />
+      </div>
+
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap');
-        @media (max-width: 900px) {
-          .hero-grid { grid-template-columns: 1fr !important; min-height: auto !important; }
-          .hero-grid > div:first-child { padding: 130px 28px 40px !important; }
-          .hero-grid > div:last-child { padding: 0 28px 60px !important; }
-        }
-        @keyframes pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255,92,0,0.5); }
-          70% { box-shadow: 0 0 0 8px rgba(255,92,0,0); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500;600&display=swap');
       `}</style>
     </div>
   )

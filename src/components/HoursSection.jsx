@@ -24,28 +24,29 @@ export default function HoursSection({ hours, links }) {
   const rightRef = useRef(null); useReveal(rightRef)
 
   return (
-    <section id="hours-section" style={{ padding: '120px 0', background: '#0d0d0d', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', top: '50%', left: -120, width: 400, height: 400, border: '1px solid rgba(255,92,0,0.06)', borderRadius: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+    <section id="hours-section" style={{ padding: '96px 0', background: 'var(--bg)' }}>
+      <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 48px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'start' }} className="hours-grid">
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 56px', display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 96, alignItems: 'start' }} className="hours-grid">
-        <div ref={leftRef} className="reveal-left">
-          <div style={{ display: 'inline-block', background: 'var(--orange)', color: '#fff', fontSize: 10, fontFamily: 'DM Sans', fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', padding: '6px 14px', marginBottom: 24 }}>Hours</div>
-          <h2 style={{ fontFamily: 'DM Sans', fontSize: 'clamp(44px,5.5vw,72px)', fontWeight: 800, color: '#fff', lineHeight: 0.9, letterSpacing: '-2px', marginBottom: 28 }}>
-            We're<br />Open.<br /><span style={{ color: 'var(--orange)' }}>Come in.</span>
+        <div ref={leftRef} className="reveal">
+          <p style={{ fontFamily: 'DM Sans', fontSize: 12, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--accent)', fontWeight: 600, marginBottom: 16 }}>Hours</p>
+          <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(32px,4vw,48px)', fontWeight: 700, fontStyle: 'italic', color: 'var(--ink)', lineHeight: 1.15, marginBottom: 20 }}>
+            Come Visit Us
           </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.35)', lineHeight: 1.8, fontWeight: 300, marginBottom: 40, maxWidth: 320, fontFamily: 'DM Sans' }}>
-            Walk-ins always welcome. For big groups, give us a heads up.
+          <p style={{ fontSize: 15, color: 'var(--muted)', lineHeight: 1.75, marginBottom: 36, fontFamily: 'DM Sans', maxWidth: 320 }}>
+            Walk-ins welcome. Reservations recommended on weekends.
           </p>
           {links?.reservation_url && (
-            <a href={links.reservation_url} target="_blank" rel="noreferrer" className="btn-orange">Reserve a Table</a>
+            <a href={links.reservation_url} target="_blank" rel="noreferrer" className="btn-primary">Reserve a Table</a>
           )}
           {special.length > 0 && (
-            <div style={{ marginTop: 48 }}>
-              <div style={{ fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: '#444', marginBottom: 16, fontFamily: 'DM Sans' }}>Special Hours</div>
+            <div style={{ marginTop: 40 }}>
+              <p style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 14, fontFamily: 'DM Sans' }}>Special Hours</p>
               {special.map(s => (
                 <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
-                  <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', fontFamily: 'DM Sans' }}>{s.label}</span>
-                  <span style={{ fontSize: 13, color: 'var(--orange)', fontFamily: 'DM Sans', fontWeight: 700 }}>{s.closed ? 'Closed' : `${formatTime(s.open_time)} — ${formatTime(s.close_time)}`}</span>
+                  <span style={{ fontSize: 14, color: 'var(--ink)', fontFamily: 'DM Sans' }}>{s.label}</span>
+                  <span style={{ fontSize: 14, color: 'var(--accent)', fontFamily: 'DM Sans', fontWeight: 600 }}>
+                    {s.closed ? 'Closed' : `${formatTime(s.open_time)} — ${formatTime(s.close_time)}`}
+                  </span>
                 </div>
               ))}
             </div>
@@ -53,34 +54,33 @@ export default function HoursSection({ hours, links }) {
         </div>
 
         <div ref={rightRef} className="reveal d2">
-          <div style={{ border: '1px solid var(--border)', overflow: 'hidden' }}>
+          <div style={{ background: '#fff', border: '1px solid var(--border)', overflow: 'hidden' }}>
             {DAYS.map((day, i) => {
               const h = regular.find(r => r.day_of_week === i)
               const isToday = i === today
               return (
                 <div key={i} style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '18px 24px', borderBottom: i < 6 ? '1px solid var(--border)' : 'none',
-                  background: isToday ? 'rgba(255,92,0,0.08)' : 'transparent', position: 'relative'
+                  padding: '15px 24px', borderBottom: i < 6 ? '1px solid var(--border)' : 'none',
+                  background: isToday ? 'rgba(201,168,76,0.06)' : 'transparent', position: 'relative'
                 }}>
-                  {isToday && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'var(--orange)' }} />}
-                  <span style={{ fontSize: 13, fontFamily: 'DM Sans', color: isToday ? '#fff' : 'rgba(255,255,255,0.3)', fontWeight: isToday ? 700 : 400 }}>{day}</span>
-                  <span style={{ fontSize: 14, fontFamily: 'DM Sans', fontWeight: isToday ? 700 : 400, color: isToday ? 'var(--orange)' : (!h || h.closed ? '#333' : 'rgba(255,255,255,0.3)') }}>
+                  {isToday && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: 'var(--accent)' }} />}
+                  <span style={{ fontSize: 14, fontFamily: 'DM Sans', color: isToday ? 'var(--ink)' : 'var(--muted)', fontWeight: isToday ? 600 : 400 }}>{day}</span>
+                  <span style={{ fontSize: 14, fontFamily: 'DM Sans', fontWeight: isToday ? 600 : 400, color: isToday ? 'var(--accent)' : (!h || h.closed ? '#ccc' : 'var(--muted)') }}>
                     {!h || h.closed ? 'Closed' : `${formatTime(h.open_time)} — ${formatTime(h.close_time)}`}
                   </span>
                 </div>
               )
             })}
           </div>
-          <p style={{ fontSize: 11, color: '#333', marginTop: 14, fontFamily: 'DM Sans' }}>Hours may vary on holidays.</p>
+          <p style={{ fontSize: 12, color: '#bbb', marginTop: 12, fontFamily: 'DM Sans' }}>Hours may vary on holidays.</p>
         </div>
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          #hours-section { padding: 80px 0 !important; }
-          #hours-section > div { padding: 0 24px !important; }
-          .hours-grid { grid-template-columns: 1fr !important; gap: 56px !important; }
+          #hours-section { padding: 72px 0 !important; }
+          #hours-section > div { padding: 0 24px !important; grid-template-columns: 1fr !important; gap: 48px !important; }
         }
       `}</style>
     </section>
