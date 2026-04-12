@@ -26,9 +26,6 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
 
       {/* Info column */}
       <div ref={infoRef} className="reveal-left" style={{ padding:'72px 56px',borderRight:'1px solid #E4E0D8' }}>
-        <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:20,display:'flex',alignItems:'center',gap:12 }}>
-          <span style={{ display:'inline-block',width:32,height:1,background:'#C0392B' }}/>{index===0?'Location & Hours':`Location ${index+1}`}
-        </p>
         <h3 className="syne" style={{ fontSize:'clamp(32px,4vw,52px)',fontWeight:800,color:'#141412',lineHeight:0.9,margin:'0 0 28px',letterSpacing:'-1.5px' }}>
           {(loc.name||restaurant.name).toUpperCase()}
         </h3>
@@ -102,7 +99,7 @@ export default function LocationSection({ restaurant, hours, links, locations, p
       
 
       {/* Header */}
-      <div style={{ padding:'72px 64px 56px',maxWidth:1100,margin:'0 auto' }}>
+      <div style={{ padding:'72px 64px 24px',maxWidth:1100,margin:'0 auto' }}>
         <div ref={headRef} className="reveal" style={{ display:'flex',alignItems:'flex-end',justifyContent:'space-between',flexWrap:'wrap',gap:24 }}>
           <div>
             <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:16,display:'flex',alignItems:'center',gap:12 }}>
