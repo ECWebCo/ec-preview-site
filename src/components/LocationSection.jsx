@@ -105,7 +105,7 @@ export default function LocationSection({ restaurant, hours, links, locations })
 
 
       {locs.map((loc,i)=>(
-        <LocationCard key={loc.id||i} loc={loc} index={i} restaurant={restaurant} fallbackHours={hours} fallbackLinks={links} photos={photos}/>
+        <LocationCard key={loc.id||i} loc={loc} index={i} restaurant={restaurant} fallbackHours={hours} fallbackLinks={links}/>
       ))}
 
       <style>{`
