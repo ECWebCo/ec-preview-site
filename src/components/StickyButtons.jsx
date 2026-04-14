@@ -57,9 +57,8 @@ export default function StickyButtons({ restaurant, links, locations }) {
       justifyContent:'center',gap:4,padding:'11px 8px',
       background: primary ? '#2D5016' : '#fff',
       color: primary ? '#fff' : '#1C1A17',
-      textDecoration:'none',fontFamily:'DM Sans',
-      fontSize:10,fontWeight:600,letterSpacing:'0.5px',
-      textTransform:'uppercase',cursor:'pointer',
+      textDecoration:'none',fontFamily:'Cormorant Garamond,serif',
+      fontSize:14,fontWeight:400,fontStyle:'italic',cursor:'pointer',
       border:'none',borderRight:'1px solid #eee',
     }
 
