@@ -46,10 +46,10 @@ function AppContent({ data }) {
     <>
       <Nav restaurant={restaurant} links={activeLinks} locations={locations} />
       <Hero restaurant={restaurant} heroPhoto={heroPhoto} />
-      <MenuSection sections={sections} photos={photos} />
-      <GallerySection photos={photos} restaurant={restaurant} />
-      <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} photos={photos} />
-      <ContactSection restaurant={restaurant} links={activeLinks} photos={photos} />
+      <MenuSection sections={sections} />
+      <GallerySection restaurant={restaurant} />
+      <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
+      <ContactSection restaurant={restaurant} links={activeLinks} />
       <Footer restaurant={restaurant} />
       <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
     </>

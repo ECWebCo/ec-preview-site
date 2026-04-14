@@ -9,7 +9,7 @@ function Picker({ locations, type, onClose }) {
   return (
     <div style={{ position:'fixed',inset:0,zIndex:300,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',backdropFilter:'blur(4px)' }} onClick={onClose}>
       <div style={{ background:'#fff',minWidth:320,boxShadow:'0 24px 80px rgba(0,0,0,0.15)',overflow:'hidden' }} onClick={e=>e.stopPropagation()}>
-        <div style={{ padding:'20px 28px',borderBottom:'1px solid #eee',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
+        <div style={{ padding:'18px 28px',borderBottom:'1px solid #eee',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
           <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:18,fontStyle:'italic',color:'#1C1A17' }}>
             {type==='order'?'Order from':type==='reserve'?'Reserve at':'Call'}
           </span>
@@ -17,12 +17,12 @@ function Picker({ locations, type, onClose }) {
         </div>
         {locations.map((loc,i)=>{
           const url=getUrl(loc); if(!url) return null
-          return(
+          return (
             <a key={i} href={url} target={type!=='call'?'_blank':'_self'} rel="noreferrer" onClick={onClose}
-              style={{ display:'flex',flexDirection:'column',padding:'18px 28px',borderBottom:'1px solid #f8f6f2',textDecoration:'none',transition:'background 0.15s' }}
+              style={{ display:'flex',flexDirection:'column',padding:'16px 28px',borderBottom:'1px solid #f8f6f2',textDecoration:'none',transition:'background 0.15s' }}
               onMouseOver={e=>e.currentTarget.style.background='#faf8f3'} onMouseOut={e=>e.currentTarget.style.background='transparent'}>
-              <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:17,color:'#1C1A17',fontStyle:'italic' }}>{loc.name||loc.address}</span>
-              {loc.address&&<span style={{ fontSize:12,color:'#aaa',marginTop:3,fontFamily:'DM Sans' }}>{loc.address}</span>}
+              <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:16,fontStyle:'italic',color:'#1C1A17' }}>{loc.name||loc.address}</span>
+              {loc.address&&<span style={{ fontSize:12,color:'#aaa',marginTop:2,fontFamily:'DM Sans' }}>{loc.address}</span>}
             </a>
           )
         })}
@@ -39,7 +39,7 @@ export default function Nav({ restaurant, links, locations }) {
 
   useEffect(()=>{
     const fn = () => setScrolled(window.scrollY > 80)
-    window.addEventListener('scroll', fn, { passive: true })
+    window.addEventListener('scroll', fn, { passive:true })
     return () => window.removeEventListener('scroll', fn)
   },[])
 
@@ -68,33 +68,36 @@ export default function Nav({ restaurant, links, locations }) {
         borderBottom:'1px solid #E2DDD4',
         transition:'box-shadow 0.3s ease'
       }}>
-        {/* Row 1 — logo centered */}
-        <div style={{ position:'relative',height:68,display:'flex',alignItems:'center',padding:'0 36px' }}>
-          {/* Hamburger - mobile */}
-          <button className="nav-ham" onClick={()=>setOpen(!open)}
-            style={{ display:'none',background:'none',border:'none',flexDirection:'column',gap:5,cursor:'pointer',padding:4,zIndex:2 }}>
-            {[0,1,2].map(i=>(
-              <span key={i} style={{ display:'block',width:22,height:1.5,background:'#1C1A17',transition:'0.3s',
-                transform:i===0&&open?'rotate(45deg) translate(4px,5px)':i===2&&open?'rotate(-45deg) translate(4px,-5px)':'none',
-                opacity:i===1&&open?0:1 }}/>
-            ))}
-          </button>
+        {/* Single row — logo left, nav center, CTAs right */}
+        <div style={{ height:56,display:'flex',alignItems:'center',padding:'0 40px',gap:24 }}>
 
-          {/* Logo — absolute center */}
-          <div style={{ position:'absolute',left:'50%',top:'50%',transform:'translate(-50%,-50%)',zIndex:1 }}>
+          {/* Logo — left */}
+          <div style={{ flexShrink:0 }}>
             {restaurant.logo_url
-              ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height:52,width:'auto',objectFit:'contain',display:'block' }}/>
-              : <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:24,fontStyle:'italic',fontWeight:600,color:'#1C1A17',whiteSpace:'nowrap',letterSpacing:'0.3px' }}>
+              ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height:40,width:'auto',objectFit:'contain',display:'block' }}/>
+              : <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:20,fontStyle:'italic',fontWeight:600,color:'#1C1A17',whiteSpace:'nowrap' }}>
                   {restaurant.name}
                 </span>
             }
           </div>
 
+          {/* Nav links — center */}
+          <div className="nav-links-d" style={{ flex:1,display:'flex',justifyContent:'center',gap:40 }}>
+            {navLinks.map(({label,id})=>(
+              <button key={id} onClick={()=>scrollTo(id)}
+                style={{ background:'none',border:'none',fontSize:10,letterSpacing:'3px',textTransform:'uppercase',color:'#aaa',cursor:'pointer',fontFamily:'DM Sans',fontWeight:600,transition:'color 0.2s' }}
+                onMouseOver={e=>e.target.style.color='#2D5016'}
+                onMouseOut={e=>e.target.style.color='#aaa'}>
+                {label}
+              </button>
+            ))}
+          </div>
+
           {/* CTAs — right */}
-          <div className="nav-cta-d" style={{ marginLeft:'auto',display:'flex',gap:10,alignItems:'center',zIndex:2 }}>
+          <div className="nav-cta-d" style={{ display:'flex',gap:8,alignItems:'center',flexShrink:0 }}>
             {(links?.phone||(isMulti&&locations.some(l=>l.location_links?.[0]?.phone)))&&(
               <button onClick={()=>cta('call',`tel:${links?.phone}`)}
-                style={{ padding:'8px 18px',background:'none',border:'1px solid #ddd',color:'#7A766E',fontSize:11,fontFamily:'DM Sans',fontWeight:500,cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.5px' }}
+                style={{ padding:'6px 16px',background:'none',border:'1px solid #ddd',color:'#7A766E',fontSize:11,fontFamily:'DM Sans',fontWeight:500,cursor:'pointer',transition:'all 0.2s' }}
                 onMouseOver={e=>{e.currentTarget.style.borderColor='#2D5016';e.currentTarget.style.color='#2D5016'}}
                 onMouseOut={e=>{e.currentTarget.style.borderColor='#ddd';e.currentTarget.style.color='#7A766E'}}>
                 Call
@@ -102,30 +105,28 @@ export default function Nav({ restaurant, links, locations }) {
             )}
             {(links?.reservation_url||(isMulti&&locations.some(l=>l.location_links?.[0]?.reservation_url)))&&(
               <button onClick={()=>cta('reserve',links?.reservation_url)}
-                style={{ padding:'8px 18px',background:'none',border:'1px solid #ddd',color:'#7A766E',fontSize:11,fontFamily:'DM Sans',fontWeight:500,cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.5px' }}
+                style={{ padding:'6px 16px',background:'none',border:'1px solid #ddd',color:'#7A766E',fontSize:11,fontFamily:'DM Sans',fontWeight:500,cursor:'pointer',transition:'all 0.2s' }}
                 onMouseOver={e=>{e.currentTarget.style.borderColor='#2D5016';e.currentTarget.style.color='#2D5016'}}
                 onMouseOut={e=>{e.currentTarget.style.borderColor='#ddd';e.currentTarget.style.color='#7A766E'}}>
                 Reserve
               </button>
             )}
             {(links?.order_url||(isMulti&&locations.some(l=>l.location_links?.[0]?.order_url)))&&(
-              <button onClick={()=>cta('order',links?.order_url)} className="btn-green" style={{ padding:'9px 22px',fontSize:11 }}>
+              <button onClick={()=>cta('order',links?.order_url)} className="btn-green" style={{ padding:'7px 20px',fontSize:11 }}>
                 Order
               </button>
             )}
           </div>
-        </div>
 
-        {/* Row 2 — nav links */}
-        <div className="nav-links-d" style={{ borderTop:'1px solid #f0ede8',display:'flex',justifyContent:'center',gap:48,padding:'10px 36px' }}>
-          {navLinks.map(({label,id})=>(
-            <button key={id} onClick={()=>scrollTo(id)}
-              style={{ background:'none',border:'none',fontSize:10,letterSpacing:'3px',textTransform:'uppercase',color:'#aaa',cursor:'pointer',fontFamily:'DM Sans',fontWeight:600,transition:'color 0.2s',padding:'2px 0',position:'relative' }}
-              onMouseOver={e=>e.target.style.color='#2D5016'}
-              onMouseOut={e=>e.target.style.color='#aaa'}>
-              {label}
-            </button>
-          ))}
+          {/* Hamburger — mobile only */}
+          <button className="nav-ham" onClick={()=>setOpen(!open)}
+            style={{ display:'none',background:'none',border:'none',flexDirection:'column',gap:5,cursor:'pointer',padding:4,marginLeft:'auto' }}>
+            {[0,1,2].map(i=>(
+              <span key={i} style={{ display:'block',width:22,height:1.5,background:'#1C1A17',transition:'0.3s',
+                transform:i===0&&open?'rotate(45deg) translate(4px,5px)':i===2&&open?'rotate(-45deg) translate(4px,-5px)':'none',
+                opacity:i===1&&open?0:1 }}/>
+            ))}
+          </button>
         </div>
       </header>
 
@@ -134,14 +135,14 @@ export default function Nav({ restaurant, links, locations }) {
         <div style={{ position:'fixed',inset:0,background:'#fff',zIndex:99,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center' }}>
           {navLinks.map(({label,id})=>(
             <button key={id} onClick={()=>scrollTo(id)}
-              style={{ background:'none',border:'none',borderBottom:'1px solid #f5f2ed',width:'100%',padding:'24px 0',textAlign:'center',fontSize:32,color:'#1C1A17',fontFamily:'Cormorant Garamond,serif',fontStyle:'italic',cursor:'pointer',fontWeight:600,transition:'color 0.2s' }}
+              style={{ background:'none',border:'none',borderBottom:'1px solid #f5f2ed',width:'100%',padding:'22px 0',textAlign:'center',fontSize:30,color:'#1C1A17',fontFamily:'Cormorant Garamond,serif',fontStyle:'italic',cursor:'pointer',fontWeight:600,transition:'color 0.2s' }}
               onMouseOver={e=>e.target.style.color='#2D5016'} onMouseOut={e=>e.target.style.color='#1C1A17'}>
               {label}
             </button>
           ))}
-          <div style={{ display:'flex',gap:14,marginTop:40,flexWrap:'wrap',justifyContent:'center',padding:'0 32px' }}>
+          <div style={{ display:'flex',gap:14,marginTop:36,flexWrap:'wrap',justifyContent:'center' }}>
             {links?.reservation_url&&<button onClick={()=>{setOpen(false);cta('reserve',links.reservation_url)}} className="btn-green">Reserve</button>}
-            {links?.order_url&&<button onClick={()=>{setOpen(false);cta('order',links.order_url)}} className="btn-outline">Order Online</button>}
+            {links?.order_url&&<button onClick={()=>{setOpen(false);cta('order',links.order_url)}} className="btn-outline">Order</button>}
           </div>
         </div>
       )}

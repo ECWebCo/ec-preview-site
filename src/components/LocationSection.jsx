@@ -13,20 +13,19 @@ function useReveal(ref,delay=0){
   },[ref,delay])
 }
 
-function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, photos }) {
+function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks }) {
   const today = new Date().getDay()
   const infoRef=useRef(null); useReveal(infoRef, index*0.1)
   const rightRef=useRef(null); useReveal(rightRef, index*0.1+0.15)
   const locHours = loc.location_hours?.length>0?loc.location_hours:fallbackHours
   const locLinks = loc.location_links?.[0]||fallbackLinks||{}
   const addr = loc.address
-  const locPhoto = photos?.[index+3]?.url || photos?.[0]?.url
 
   return (
     <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',borderTop:'1px solid var(--border)' }} className="loc-card">
 
       {/* Info */}
-      <div ref={infoRef} className="reveal-left" style={{ padding:'80px 72px',borderRight:'1px solid var(--border)' }}>
+      <div ref={infoRef} className="reveal-left" style={{ padding:'56px 64px',borderRight:'1px solid var(--border)' }}>
         <div className="eyebrow"><span className="eyebrow-line"/>{locs.length>1?`Location ${index+1}`:'Visit Us'}</div>
         <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(36px,4.5vw,60px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:1.0,margin:'0 0 28px',letterSpacing:'-0.3px' }}>
           {loc.name||restaurant.name}
@@ -75,11 +74,7 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
 
       {/* Right: photo + map stacked */}
       <div ref={rightRef} className="reveal-right" style={{ display:'flex',flexDirection:'column' }}>
-        {locPhoto&&(
-          <div className="photo-hover" style={{ flex:'0 0 320px',overflow:'hidden',background:'#e8e4dc',borderBottom:'1px solid var(--border)' }}>
-            <img src={locPhoto} alt="restaurant" style={{ width:'100%',height:'100%',objectFit:'cover',minHeight:320 }}/>
-          </div>
-        )}
+
         {addr&&(
           <a href={`https://maps.google.com?q=${encodeURIComponent(addr)}`} target="_blank" rel="noreferrer"
             style={{ flex:1,display:'block',textDecoration:'none',overflow:'hidden',position:'relative',minHeight:280,background:'#e8e4dc',transition:'opacity 0.2s' }}
@@ -101,26 +96,13 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks, ph
 // need locs in scope for LocationCard
 let locs = []
 
-export default function LocationSection({ restaurant, hours, links, locations, photos }) {
+export default function LocationSection({ restaurant, hours, links, locations }) {
   const headerRef=useRef(null); useReveal(headerRef)
   locs = locations?.length>0?locations:restaurant.locations?.length>0?restaurant.locations:[{name:restaurant.name,address:restaurant.address,phone:links?.phone,location_hours:[],location_links:[links]}]
 
   return (
-    <section id="location-section" style={{ background:'var(--cream)',paddingTop:80 }}>
-      {/* Header */}
-      <div style={{ padding:'0 72px 56px',maxWidth:1100,margin:'0 auto' }}>
-        <div ref={headerRef} className="reveal" style={{ display:'flex',alignItems:'flex-end',justifyContent:'space-between',flexWrap:'wrap',gap:24 }}>
-          <div>
-            <div className="eyebrow"><span className="eyebrow-line"/>{locs.length>1?'Our Locations':'Location & Hours'}</div>
-            <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(44px,5.5vw,72px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:1.0,margin:0,letterSpacing:'-0.3px' }}>
-              Come Visit Us
-            </h2>
-          </div>
-          <p style={{ fontSize:14,color:'var(--muted)',maxWidth:260,lineHeight:1.9,fontFamily:'DM Sans',fontWeight:300 }}>
-            Reservations welcome. Walk-ins always embraced.
-          </p>
-        </div>
-      </div>
+    <section id="location-section" style={{ background:'var(--cream)' }}>
+
 
       {locs.map((loc,i)=>(
         <LocationCard key={loc.id||i} loc={loc} index={i} restaurant={restaurant} fallbackHours={hours} fallbackLinks={links} photos={photos}/>

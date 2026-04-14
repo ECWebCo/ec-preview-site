@@ -13,7 +13,7 @@ function MenuItem({ item, index }) {
   const ref = useRef(null)
   useEffect(()=>{
     const el=ref.current; if(!el) return
-    el.style.transitionDelay=`${Math.min(index*0.06,0.45)}s`
+    el.style.transitionDelay=`${Math.min(index*0.05,0.4)}s`
     const obs=new IntersectionObserver(([e])=>{
       if(e.isIntersecting){ el.style.opacity=item.available===false?'0.35':'1'; el.style.transform='translateY(0)'; obs.disconnect() }
     },{threshold:0.04})
@@ -21,87 +21,74 @@ function MenuItem({ item, index }) {
   },[index])
 
   return (
-    <div ref={ref} className="menu-item" style={{
-      opacity:0, transform:'translateY(16px)',
-      transition:'opacity 0.6s ease, transform 0.6s ease, padding-left 0.4s ease'
+    <div ref={ref} style={{
+      opacity:0, transform:'translateY(12px)',
+      transition:'opacity 0.55s ease, transform 0.55s ease',
+      padding:'18px 0',
+      borderBottom:'1px solid var(--border)',
+      display:'grid',
+      gridTemplateColumns:'1fr auto',
+      gap:16,
+      alignItems:'start'
     }}>
-      <div>
-        <div style={{ display:'flex',alignItems:'baseline',gap:12,marginBottom:item.description?6:0 }}>
-          <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:20,fontWeight:600,fontStyle:'italic',color:'#1C1A17',lineHeight:1.2 }}>
-            {item.name}
+      <div style={{ display:'flex',alignItems:'baseline',gap:0,minWidth:0 }}>
+        {/* Item name — uppercase small caps style */}
+        <span style={{ fontFamily:'DM Sans',fontSize:13,fontWeight:600,letterSpacing:'1.5px',textTransform:'uppercase',color:'#1C1A17',flexShrink:0 }}>
+          {item.name}
+        </span>
+        {/* Dotted leader */}
+        <span style={{ flex:1,borderBottom:'1px dotted #C8C4BE',margin:'0 10px',position:'relative',top:'-5px',minWidth:20 }}/>
+        {/* Price */}
+        {item.price&&(
+          <span style={{ fontFamily:'DM Sans',fontSize:13,fontWeight:500,color:'#2D5016',flexShrink:0 }}>
+            {Number(item.price).toFixed(0)}
           </span>
-          {item.available===false&&(
-            <span style={{ fontSize:9,padding:'2px 8px',background:'#f0ede6',color:'#bbb',fontFamily:'DM Sans',fontWeight:600,letterSpacing:1.5,textTransform:'uppercase',whiteSpace:'nowrap' }}>
-              86'd
-            </span>
-          )}
-        </div>
-        {item.description&&(
-          <p style={{ fontSize:13,color:'#7A766E',lineHeight:1.65,margin:0,fontFamily:'DM Sans',fontWeight:300,maxWidth:420 }}>
-            {item.description}
-          </p>
         )}
       </div>
-      {item.price&&(
-        <div style={{ fontFamily:'Cormorant Garamond,serif',fontSize:19,fontWeight:400,fontStyle:'italic',color:'#2D5016',flexShrink:0,paddingTop:2,whiteSpace:'nowrap' }}>
-          ${Number(item.price).toFixed(2)}
+      {item.description&&(
+        <div style={{ gridColumn:'1 / -1',paddingTop:0 }}>
+          <p style={{ fontSize:12,color:'var(--muted)',lineHeight:1.6,margin:0,fontFamily:'Cormorant Garamond,serif',fontStyle:'italic',fontWeight:400 }}>
+            {item.description}
+          </p>
         </div>
+      )}
+      {item.available===false&&(
+        <span style={{ fontSize:9,padding:'2px 8px',background:'#f0ede6',color:'#bbb',fontFamily:'DM Sans',fontWeight:600,letterSpacing:1.5,textTransform:'uppercase' }}>
+          86'd
+        </span>
       )}
     </div>
   )
 }
 
-export default function MenuSection({ sections, photos }) {
+export default function MenuSection({ sections }) {
   const [activeTab, setActiveTab] = useState(0)
-  const leftRef = useRef(null); useReveal(leftRef)
-  const rightRef = useRef(null); useReveal(rightRef, 0.18)
+  const headerRef = useRef(null); useReveal(headerRef)
 
   if(!sections?.length) return null
   const active = sections[activeTab]
   const items = [...(active?.items?.filter(i=>i.available!==false)||[]), ...(active?.items?.filter(i=>i.available===false)||[])]
-  const menuPhoto = photos?.[1]?.url || photos?.[0]?.url
 
   return (
-    <section id="menu-section" style={{ background:'var(--cream)' }}>
+    <section id="menu-section" style={{ background:'var(--cream)',paddingTop:72 }}>
 
-      {/* ── Intro: split layout ── */}
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',minHeight:560 }} className="menu-intro-grid">
-
-        {/* Left — text */}
-        <div ref={leftRef} className="reveal-left" style={{ padding:'96px 72px',display:'flex',flexDirection:'column',justifyContent:'center',borderRight:'1px solid var(--border)' }}>
+      {/* Header */}
+      <div style={{ maxWidth:960,margin:'0 auto',padding:'0 64px 48px' }}>
+        <div ref={headerRef} className="reveal">
           <div className="eyebrow"><span className="eyebrow-line"/>The Menu</div>
-          <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(52px,6vw,84px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:0.92,margin:'0 0 28px',letterSpacing:'-0.5px' }}>
-            Made with<br /><em style={{ fontWeight:600,color:'var(--green)' }}>Passion.</em>
+          <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(40px,5vw,64px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:1.0,margin:0,letterSpacing:'-0.3px' }}>
+            Made with <em style={{ fontWeight:600,color:'var(--green)' }}>Passion.</em>
           </h2>
-          <p style={{ fontSize:15,color:'var(--muted)',lineHeight:1.9,fontFamily:'DM Sans',fontWeight:300,maxWidth:360,margin:'0 0 40px' }}>
-            Every pasta hand-rolled, every sauce simmered for hours. Our kitchen is open — come taste the difference.
-          </p>
-          <div style={{ display:'flex',alignItems:'center',gap:24 }}>
-            <button onClick={()=>document.getElementById('menu-items')?.scrollIntoView({behavior:'smooth'})} className="btn-green">
-              See Full Menu
-            </button>
-            <div style={{ width:40,height:1,background:'var(--border)' }}/>
-          </div>
-        </div>
-
-        {/* Right — food photo */}
-        <div className="photo-hover" style={{ minHeight:480,background:'#e8e4dc',position:'relative' }}>
-          {menuPhoto
-            ? <img src={menuPhoto} alt="Our food" style={{ width:'100%',height:'100%',objectFit:'cover',objectPosition:'center' }}/>
-            : <div style={{ width:'100%',height:'100%',background:'linear-gradient(135deg,#e8e4dc,#d8d3c8)' }}/>
-          }
-          {/* Green overlay strip on bottom */}
-          <div style={{ position:'absolute',bottom:0,left:0,right:0,height:4,background:'var(--green)' }}/>
         </div>
       </div>
 
-      {/* ── Tabs ── */}
+      {/* Tabs */}
       {sections.length>1&&(
-        <div style={{ position:'sticky',top:116,background:'var(--cream)',zIndex:10,borderBottom:'1px solid var(--border)',borderTop:'1px solid var(--border)' }}>
-          <div style={{ maxWidth:1100,margin:'0 auto',padding:'0 72px',display:'flex',overflowX:'auto' }}>
+        <div style={{ position:'sticky',top:56,background:'var(--cream)',zIndex:10,borderBottom:'1px solid var(--border)',borderTop:'1px solid var(--border)' }}>
+          <div style={{ maxWidth:960,margin:'0 auto',padding:'0 64px',display:'flex',overflowX:'auto' }}>
             {sections.map((s,i)=>(
               <button key={s.id} onClick={()=>setActiveTab(i)} style={{
-                padding:'16px 32px',fontSize:10,border:'none',background:'none',
+                padding:'14px 28px',fontSize:10,border:'none',background:'none',
                 fontFamily:'DM Sans',fontWeight:700,letterSpacing:'2.5px',textTransform:'uppercase',
                 whiteSpace:'nowrap',cursor:'pointer',
                 color:activeTab===i?'var(--green)':'#bbb',
@@ -113,34 +100,34 @@ export default function MenuSection({ sections, photos }) {
         </div>
       )}
 
-      {/* ── Items ── */}
-      <div id="menu-items" style={{ maxWidth:1100,margin:'0 auto',padding:'8px 72px 100px' }}>
-        {items.length===0
-          ? <p style={{ color:'var(--muted)',fontSize:15,padding:'56px 0',textAlign:'center',fontFamily:'Cormorant Garamond,serif',fontStyle:'italic' }}>Coming soon.</p>
-          : <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 72px' }} className="menu-items-grid">
-              {items.map((item,i)=><MenuItem key={item.id} item={item} index={i}/>)}
-            </div>
-        }
-      </div>
+      {/* Menu card — elegant bordered box like image 4 */}
+      <div style={{ maxWidth:960,margin:'0 auto',padding:'48px 64px 80px' }}>
+        <div style={{
+          border:'1px solid var(--green)',
+          outline:'3px solid var(--green)',
+          outlineOffset:6,
+          padding:'48px 56px',
+          background:'var(--cream)',
+          position:'relative'
+        }}>
+          {/* Section name as card title */}
+          <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:32,fontWeight:300,fontStyle:'italic',color:'#1C1A17',textAlign:'center',marginBottom:40,letterSpacing:'-0.2px' }}>
+            {active?.name}
+          </h3>
 
-      {/* ── Mid-section photo strip ── */}
-      {photos?.length>=3&&(
-        <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr 1fr',height:360,borderTop:'1px solid var(--border)' }}>
-          {[photos[2],photos[3],photos[4]].filter(Boolean).map((p,i)=>(
-            <div key={i} className="photo-hover" style={{ borderRight:i<2?'1px solid var(--border)':'none',background:'#e8e4dc',overflow:'hidden' }}>
-              <img src={p.url} alt="food" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
-            </div>
-          ))}
+          {items.length===0
+            ? <p style={{ color:'var(--muted)',fontSize:15,padding:'24px 0',textAlign:'center',fontFamily:'Cormorant Garamond,serif',fontStyle:'italic' }}>Coming soon.</p>
+            : <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 56px' }} className="menu-items-grid">
+                {items.map((item,i)=><MenuItem key={item.id} item={item} index={i}/>)}
+              </div>
+          }
         </div>
-      )}
+      </div>
 
       <style>{`
         @media(max-width:900px){
-          .menu-intro-grid{grid-template-columns:1fr!important}
-          .menu-intro-grid>div:last-child{min-height:320px!important;border-right:none!important}
-          .menu-intro-grid>div:first-child{padding:64px 28px!important;border-right:none!important}
+          #menu-section>div{padding-left:24px!important;padding-right:24px!important}
           .menu-items-grid{grid-template-columns:1fr!important;gap:0!important}
-          #menu-items{padding:8px 28px 72px!important}
           #menu-section div[style*="sticky"]>div{padding:0 16px!important}
         }
       `}</style>
