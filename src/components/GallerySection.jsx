@@ -19,11 +19,7 @@ function GalleryPhoto({ photo, delay }) {
   },[delay])
 
   return (
-    <div ref={ref} className="reveal-scale" style={{
-      overflow:'hidden', background:'#e0dbd0', position:'relative',
-      aspectRatio: '1/1',
-      cursor:'pointer'
-    }}
+    <div ref={ref} className="reveal-scale" style={{ overflow:'hidden', background:'#e0dbd0', aspectRatio:'1/1', cursor:'pointer' }}
       onMouseOver={e=>{
         e.currentTarget.querySelector('img').style.transform='scale(1.06)'
         e.currentTarget.querySelector('img').style.filter='brightness(1.08)'
@@ -45,8 +41,6 @@ export default function GallerySection({ photos, restaurant }) {
   const headerRef = useRef(null); useReveal(headerRef)
   if(!photos?.length) return null
 
-  const [p0,p1,p2,p3,p4,p5,p6,p7] = photos
-
   return (
     <section id="gallery-section" style={{ background:'var(--warm)', padding:'80px 0 0' }}>
 
@@ -57,39 +51,28 @@ export default function GallerySection({ photos, restaurant }) {
             <span className="eyebrow-line"/>From Our Kitchen<span className="eyebrow-line"/>
           </div>
           <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(40px,5vw,68px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:1.0,margin:0 }}>
-            From Our Kitchen
+            The Experience
           </h2>
         </div>
       </div>
 
-      {/* 3-column grid with varied heights for visual interest */}
-      <div style={{ padding:'0 64px', maxWidth:1200, margin:'0 auto 80px' }}>
-        {/* Row 1 — 3 photos, middle one taller */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:8, alignItems:'start' }}>
-          {p0&&<GalleryPhoto photo={p0} delay={0} />}
-          {p1&&<GalleryPhoto photo={p1} delay={0.08} />}
-          {p2&&<GalleryPhoto photo={p2} delay={0.16} />}
-        </div>
-        {/* Row 2 — 3 photos, first and last taller */}
-        {photos.length > 3 && (
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, alignItems:'start' }}>
-            {p3&&<GalleryPhoto photo={p3} delay={0.24} />}
-            {p4&&<GalleryPhoto photo={p4} delay={0.32} />}
-            {p5&&<GalleryPhoto photo={p5} delay={0.4} />}
-          </div>
-        )}
-        {/* Row 3 — remaining photos */}
-        {photos.length > 6 && (
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:8 }}>
-            {p6&&<GalleryPhoto photo={p6} delay={0.48} />}
-            {p7&&<GalleryPhoto photo={p7} delay={0.56} />}
-          </div>
-        )}
+      {/* Grid — 4 col desktop, 2 col mobile */}
+      <div className="gallery-grid" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, padding:'0 64px', maxWidth:1200, margin:'0 auto 80px' }}>
+        {photos.slice(0,8).map((photo,i)=>(
+          <GalleryPhoto key={photo.id||i} photo={photo} delay={i*0.07}/>
+        ))}
       </div>
 
       <style>{`
         @media(max-width:768px){
-          .gallery-grid{grid-template-columns:repeat(2,1fr)!important;padding:0 16px!important;gap:6px!important}
+          .gallery-grid {
+            grid-template-columns: repeat(2,1fr) !important;
+            padding: 0 16px !important;
+            gap: 6px !important;
+          }
+          #gallery-section > div:first-child {
+            padding: 0 24px 36px !important;
+          }
         }
       `}</style>
     </section>
