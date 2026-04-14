@@ -4,7 +4,7 @@ export default function Hero({ restaurant, heroPhoto }) {
 
   return (
     <div style={{ paddingTop: navH }}>
-      <div style={{
+      <div id="hero-inner" style={{
         width: '100%',
         height: `calc(100vh - ${navH}px)`,
         minHeight: 500,
@@ -25,6 +25,11 @@ export default function Hero({ restaurant, heroPhoto }) {
           </div>
         )}
       </div>
+      <style>{`
+        @media(max-width:768px){
+          #hero-inner{ height:calc(100vh - 72px - 68px) !important; min-height:400px !important; }
+        }
+      `}</style>
     </div>
   )
 }
