@@ -89,8 +89,7 @@ export default function GallerySection({ photos, restaurant }) {
 
       <style>{`
         @media(max-width:768px){
-          #gallery-section>div:nth-child(2){padding:0 24px!important}
-          #gallery-section>div:nth-child(2)>div{grid-template-columns:repeat(2,1fr)!important}
+          .gallery-grid{grid-template-columns:repeat(2,1fr)!important;padding:0 16px!important;gap:6px!important}
         }
       `}</style>
     </section>

@@ -55,8 +55,7 @@ export default function Nav({ restaurant, links, locations }) {
     {label:'Menu',id:'menu-section'},
     {label:'Kitchen',id:'gallery-section'},
     {label:'Location',id:'location-section'},
-    {label:'Contact',id:'contact-section'},
-  ]
+      ]
 
   return (
     <>
@@ -74,7 +73,7 @@ export default function Nav({ restaurant, links, locations }) {
           {/* Logo — left */}
           <div style={{ flexShrink:0 }}>
             {restaurant.logo_url
-              ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height:80,width:'auto',objectFit:'contain',display:'block' }}/>
+              ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height:60,width:'auto',objectFit:'contain',display:'block' }}/>
               : <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:20,fontStyle:'italic',fontWeight:600,color:'#1C1A17',whiteSpace:'nowrap' }}>
                   {restaurant.name}
                 </span>
