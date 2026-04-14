@@ -1,6 +1,6 @@
 export default function Hero({ restaurant, heroPhoto }) {
   const videoUrl = restaurant?.hero_video_url
-  const navH = 56
+  const navH = 72
 
   return (
     <div style={{ paddingTop: navH }}>

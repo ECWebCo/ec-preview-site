@@ -9,7 +9,7 @@ function useReveal(ref, delay=0) {
   },[ref,delay])
 }
 
-function GalleryPhoto({ photo, delay, tall }) {
+function GalleryPhoto({ photo, delay }) {
   const ref = useRef(null)
   useEffect(()=>{
     const el=ref.current; if(!el) return
@@ -66,23 +66,23 @@ export default function GallerySection({ photos, restaurant }) {
       <div style={{ padding:'0 64px', maxWidth:1200, margin:'0 auto 80px' }}>
         {/* Row 1 — 3 photos, middle one taller */}
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:8, alignItems:'start' }}>
-          {p0&&<GalleryPhoto photo={p0} delay={0} tall={false}/>}
-          {p1&&<GalleryPhoto photo={p1} delay={0.08} tall={true}/>}
-          {p2&&<GalleryPhoto photo={p2} delay={0.16} tall={false}/>}
+          {p0&&<GalleryPhoto photo={p0} delay={0} />}
+          {p1&&<GalleryPhoto photo={p1} delay={0.08} />}
+          {p2&&<GalleryPhoto photo={p2} delay={0.16} />}
         </div>
         {/* Row 2 — 3 photos, first and last taller */}
         {photos.length > 3 && (
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, alignItems:'start' }}>
-            {p3&&<GalleryPhoto photo={p3} delay={0.24} tall={true}/>}
-            {p4&&<GalleryPhoto photo={p4} delay={0.32} tall={false}/>}
-            {p5&&<GalleryPhoto photo={p5} delay={0.4} tall={true}/>}
+            {p3&&<GalleryPhoto photo={p3} delay={0.24} />}
+            {p4&&<GalleryPhoto photo={p4} delay={0.32} />}
+            {p5&&<GalleryPhoto photo={p5} delay={0.4} />}
           </div>
         )}
         {/* Row 3 — remaining photos */}
         {photos.length > 6 && (
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:8 }}>
-            {p6&&<GalleryPhoto photo={p6} delay={0.48} tall={false}/>}
-            {p7&&<GalleryPhoto photo={p7} delay={0.56} tall={false}/>}
+            {p6&&<GalleryPhoto photo={p6} delay={0.48} />}
+            {p7&&<GalleryPhoto photo={p7} delay={0.56} />}
           </div>
         )}
       </div>

@@ -69,12 +69,12 @@ export default function Nav({ restaurant, links, locations }) {
         transition:'box-shadow 0.3s ease'
       }}>
         {/* Single row — logo left, nav center, CTAs right */}
-        <div style={{ height:56,display:'flex',alignItems:'center',padding:'0 40px',gap:24 }}>
+        <div style={{ height:72,display:'flex',alignItems:'center',padding:'0 40px',gap:24 }}>
 
           {/* Logo — left */}
           <div style={{ flexShrink:0 }}>
             {restaurant.logo_url
-              ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height:40,width:'auto',objectFit:'contain',display:'block' }}/>
+              ? <img src={restaurant.logo_url} alt={restaurant.name} style={{ height:80,width:'auto',objectFit:'contain',display:'block' }}/>
               : <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:20,fontStyle:'italic',fontWeight:600,color:'#1C1A17',whiteSpace:'nowrap' }}>
                   {restaurant.name}
                 </span>
