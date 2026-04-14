@@ -42,7 +42,7 @@ export default function GallerySection({ photos, restaurant }) {
   if(!photos?.length) return null
 
   return (
-    <section id="gallery-section" style={{ background:'var(--warm)', padding:'80px 0 64px' }}>
+    <section id="gallery-section" style={{ background:'var(--warm)', padding:'80px 0 80px' }}>
 
       {/* Header */}
       <div style={{ textAlign:'center', padding:'0 64px 48px' }}>
