@@ -61,9 +61,9 @@ export default function MenuSection({ sections }) {
 
       {/* Header */}
       <div style={{ maxWidth:860,margin:'0 auto',padding:'0 64px 40px' }}>
-        <div ref={headerRef} className="reveal" style={{ display:'flex',alignItems:'flex-end',justifyContent:'space-between',flexWrap:'wrap',gap:24 }}>
+        <div ref={headerRef} className="reveal" style={{ display:'flex',flexDirection:'column',alignItems:'center',textAlign:'center',gap:20 }}>
           <div>
-            <div className="eyebrow"><span className="eyebrow-line"/>The Menu</div>
+            <div className="eyebrow" style={{justifyContent:'center'}}><span className="eyebrow-line"/>The Menu<span className="eyebrow-line"/></div>
             <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(36px,4.5vw,58px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:1.0,margin:0 }}>
               Made with <em style={{ fontWeight:600,color:'var(--green)' }}>Passion.</em>
             </h2>

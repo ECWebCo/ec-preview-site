@@ -5,6 +5,7 @@ import Hero from './components/Hero'
 import MenuSection from './components/MenuSection'
 import GallerySection from './components/GallerySection'
 import LocationSection from './components/LocationSection'
+import TextureSection from './components/TextureSection'
 import Footer from './components/Footer'
 import StickyButtons from './components/StickyButtons'
 
@@ -47,6 +48,7 @@ function AppContent({ data }) {
       <Hero restaurant={restaurant} heroPhoto={heroPhoto} />
       <MenuSection sections={sections} />
       <GallerySection photos={photos} restaurant={restaurant} />
+      <TextureSection restaurant={restaurant} links={activeLinks} />
       <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
       <Footer restaurant={restaurant} />
       <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />

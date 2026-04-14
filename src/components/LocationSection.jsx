@@ -77,9 +77,9 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks }) 
 
         {addr&&(
           <a href={`https://maps.google.com?q=${encodeURIComponent(addr)}`} target="_blank" rel="noreferrer"
-            style={{ flex:1,display:'block',textDecoration:'none',overflow:'hidden',position:'relative',minHeight:280,background:'#e8e4dc',transition:'opacity 0.2s' }}
+            style={{ display:'block',textDecoration:'none',overflow:'hidden',position:'relative',minHeight:320,background:'#e8e4dc',transition:'opacity 0.2s',margin:'0 64px 64px',border:'1px solid var(--border)' }}
             onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            <iframe title="map" width="100%" height="100%" style={{ border:0,display:'block',filter:'grayscale(20%) contrast(1.05)',pointerEvents:'none',minHeight:280 }} loading="lazy"
+            <iframe title="map" width="100%" height="100%" style={{ border:0,display:'block',filter:'grayscale(20%) contrast(1.05)',pointerEvents:'none',minHeight:320 }} loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               src={`https://maps.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`}/>
             <div style={{ position:'absolute',bottom:0,left:0,right:0,background:'linear-gradient(to top,rgba(28,26,23,0.75),transparent)',padding:'16px 22px',display:'flex',justifyContent:'space-between',alignItems:'flex-end' }}>

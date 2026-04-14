@@ -42,16 +42,14 @@ export default function GallerySection({ photos, restaurant }) {
 
       {/* Header */}
       <div style={{ padding:'88px 72px 64px',maxWidth:1100,margin:'0 auto' }}>
-        <div ref={headerRef} className="reveal" style={{ display:'flex',alignItems:'flex-end',justifyContent:'space-between',flexWrap:'wrap',gap:24 }}>
+        <div ref={headerRef} className="reveal" style={{ textAlign:'center' }}>
           <div>
-            <div className="eyebrow"><span className="eyebrow-line"/>Gallery</div>
+            <div className="eyebrow" style={{justifyContent:'center'}}><span className="eyebrow-line"/>Gallery<span className="eyebrow-line"/></div>
             <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(44px,5.5vw,72px)',fontWeight:300,fontStyle:'italic',color:'#1C1A17',lineHeight:1.0,margin:0,letterSpacing:'-0.3px' }}>
               The Experience
             </h2>
           </div>
-          <p style={{ fontSize:14,color:'var(--muted)',maxWidth:280,lineHeight:1.9,fontFamily:'DM Sans',fontWeight:300 }}>
-            Every detail crafted with love. Come see for yourself.
-          </p>
+
         </div>
       </div>
 
