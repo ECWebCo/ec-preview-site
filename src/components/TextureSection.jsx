@@ -46,7 +46,7 @@ export default function TextureSection({ restaurant, links }) {
 
         {links?.reservation_url&&(
           <a href={links.reservation_url} target="_blank" rel="noreferrer"
-            style={{ display:'inline-block',padding:'13px 36px',background:'transparent',border:'1px solid rgba(255,255,255,0.5)',color:'#fff',fontFamily:'DM Sans',fontSize:11,fontWeight:600,letterSpacing:'2.5px',textTransform:'uppercase',textDecoration:'none',transition:'all 0.25s',backdropFilter:'blur(4px)' }}
+            style={{ display:'inline-block',padding:'13px 36px',background:'transparent',border:'1px solid rgba(255,255,255,0.5)',color:'#fff',fontFamily:'Cormorant Garamond,serif',fontSize:14,fontWeight:600,fontStyle:'italic',textDecoration:'none',transition:'all 0.25s',backdropFilter:'blur(4px)' }}
             onMouseOver={e=>{e.currentTarget.style.background='rgba(255,255,255,0.15)';e.currentTarget.style.borderColor='#fff'}}
             onMouseOut={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(255,255,255,0.5)'}}>
             Make a Reservation

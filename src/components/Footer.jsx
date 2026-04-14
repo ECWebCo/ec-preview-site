@@ -8,12 +8,12 @@ export default function Footer({ restaurant }) {
           <div style={{ fontFamily:'Cormorant Garamond,serif',fontSize:32,fontStyle:'italic',fontWeight:400,color:'#fff',marginBottom:8 }}>
             {restaurant.name}
           </div>
-          <div style={{ fontSize:12,color:'rgba(255,255,255,0.4)',fontFamily:'DM Sans',fontWeight:300,marginBottom:28 }}>
+          <div style={{ fontSize:14,color:'rgba(255,255,255,0.4)',fontFamily:'Cormorant Garamond,serif',fontWeight:300,fontStyle:'italic',marginBottom:28 }}>
             {restaurant.tagline||'Authentic Italian cuisine, crafted with love.'}
           </div>
           <nav style={{ display:'flex',justifyContent:'center',gap:36,flexWrap:'wrap' }}>
             {[['Menu','menu-section'],['Kitchen','gallery-section'],['Location','location-section']].map(([l,id])=>(
-              <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none',border:'none',fontSize:10,letterSpacing:'2.5px',textTransform:'uppercase',color:'rgba(255,255,255,0.4)',cursor:'pointer',fontFamily:'DM Sans',fontWeight:600,transition:'color 0.2s' }}
+              <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none',border:'none',fontSize:14,letterSpacing:'0.5px',color:'rgba(255,255,255,0.5)',cursor:'pointer',fontFamily:'Cormorant Garamond,serif',fontWeight:400,fontStyle:'italic',transition:'color 0.2s' }}
                 onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>
                 {l}
               </button>

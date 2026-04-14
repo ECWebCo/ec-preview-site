@@ -84,7 +84,7 @@ export default function Nav({ restaurant, links, locations }) {
           <div className="nav-links-d" style={{ flex:1,display:'flex',justifyContent:'center',gap:40 }}>
             {navLinks.map(({label,id})=>(
               <button key={id} onClick={()=>scrollTo(id)}
-                style={{ background:'none',border:'none',fontSize:10,letterSpacing:'3px',textTransform:'uppercase',color:'#aaa',cursor:'pointer',fontFamily:'DM Sans',fontWeight:600,transition:'color 0.2s' }}
+                style={{ background:'none',border:'none',fontSize:13,letterSpacing:'0.5px',color:'#aaa',cursor:'pointer',fontFamily:'Cormorant Garamond,serif',fontWeight:400,fontStyle:'italic',transition:'color 0.2s' }}
                 onMouseOver={e=>e.target.style.color='#2D5016'}
                 onMouseOut={e=>e.target.style.color='#aaa'}>
                 {label}
@@ -111,7 +111,7 @@ export default function Nav({ restaurant, links, locations }) {
               </button>
             )}
             {(links?.order_url||(isMulti&&locations.some(l=>l.location_links?.[0]?.order_url)))&&(
-              <button onClick={()=>cta('order',links?.order_url)} className="btn-green" style={{ padding:'7px 20px',fontSize:11 }}>
+              <button onClick={()=>cta('order',links?.order_url)} className="btn-green" style={{ padding:'7px 22px',fontSize:13 }}>
                 Order
               </button>
             )}
