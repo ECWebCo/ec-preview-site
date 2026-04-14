@@ -53,10 +53,10 @@ export default function LocationSection({ restaurant, hours, links, locations })
   const today = new Date().getDay()
 
   return (
-    <section id="location-section" style={{ background:'var(--warm)', padding:'80px 0' }}>
+    <section id="location-section" style={{ background:'var(--warm)', padding:'48px 0 80px' }}>
 
       {/* Header — restaurant name as title */}
-      <div style={{ textAlign:'center', padding:'0 64px 56px' }}>
+      <div style={{ textAlign:'center', padding:'0 64px 36px' }}>
         <div className="eyebrow" style={{ justifyContent:'center' }}>
           <span className="eyebrow-line"/>Location & Hours<span className="eyebrow-line"/>
         </div>
