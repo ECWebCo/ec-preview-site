@@ -5,7 +5,6 @@ import Hero from './components/Hero'
 import MenuSection from './components/MenuSection'
 import GallerySection from './components/GallerySection'
 import LocationSection from './components/LocationSection'
-import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 import StickyButtons from './components/StickyButtons'
 
@@ -47,9 +46,8 @@ function AppContent({ data }) {
       <Nav restaurant={restaurant} links={activeLinks} locations={locations} />
       <Hero restaurant={restaurant} heroPhoto={heroPhoto} />
       <MenuSection sections={sections} />
-      <GallerySection restaurant={restaurant} />
+      <GallerySection photos={photos} restaurant={restaurant} />
       <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
-      <ContactSection restaurant={restaurant} links={activeLinks} />
       <Footer restaurant={restaurant} />
       <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
     </>

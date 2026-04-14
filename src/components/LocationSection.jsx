@@ -42,7 +42,7 @@ function LocationCard({ loc, index, restaurant, fallbackHours, fallbackLinks }) 
           </a>
         </div>}
 
-        <div style={{ display:'flex',gap:12,flexWrap:'wrap',marginBottom:52 }}>
+        <div style={{ display:'flex',gap:12,flexWrap:'wrap',marginBottom:40 }}>
           {locLinks.order_url&&<a href={locLinks.order_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'order_click')} className="btn-green" style={{ padding:'11px 28px',fontSize:12 }}>Order Online</a>}
           {locLinks.reservation_url&&<a href={locLinks.reservation_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'reserve_click')} className="btn-outline" style={{ padding:'10px 28px',fontSize:12 }}>Reserve</a>}
           {(loc.phone||locLinks.phone)&&<a href={`tel:${loc.phone||locLinks.phone}`} onClick={()=>trackEvent(restaurant.id,'phone_click')} style={{ padding:'10px 20px',background:'transparent',color:'var(--muted)',fontSize:12,fontFamily:'DM Sans',fontWeight:500,display:'inline-block',border:'1px solid var(--border)',textDecoration:'none',transition:'all 0.2s' }} onMouseOver={e=>{e.currentTarget.style.borderColor='var(--green)';e.currentTarget.style.color='var(--green)'}} onMouseOut={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--muted)'}}>Call</a>}

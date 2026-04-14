@@ -57,7 +57,7 @@ export default function GallerySection({ photos, restaurant }) {
 
       {/* ── Full-width carousel ── */}
       <div
-        style={{ position:'relative',width:'100%',height:'clamp(420px,60vh,720px)',overflow:'hidden',background:'#1C1A17',cursor:'pointer',borderTop:'1px solid var(--border)',borderBottom:'1px solid var(--border)' }}
+        style={{ position:'relative',width:'100%',height:'clamp(420px,60vh,720px)',overflow:'hidden',background:'#1C1A17',cursor:'pointer',borderTop:'1px solid var(--border)',borderBottom:'1px solid var(--border)',margin:'0 64px',width:'calc(100% - 128px)' }}
         onMouseEnter={pause} onMouseLeave={resume}
       >
         {/* Slides */}
@@ -123,7 +123,7 @@ export default function GallerySection({ photos, restaurant }) {
 
       {/* ── Thumbnail strip ── */}
       {photos.length>1&&(
-        <div style={{ display:'flex',gap:4,padding:'4px 0 0',background:'var(--cream)' }}>
+        <div style={{ display:'flex',gap:4,padding:'4px 64px 0',background:'var(--cream)' }}>
           {photos.slice(0,8).map((photo,i)=>(
             <div key={i} onClick={()=>goTo(i)}
               style={{
