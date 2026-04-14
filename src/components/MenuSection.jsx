@@ -60,8 +60,8 @@ function SectionColumn({ section, colIndex }) {
   const items = [...(section.items?.filter(i=>i.available!==false)||[]), ...(section.items?.filter(i=>i.available===false)||[])]
 
   return (
-    <div ref={ref} className={colIndex===0?'reveal-left':'reveal-right'}>
-      <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:22,fontWeight:400,fontStyle:'italic',color:'#1C1A17',marginBottom:16,letterSpacing:'-0.2px' }}>
+    <div ref={ref} className={colIndex===0?'reveal-left':'reveal-right'} style={{ marginBottom:48, breakInside:'avoid', pageBreakInside:'avoid' }}>
+      <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:24,fontWeight:400,fontStyle:'italic',color:'#1C1A17',marginBottom:16,letterSpacing:'-0.2px',textAlign:'center' }}>
         {section.name}
       </h3>
       {items.map((item,i)=><MenuItem key={item.id||i} item={item} index={i}/>)}
@@ -77,11 +77,6 @@ export default function MenuSection({ sections }) {
 
   const items = [...(sections[activeTab]?.items?.filter(i=>i.available!==false)||[]), ...(sections[activeTab]?.items?.filter(i=>i.available===false)||[])]
 
-  // Pair sections for desktop two-column layout
-  const pairs = []
-  for(let i=0; i<sections.length; i+=2) {
-    pairs.push([sections[i], sections[i+1]||null])
-  }
 
   return (
     <section id="menu-section" style={{ background:'var(--cream)', padding:'80px 0' }}>
@@ -98,13 +93,10 @@ export default function MenuSection({ sections }) {
         </div>
       </div>
 
-      {/* ── DESKTOP: full menu, all sections, two columns ── */}
-      <div className="menu-desktop" style={{ maxWidth:1100,margin:'0 auto',padding:'0 64px' }}>
-        {pairs.map(([left, right], pi)=>(
-          <div key={pi} style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 80px',marginBottom:0,paddingBottom:0,borderBottom:'none' }}>
-            <SectionColumn section={left} colIndex={0}/>
-            <SectionColumn section={right} colIndex={1}/>
-          </div>
+      {/* ── DESKTOP: CSS columns so sections flow naturally ── */}
+      <div className="menu-desktop" style={{ maxWidth:1100,margin:'0 auto',padding:'0 64px',columnCount:2,columnGap:80,columnFill:'balance' }}>
+        {sections.map((section,si)=>(
+          <SectionColumn key={section.id||si} section={section} colIndex={si%2}/>
         ))}
       </div>
 
