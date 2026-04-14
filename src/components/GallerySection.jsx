@@ -42,7 +42,7 @@ export default function GallerySection({ photos, restaurant }) {
   if(!photos?.length) return null
 
   return (
-    <section id="gallery-section" style={{ background:'var(--warm)', padding:'80px 0 0' }}>
+    <section id="gallery-section" style={{ background:'var(--warm)', padding:'80px 0 64px' }}>
 
       {/* Header */}
       <div style={{ textAlign:'center', padding:'0 64px 48px' }}>
@@ -57,7 +57,7 @@ export default function GallerySection({ photos, restaurant }) {
       </div>
 
       {/* Grid — 4 col desktop, 2 col mobile */}
-      <div className="gallery-grid" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, padding:'0 24px', maxWidth:1400, margin:'0 auto 64px' }}>
+      <div className="gallery-grid" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, padding:'0 24px', maxWidth:1400, margin:'0 auto 0' }}>
         {photos.slice(0,8).map((photo,i)=>(
           <GalleryPhoto key={photo.id||i} photo={photo} delay={i*0.07}/>
         ))}
