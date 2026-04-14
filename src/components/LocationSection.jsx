@@ -38,14 +38,14 @@ export default function LocationSection({ restaurant, hours, links, locations })
   const today = new Date().getDay()
 
   return (
-    <section id="location-section" style={{ background:'var(--cream)', padding:'72px 0 0' }}>
+    <section id="location-section" style={{ background:'var(--warm)', padding:'72px 0 0' }}>
 
       {/* Header */}
       <div style={{ textAlign:'center', padding:'0 64px 48px' }}>
         <div className="eyebrow" style={{ justifyContent:'center' }}>
           <span className="eyebrow-line"/>Location & Hours<span className="eyebrow-line"/>
         </div>
-        <h2 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(36px,4.5vw,58px)', fontWeight:300, fontStyle:'italic', color:'#1C1A17', lineHeight:1.0, margin:0 }}>
+        <h2 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(40px,5vw,68px)', fontWeight:300, fontStyle:'italic', color:'#1C1A17', lineHeight:1.0, margin:0 }}>
           Come Visit Us
         </h2>
       </div>

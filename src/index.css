@@ -6,7 +6,7 @@
   --green:     #2D5016;
   --green-lt:  #3A6B1C;
   --cream:     #FAF8F3;
-  --warm:      #F4F0E8;
+  --warm:      #EDEAE0;
   --ink:       #1C1A17;
   --muted:     #7A766E;
   --border:    #E2DDD4;
@@ -176,6 +176,20 @@ a { color: inherit; text-decoration: none; }
 .carousel-slide img {
   width: 100%; height: 100%; object-fit: cover;
   animation: carouselKenBurns 8s ease-in-out infinite alternate;
+}
+
+/* ── Section divider ── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ── Section divider green ── */
+.section-divider-green {
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--green), transparent);
+  margin: 0;
 }
 
 /* ── Nav ── */

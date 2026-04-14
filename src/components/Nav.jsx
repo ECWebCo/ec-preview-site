@@ -53,7 +53,7 @@ export default function Nav({ restaurant, links, locations }) {
 
   const navLinks = [
     {label:'Menu',id:'menu-section'},
-    {label:'Gallery',id:'gallery-section'},
+    {label:'Kitchen',id:'gallery-section'},
     {label:'Location',id:'location-section'},
     {label:'Contact',id:'contact-section'},
   ]

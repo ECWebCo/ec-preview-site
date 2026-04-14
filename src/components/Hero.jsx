@@ -4,16 +4,13 @@ export default function Hero({ restaurant, heroPhoto }) {
 
   return (
     <div style={{ paddingTop: navH }}>
-      {/* Gap between nav and hero */}
-      <div style={{ height: 24, background: '#fff' }} />
       <div style={{
         width: '100%',
-        height: `calc(100vh - ${navH + 24}px)`,
+        height: `calc(100vh - ${navH}px)`,
         minHeight: 500,
         position: 'relative',
         overflow: 'hidden',
-        background: '#1C1A17',
-        margin: '0 0 0 0'
+        background: '#1C1A17'
       }}>
         {videoUrl ? (
           <video autoPlay muted loop playsInline style={{ position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center' }}>

@@ -12,7 +12,7 @@ export default function Footer({ restaurant }) {
             {restaurant.tagline||'Authentic Italian cuisine, crafted with love.'}
           </div>
           <nav style={{ display:'flex',justifyContent:'center',gap:36,flexWrap:'wrap' }}>
-            {[['Menu','menu-section'],['Gallery','gallery-section'],['Location','location-section']].map(([l,id])=>(
+            {[['Menu','menu-section'],['Kitchen','gallery-section'],['Location','location-section']].map(([l,id])=>(
               <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none',border:'none',fontSize:10,letterSpacing:'2.5px',textTransform:'uppercase',color:'rgba(255,255,255,0.4)',cursor:'pointer',fontFamily:'DM Sans',fontWeight:600,transition:'color 0.2s' }}
                 onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>
                 {l}

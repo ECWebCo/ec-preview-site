@@ -5,6 +5,7 @@ import Hero from './components/Hero'
 import MenuSection from './components/MenuSection'
 import GallerySection from './components/GallerySection'
 import LocationSection from './components/LocationSection'
+import TextureSection from './components/TextureSection'
 import Footer from './components/Footer'
 import StickyButtons from './components/StickyButtons'
 
@@ -45,8 +46,11 @@ function AppContent({ data }) {
     <>
       <Nav restaurant={restaurant} links={activeLinks} locations={locations} />
       <Hero restaurant={restaurant} heroPhoto={heroPhoto} />
+      <div className="section-divider-green" />
       <MenuSection sections={sections} />
+      <div className="section-divider" />
       <GallerySection photos={photos} restaurant={restaurant} />
+      <TextureSection restaurant={restaurant} links={activeLinks} />
       <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
       <Footer restaurant={restaurant} />
       <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
