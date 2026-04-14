@@ -21,7 +21,7 @@ function GalleryPhoto({ photo, delay }) {
   return (
     <div ref={ref} className="reveal-scale" style={{
       overflow:'hidden', background:'#e0dbd0', position:'relative',
-      aspectRatio: tall ? '3/4' : '4/3',
+      aspectRatio: '1/1',
       cursor:'pointer'
     }}
       onMouseOver={e=>{
