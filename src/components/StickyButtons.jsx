@@ -55,7 +55,7 @@ export default function StickyButtons({ restaurant, links, locations }) {
     const style = {
       flex:1,display:'flex',flexDirection:'column',alignItems:'center',
       justifyContent:'center',gap:4,padding:'11px 8px',
-      background: primary ? '#2D5016' : '#fff',
+      background: primary ? 'var(--green)' : 'var(--cream)',
       color: primary ? '#fff' : '#1C1A17',
       textDecoration:'none',fontFamily:'Cormorant Garamond,serif',
       fontSize:14,fontWeight:400,fontStyle:'italic',cursor:'pointer',
@@ -69,7 +69,7 @@ export default function StickyButtons({ restaurant, links, locations }) {
   return (
     <>
       {picker&&<LocationPicker locations={locations} type={picker} onClose={()=>setPicker(null)}/>}
-      <div className="sticky-mobile-bar" style={{ position:'fixed',bottom:0,left:0,right:0,zIndex:200,display:'none',background:'#fff',borderTop:'1px solid #eee',paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -4px 24px rgba(0,0,0,0.08)' }}>
+      <div className="sticky-mobile-bar" style={{ position:'fixed',bottom:0,left:0,right:0,zIndex:200,display:'none',background:'var(--cream)',borderTop:'1px solid var(--border)',paddingBottom:'env(safe-area-inset-bottom)',boxShadow:'0 -4px 24px rgba(0,0,0,0.08)' }}>
         <BtnItem type="order" label="Order" primary icon={<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2h2l2.5 8h7l1.5-5H5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="8" cy="14" r="1" fill="currentColor"/><circle cx="13" cy="14" r="1" fill="currentColor"/></svg>}/>
         <BtnItem type="reserve" label="Reserve" icon={<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.5"/><path d="M2 7h14M6 2v2M12 2v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>}/>
         <BtnItem type="call" label="Call" icon={<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3.5a1 1 0 011-1h2l1.5 3.5-1.5 1.5c.8 1.6 2 2.8 3.5 3.5L11 9.5l3.5 1.5v2a1 1 0 01-1 1C5.5 14.5 3 7 3 3.5z" stroke="currentColor" strokeWidth="1.5"/></svg>}/>

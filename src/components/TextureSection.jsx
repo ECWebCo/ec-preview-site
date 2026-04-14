@@ -9,9 +9,10 @@ function useReveal(ref) {
 }
 
 // Beautiful Amalfi Coast / Tuscany image
-const ITALY_PHOTO = 'https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=1920&q=80'
+
 
 export default function TextureSection({ restaurant, links }) {
+  const bannerPhoto = restaurant?.banner_image_url || "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=1920&q=80"
   const ref = useRef(null); useReveal(ref)
 
   return (
@@ -19,7 +20,7 @@ export default function TextureSection({ restaurant, links }) {
     <div style={{ position:'relative', overflow:'hidden', height:'clamp(320px,45vw,560px)' }}>
       {/* Italy photo */}
       <img
-        src={ITALY_PHOTO}
+        src={bannerPhoto}
         alt="Italy"
         style={{ position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover',objectPosition:'center 60%' }}
       />
