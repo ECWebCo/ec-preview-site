@@ -61,10 +61,9 @@ function SectionColumn({ section, colIndex }) {
 
   return (
     <div ref={ref} className={colIndex===0?'reveal-left':'reveal-right'}>
-      <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:22,fontWeight:400,fontStyle:'italic',color:'#1C1A17',marginBottom:4,letterSpacing:'-0.2px' }}>
+      <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:22,fontWeight:400,fontStyle:'italic',color:'#1C1A17',marginBottom:16,letterSpacing:'-0.2px' }}>
         {section.name}
       </h3>
-      <div style={{ width:32,height:1,background:'var(--green)',marginBottom:20 }}/>
       {items.map((item,i)=><MenuItem key={item.id||i} item={item} index={i}/>)}
     </div>
   )
@@ -102,7 +101,7 @@ export default function MenuSection({ sections }) {
       {/* ── DESKTOP: full menu, all sections, two columns ── */}
       <div className="menu-desktop" style={{ maxWidth:1100,margin:'0 auto',padding:'0 64px' }}>
         {pairs.map(([left, right], pi)=>(
-          <div key={pi} style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 80px',marginBottom: pi < pairs.length-1 ? 56 : 0,paddingBottom: pi < pairs.length-1 ? 56 : 0,borderBottom: pi < pairs.length-1 ? '1px solid var(--border)' : 'none' }}>
+          <div key={pi} style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 80px',marginBottom: pi < pairs.length-1 ? 56 : 0,paddingBottom: 0,borderBottom: 'none' }}>
             <SectionColumn section={left} colIndex={0}/>
             <SectionColumn section={right} colIndex={1}/>
           </div>
