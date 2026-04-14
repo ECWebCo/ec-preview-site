@@ -57,10 +57,10 @@ export default function MenuSection({ sections }) {
   const items = [...(active?.items?.filter(i=>i.available!==false)||[]), ...(active?.items?.filter(i=>i.available===false)||[])]
 
   return (
-    <section id="menu-section" style={{ background:'var(--cream)',paddingTop:64 }}>
+    <section id="menu-section" style={{ background:'var(--cream)',paddingTop:56 }}>
 
       {/* Header */}
-      <div style={{ maxWidth:860,margin:'0 auto',padding:'0 64px 40px' }}>
+      <div style={{ maxWidth:860,margin:'0 auto',padding:'0 64px 28px' }}>
         <div ref={headerRef} className="reveal" style={{ display:'flex',flexDirection:'column',alignItems:'center',textAlign:'center',gap:20 }}>
           <div>
             <div className="eyebrow" style={{justifyContent:'center'}}><span className="eyebrow-line"/>The Menu<span className="eyebrow-line"/></div>
@@ -105,18 +105,14 @@ export default function MenuSection({ sections }) {
       </div>
 
       {/* Menu card */}
-      <div style={{ maxWidth:860,margin:'0 auto',padding:'0 64px 80px' }}>
+      <div style={{ maxWidth:860,margin:'0 auto',padding:'0 64px 56px' }}>
         <div style={{
           border:'1px solid var(--green)',
           outline:'3px solid var(--green)',
           outlineOffset:5,
-          padding:'44px 52px',
+          padding:'36px 44px',
           background:'var(--cream)',
         }}>
-          <h3 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:28,fontWeight:300,fontStyle:'italic',color:'#1C1A17',textAlign:'center',marginBottom:36 }}>
-            {active?.name}
-          </h3>
-
           {items.length===0
             ? <p style={{ color:'var(--muted)',textAlign:'center',fontFamily:'Cormorant Garamond,serif',fontStyle:'italic',padding:'24px 0' }}>Coming soon.</p>
             : <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 56px' }} className="menu-items-grid">
