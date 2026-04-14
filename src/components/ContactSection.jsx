@@ -11,86 +11,81 @@ function useReveal(ref,delay=0){
 }
 
 export default function ContactSection({ restaurant, links, photos }) {
-  const headRef=useRef(null);useReveal(headRef)
-  const leftRef=useRef(null);useReveal(leftRef,0.1)
-  const rightRef=useRef(null);useReveal(rightRef,0.2)
-
-  const contactPhoto = photos?.[3]?.url || photos?.[1]?.url || photos?.[0]?.url
+  const headRef=useRef(null); useReveal(headRef)
+  const leftRef=useRef(null); useReveal(leftRef,0.12)
+  const rightRef=useRef(null); useReveal(rightRef,0.24)
+  const contactPhoto = photos?.[4]?.url||photos?.[2]?.url||photos?.[0]?.url
 
   return (
-    <section id="contact-section" style={{ background:'#fff', paddingTop:80 }}>
-      
+    <section id="contact-section" style={{ background:'var(--green)',paddingTop:0 }}>
 
-      {/* Header */}
-      <div style={{ padding:'72px 64px 64px',maxWidth:1100,margin:'0 auto' }}>
-        <div ref={headRef} className="reveal" style={{ textAlign:'center' }}>
-          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#C0392B',marginBottom:20,display:'flex',alignItems:'center',justifyContent:'center',gap:16 }}>
-            <span style={{ display:'inline-block',width:40,height:1,background:'#C0392B' }}/>Contact Us<span style={{ display:'inline-block',width:40,height:1,background:'#C0392B' }}/>
-          </p>
-          <h2 className="syne" style={{ fontSize:'clamp(44px,6vw,82px)',fontWeight:800,color:'#141412',lineHeight:0.9,margin:0,letterSpacing:'-2.5px' }}>
-            LET'S<br />TALK.
-          </h2>
-        </div>
-      </div>
+      {/* Full-width grid */}
+      <div style={{ display:'grid',gridTemplateColumns:'1fr 1.1fr 0.9fr',minHeight:640 }} className="contact-grid">
 
-      {/* Full-width grid: photo | info | brand card */}
-      <div style={{ display:'grid',gridTemplateColumns:'1fr 1.1fr 0.9fr',borderTop:'none',minHeight:560 }} className="contact-grid">
-
-        {/* Photo column */}
-        <div className="photo-card" style={{ overflow:'hidden',background:'#e0dbd0',borderRight:'1px solid #E4E0D8' }}>
+        {/* Photo left */}
+        <div className="photo-hover" style={{ overflow:'hidden',background:'#1a3008',position:'relative' }}>
           {contactPhoto
-            ? <img src={contactPhoto} alt="restaurant" style={{ width:'100%',height:'100%',objectFit:'cover',minHeight:560 }}/>
-            : <div style={{ width:'100%',height:'100%',minHeight:560,background:'linear-gradient(135deg,#ede9e0,#d8d3c8)' }}/>
+            ? <img src={contactPhoto} alt="restaurant" style={{ width:'100%',height:'100%',objectFit:'cover',minHeight:640,filter:'brightness(0.85)' }}/>
+            : <div style={{ width:'100%',height:'100%',minHeight:640,background:'#1a3008' }}/>
           }
+          <div style={{ position:'absolute',inset:0,background:'rgba(45,80,22,0.3)' }}/>
         </div>
 
-        {/* Contact info column */}
-        <div ref={leftRef} className="reveal-left" style={{ padding:'64px 52px',borderRight:'1px solid #E4E0D8',display:'flex',flexDirection:'column',justifyContent:'center' }}>
-          <p style={{ fontFamily:'DM Sans',fontSize:10,fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'#888480',marginBottom:32 }}>Reach Out</p>
+        {/* Contact info */}
+        <div ref={leftRef} className="reveal-left" style={{ padding:'80px 56px',display:'flex',flexDirection:'column',justifyContent:'center',borderRight:'1px solid rgba(255,255,255,0.12)',borderLeft:'1px solid rgba(255,255,255,0.12)' }}>
+          <div className="eyebrow" style={{ color:'var(--gold-lt)' }}>
+            <span style={{ display:'inline-block',width:48,height:1,background:'var(--gold-lt)',animation:'lineGrow 0.8s ease forwards' }}/>
+            Contact Us
+          </div>
+          <h2 style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(44px,5vw,72px)',fontWeight:300,fontStyle:'italic',color:'#fff',lineHeight:0.95,margin:'0 0 24px',letterSpacing:'-0.3px' }}>
+            We'd Love to<br />See You.
+          </h2>
+          <p style={{ fontSize:15,color:'rgba(255,255,255,0.5)',lineHeight:1.85,fontFamily:'DM Sans',fontWeight:300,marginBottom:48,maxWidth:360 }}>
+            Whether it's a reservation, a question, or a simple craving — we're always happy to hear from you.
+          </p>
 
           {[
             restaurant.email&&{href:`mailto:${restaurant.email}`,icon:'✉',label:'Email',value:restaurant.email},
             links?.phone&&{href:`tel:${links.phone}`,icon:'☎',label:'Phone',value:links.phone,onClick:()=>trackEvent(restaurant.id,'phone_click')},
-            links?.reservation_url&&{href:links.reservation_url,icon:'📅',label:'Reserve',value:'Book a table online →',onClick:()=>trackEvent(restaurant.id,'reserve_click'),ext:true},
+            links?.reservation_url&&{href:links.reservation_url,icon:'📅',label:'Reservations',value:'Book a table →',onClick:()=>trackEvent(restaurant.id,'reserve_click'),ext:true},
           ].filter(Boolean).map(({href,icon,label,value,onClick,ext})=>(
             <a key={label} href={href} target={ext?'_blank':undefined} rel={ext?'noreferrer':undefined} onClick={onClick}
-              style={{ display:'flex',alignItems:'center',gap:18,padding:'20px 0',borderBottom:'1px solid #DEDAD2',textDecoration:'none',transition:'padding-left 0.3s ease' }}
-              onMouseOver={e=>{e.currentTarget.style.paddingLeft='8px';e.currentTarget.querySelector('.cv').style.color='#C0392B'}}
-              onMouseOut={e=>{e.currentTarget.style.paddingLeft='0';e.currentTarget.querySelector('.cv').style.color='#141412'}}>
-              <div style={{ width:48,height:48,background:'#f8f5f0',border:'2px solid #141412',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18 }}>{icon}</div>
+              style={{ display:'flex',alignItems:'center',gap:18,padding:'20px 0',borderBottom:'1px solid rgba(255,255,255,0.1)',textDecoration:'none',transition:'padding-left 0.35s ease' }}
+              onMouseOver={e=>{e.currentTarget.style.paddingLeft='8px';e.currentTarget.querySelector('.cv').style.color='var(--gold-lt)'}}
+              onMouseOut={e=>{e.currentTarget.style.paddingLeft='0';e.currentTarget.querySelector('.cv').style.color='#fff'}}>
+              <div style={{ width:48,height:48,background:'rgba(255,255,255,0.08)',border:'1px solid rgba(255,255,255,0.15)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontSize:18,transition:'all 0.25s' }}>{icon}</div>
               <div>
-                <div style={{ fontSize:9,letterSpacing:'2.5px',textTransform:'uppercase',color:'#bbb',marginBottom:3,fontFamily:'DM Sans',fontWeight:700 }}>{label}</div>
-                <div className="cv syne" style={{ fontSize:14,color:'#141412',fontWeight:700,letterSpacing:'-0.2px',transition:'color 0.25s' }}>{value}</div>
+                <div style={{ fontSize:9,letterSpacing:'2.5px',textTransform:'uppercase',color:'rgba(255,255,255,0.3)',marginBottom:4,fontFamily:'DM Sans',fontWeight:600 }}>{label}</div>
+                <div className="cv" style={{ fontFamily:'Cormorant Garamond,serif',fontSize:17,fontStyle:'italic',color:'#fff',transition:'color 0.25s' }}>{value}</div>
               </div>
             </a>
           ))}
 
-          <div style={{ display:'flex',gap:12,flexWrap:'wrap',marginTop:36 }}>
-            {links?.reservation_url&&<a href={links.reservation_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'reserve_click')} className="btn-gold">Reserve a Table</a>}
-            {links?.order_url&&<a href={links.order_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'order_click')} className="btn-ink">Order Online</a>}
+          <div style={{ display:'flex',gap:14,flexWrap:'wrap',marginTop:40 }}>
+            {links?.reservation_url&&<a href={links.reservation_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'reserve_click')} style={{ padding:'14px 32px',background:'#fff',color:'var(--green)',fontFamily:'DM Sans',fontSize:12,fontWeight:700,letterSpacing:'2px',textTransform:'uppercase',display:'inline-block',textDecoration:'none',transition:'all 0.25s' }} onMouseOver={e=>e.currentTarget.style.background='var(--gold-lt)'} onMouseOut={e=>e.currentTarget.style.background='#fff'}>Reserve a Table</a>}
+            {links?.order_url&&<a href={links.order_url} target="_blank" rel="noreferrer" onClick={()=>trackEvent(restaurant.id,'order_click')} className="btn-outline-white">Order Online</a>}
           </div>
         </div>
 
-        {/* Brand card column */}
-        <div ref={rightRef} className="reveal-right" style={{ padding:'64px 48px',display:'flex',flexDirection:'column',justifyContent:'center',background:'#141412' }}>
-          <div style={{ width:40,height:4,background:'#C0392B',marginBottom:36 }}/>
-          <span className="syne" style={{ fontSize:'clamp(28px,3.5vw,46px)',fontWeight:800,color:'#fff',letterSpacing:'-1.5px',lineHeight:0.9,marginBottom:16,display:'block' }}>
-            {restaurant.name.toUpperCase()}
+        {/* Brand card */}
+        <div ref={rightRef} className="reveal-right" style={{ padding:'80px 48px',display:'flex',flexDirection:'column',justifyContent:'center',background:'rgba(0,0,0,0.15)' }}>
+          <div style={{ width:48,height:1,background:'var(--gold-lt)',marginBottom:36 }}/>
+          <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:'clamp(32px,3.5vw,52px)',fontWeight:300,fontStyle:'italic',color:'#fff',lineHeight:1.0,marginBottom:12,display:'block',letterSpacing:'-0.3px' }}>
+            {restaurant.name}
           </span>
-          {restaurant.city&&<span style={{ fontSize:11,color:'rgba(255,255,255,0.35)',letterSpacing:3,textTransform:'uppercase',fontFamily:'DM Sans',fontWeight:700,marginBottom:32,display:'block' }}>{restaurant.city}</span>}
-          <div style={{ width:40,height:1,background:'rgba(255,255,255,0.15)',marginBottom:32 }}/>
-          {restaurant.tagline&&<p style={{ fontSize:15,color:'rgba(255,255,255,0.45)',lineHeight:1.8,fontFamily:'DM Sans',fontWeight:300,marginBottom:32 }}>"{restaurant.tagline}"</p>}
+          {restaurant.city&&<span style={{ fontSize:11,color:'rgba(255,255,255,0.3)',letterSpacing:3,textTransform:'uppercase',fontFamily:'DM Sans',marginBottom:32,display:'block' }}>{restaurant.city}</span>}
+          <div style={{ width:48,height:1,background:'rgba(255,255,255,0.15)',marginBottom:32 }}/>
+          {restaurant.tagline&&<p style={{ fontSize:16,color:'rgba(255,255,255,0.45)',lineHeight:1.8,fontFamily:'Cormorant Garamond,serif',fontStyle:'italic',marginBottom:32 }}>"{restaurant.tagline}"</p>}
           {restaurant.est&&<span style={{ fontSize:10,color:'rgba(255,255,255,0.2)',fontFamily:'DM Sans',letterSpacing:2,textTransform:'uppercase' }}>Est. {restaurant.est}</span>}
         </div>
       </div>
 
       <style>{`
         @media(max-width:900px){
-          #contact-section>div:nth-child(2){padding:56px 24px 48px!important}
           .contact-grid{grid-template-columns:1fr!important}
-          .contact-grid>div:first-child{min-height:280px!important;border-right:none!important;border-bottom:1px solid #E4E0D8}
-          .contact-grid>div:nth-child(2){padding:48px 24px!important;border-right:none!important;border-bottom:1px solid #E4E0D8}
-          .contact-grid>div:nth-child(3){padding:48px 24px!important}
+          .contact-grid>div:first-child{min-height:280px!important}
+          .contact-grid>div:nth-child(2){padding:56px 28px!important;border-left:none!important;border-right:none!important}
+          .contact-grid>div:nth-child(3){padding:48px 28px!important}
         }
       `}</style>
     </section>
