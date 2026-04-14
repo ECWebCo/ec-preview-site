@@ -15,6 +15,7 @@ export default function TextureSection({ restaurant, links }) {
   const ref = useRef(null); useReveal(ref)
 
   return (
+    <div style={{ background:'var(--warm)' }}>
     <div style={{ position:'relative', overflow:'hidden', height:'clamp(320px,45vw,560px)' }}>
       {/* Italy photo */}
       <img
@@ -52,6 +53,7 @@ export default function TextureSection({ restaurant, links }) {
           </a>
         )}
       </div>
+    </div>
     </div>
   )
 }

@@ -57,7 +57,7 @@ export default function GallerySection({ photos, restaurant }) {
       </div>
 
       {/* Grid — 4 col desktop, 2 col mobile */}
-      <div className="gallery-grid" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, padding:'0 64px', maxWidth:1200, margin:'0 auto 64px' }}>
+      <div className="gallery-grid" style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, padding:'0 24px', maxWidth:1400, margin:'0 auto 64px' }}>
         {photos.slice(0,8).map((photo,i)=>(
           <GalleryPhoto key={photo.id||i} photo={photo} delay={i*0.07}/>
         ))}
