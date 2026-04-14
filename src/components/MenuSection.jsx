@@ -101,7 +101,7 @@ export default function MenuSection({ sections }) {
       {/* ── DESKTOP: full menu, all sections, two columns ── */}
       <div className="menu-desktop" style={{ maxWidth:1100,margin:'0 auto',padding:'0 64px' }}>
         {pairs.map(([left, right], pi)=>(
-          <div key={pi} style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 80px',marginBottom: pi < pairs.length-1 ? 56 : 0,paddingBottom: 0,borderBottom: 'none' }}>
+          <div key={pi} style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:'0 80px',marginBottom:0,paddingBottom:0,borderBottom:'none' }}>
             <SectionColumn section={left} colIndex={0}/>
             <SectionColumn section={right} colIndex={1}/>
           </div>
