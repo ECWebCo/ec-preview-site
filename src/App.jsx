@@ -6,6 +6,7 @@ import MenuSection from './components/MenuSection'
 import GallerySection from './components/GallerySection'
 import LocationSection from './components/LocationSection'
 import TextureSection from './components/TextureSection'
+import SocialSection from './components/SocialSection'
 import Footer from './components/Footer'
 import StickyButtons from './components/StickyButtons'
 
@@ -52,6 +53,7 @@ function AppContent({ data }) {
       <GallerySection photos={photos} restaurant={restaurant} />
       <TextureSection restaurant={restaurant} links={activeLinks} />
       <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
+      <SocialSection restaurant={restaurant} />
       <Footer restaurant={restaurant} />
       <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
     </>
