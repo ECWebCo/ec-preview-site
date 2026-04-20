@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getRestaurantData, trackEvent } from './lib/supabase'
+import KpsLayout from './components/kps/KpsLayout'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import MenuSection from './components/MenuSection'
@@ -81,16 +82,19 @@ export default function App() {
   }, [])
 
   if (loading) return (
-    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAF8F3' }}>
-      <span style={{ fontFamily:'Cormorant Garamond,serif',fontSize:24,fontStyle:'italic',color:'#2D5016' }}>Loading…</span>
+    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF8' }}>
+      <span style={{ fontFamily:'Playfair Display,serif',fontSize:24,fontStyle:'italic',color:'#1B2B4B' }}>Loading…</span>
     </div>
   )
 
   if (error) return (
-    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAF8F3' }}>
+    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF8' }}>
       <p style={{ color:'#aaa',fontFamily:'DM Sans' }}>Restaurant not found.</p>
     </div>
   )
+
+  // Custom layouts
+  if (data.restaurant.slug === 'kps-kitchen') return <KpsLayout data={data} />
 
   return <AppContent data={data} />
 }
