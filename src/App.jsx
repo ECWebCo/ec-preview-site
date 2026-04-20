@@ -94,7 +94,7 @@ export default function App() {
   )
 
   // Custom layouts
-  if (data.restaurant.slug === 'kps-kitchen') return <KpsLayout data={data} />
+  if (data.restaurant.slug === 'kp-s-kitchen') return <KpsLayout data={data} />
 
   return <AppContent data={data} />
 }
