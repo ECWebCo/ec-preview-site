@@ -180,10 +180,10 @@ function KpsNav({ activeLoc, setActiveLoc }) {
 // ─── Hero Slideshow ───────────────────────────────────────────
 function KpsHero() {
   return (
-    <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM }}>
+    <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM, paddingTop:72 }}>
       <img src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_45_04%20PM.png"
-        alt="KP's Kitchen" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }}/>
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:200, background:'linear-gradient(to bottom, rgba(250,250,248,0.85) 0%, rgba(250,250,248,0.3) 50%, transparent 100%)', pointerEvents:'none' }}/>
+        alt="KP's Kitchen" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }}/>
+      <div style={{ position:'absolute', top:0, left:0, right:0, height:160, background:'linear-gradient(to bottom, rgba(250,250,248,1) 0%, rgba(250,250,248,0.6) 50%, transparent 100%)', pointerEvents:'none' }}/>
       <div style={{ position:'relative', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
         <img src={LOGO_WHITE} alt="KP's Kitchen"
           style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))' }}
@@ -609,7 +609,7 @@ export default function KpsLayout({ data }) {
         @media(max-width:768px){
           .kps-split{grid-template-columns:1fr!important}
           .kps-split-text{padding:48px 24px!important}
-          .kps-hero{height:75vh!important}
+          .kps-hero{height:75vh!important;padding-top:0!important}
           nav{padding:0 24px!important}
           /* Mobile: text first, photo second in each row */
           .kps-photo-first .kps-split-text{order:1}
