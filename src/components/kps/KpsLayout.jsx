@@ -494,6 +494,27 @@ function LocPicker({ type, onClose }) {
   )
 }
 
+// ─── Shared padded image button ──────────────────────────────
+function PaddedImage({ src, onClick, label, sub, cta }) {
+  return (
+    <div className="kps-padded-img" style={{ padding:32, display:'flex', alignItems:'stretch' }}>
+      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor:onClick?'pointer':'default', minHeight:360, transition:'transform 0.3s ease, box-shadow 0.3s ease' }}
+        onMouseOver={e=>{ if(onClick){ e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 40px rgba(0,0,0,0.18)' }}}
+        onMouseOut={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none' }}>
+        <img src={src} alt={label||''} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}/>
+        {label && <>
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}/>
+          <div style={{ position:'absolute', bottom:28, left:28, right:28 }}>
+            {sub && <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.65)', marginBottom:6 }}>{sub}</div>}
+            <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,20px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:'#fff', marginBottom:10 }}>{label}</div>
+            {cta && <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>{cta} →</div>}
+          </div>
+        </>}
+      </div>
+    </div>
+  )
+}
+
 // ─── Row 1: About (left) | Order Online photo (right) ────────
 function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
   return (
