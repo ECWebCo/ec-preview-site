@@ -190,7 +190,7 @@ function KpsHero() {
   const next = () => setCurrent(c => (c + 1) % HERO_PHOTOS.length)
 
   return (
-    <div style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM }}>
+    <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM }}>
       {HERO_PHOTOS.map((src, i) => (
         <img key={i} src={src} alt="" style={{
           position:'absolute', inset:0, width:'100%', height:'100%',
@@ -510,11 +510,16 @@ function KpsLocations() {
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
   return (
-    <footer style={{ background:NAVY, padding:'56px 48px 40px', textAlign:'center' }}>
-      <div style={{ maxWidth:640, margin:'0 auto' }}>
-        <div style={{ display:'flex', justifyContent:'center', marginBottom:28 }}>
-          <img src={LOGO_WHITE} alt="KP's Kitchen" style={{ height:64, width:'auto', objectFit:'contain', opacity:0.85 }} onError={e=>e.target.style.display='none'}/>
-        </div>
+    <footer style={{
+      backgroundImage: `url(https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_20_00%20PM.png)`,
+      backgroundRepeat: 'repeat',
+      backgroundSize: 'auto 280px',
+      padding:'56px 48px 40px',
+      textAlign:'center',
+      position:'relative',
+    }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(27,43,75,0.82)' }}/>
+      <div style={{ maxWidth:640, margin:'0 auto', position:'relative' }}>
         <div style={{ display:'flex', gap:24, justifyContent:'center', flexWrap:'wrap', marginBottom:16 }}>
           {[
             ['5427 Bissonnet St, Bellaire TX', `https://maps.google.com?q=${encodeURIComponent(BELLAIRE.address)}`],
@@ -588,6 +593,7 @@ export default function KpsLayout({ data }) {
         @media(max-width:768px){
           .kps-split{grid-template-columns:1fr!important}
           .kps-split-text{border-right:none!important;padding:48px 24px!important;border-bottom:1px solid #E4E0D8}
+          .kps-hero{height:75vh!important}
           nav{padding:0 24px!important}
         }
       `}</style>
