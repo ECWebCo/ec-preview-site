@@ -367,164 +367,161 @@ function MenuModal({ sections, onClose }) {
 }
 
 // ─── Main content — Clark's style ────────────────────────────
-function KpsAbout({ onMenuOpen }) {
+// ─── Shared padded image ─────────────────────────────────────
+function PaddedImage({ src, onClick, label, sub, cta }) {
   return (
-    <section style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}`, padding:'80px 48px' }}>
-      <div style={{ maxWidth:640, margin:'0 auto', textAlign:'center' }}>
-        <div style={{ fontFamily:'DM Sans', fontSize:10, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:24, opacity:0.6 }}>
-          Houston, Texas · 29° 44' N / 95° 23' W
-        </div>
-        <h1 style={{ fontFamily:'DM Sans', fontSize:'clamp(16px,2.5vw,22px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:28 }}>
-          KP's Kitchen & Bar
-        </h1>
-        <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, textAlign:'justify', marginBottom:40, opacity:0.85 }}>
-          Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails to an extensive wine list — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
-        </p>
-        <div style={{ display:'flex', gap:32, justifyContent:'center', flexWrap:'wrap' }}>
-          <button onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
-            style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, cursor:'pointer', borderBottom:`1px solid ${NAVY}`, paddingBottom:4, transition:'opacity 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            Make a Reservation
-          </button>
-          <button onClick={onMenuOpen}
-            style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, cursor:'pointer', borderBottom:`1px solid ${NAVY}`, paddingBottom:4, transition:'opacity 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            View Menus
-          </button>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ─── Menus ────────────────────────────────────────────────────
-function KpsHoursSection({ onMenuOpen }) {
-  return (
-    <section style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}`, padding:'80px 48px' }}>
-      <div style={{ maxWidth:640, margin:'0 auto', textAlign:'center' }}>
-        <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Menus</div>
-        {[
-          { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM' },
-          { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM' },
-          { label:'Happy Hour', sub:'Mon – Fri · 4:00 – 6:00 PM' },
-          { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close' },
-        ].map((h,i)=>(
-          <button key={i} onClick={onMenuOpen}
-            style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, cursor:'pointer', padding:'18px 0', width:'100%', textAlign:'center', transition:'opacity 0.2s', display:'flex', justifyContent:'space-between', alignItems:'baseline' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            <span style={{ fontFamily:'DM Sans', fontSize:'clamp(13px,1.5vw,15px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY }}>{h.label}</span>
-            <span style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic' }}>{h.sub}</span>
-          </button>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-// ─── Three photo buttons ──────────────────────────────────────
-function KpsPhotoButtons({ activeLoc }) {
-  const photos = [
-    {
-      src: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=80',
-      label: 'Order Online',
-      sub: 'Curbside & Delivery',
-      onClick: () => window.open(activeLoc.order, '_blank'),
-    },
-    {
-      src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
-      label: 'Happy Hour',
-      sub: 'Mon – Fri · 4 – 6 PM',
-      onClick: () => window.open(activeLoc.resy, '_blank'),
-    },
-    {
-      src: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1200&q=80',
-      label: 'Private Dining',
-      sub: 'Events & Catering',
-      onClick: () => { window.location.href = 'mailto:events@kps-kitchen.com' },
-    },
-  ]
-
-  return (
-    <section style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}`, padding:'0 48px 80px' }}>
-      <div style={{ maxWidth:640, margin:'0 auto', display:'flex', flexDirection:'column', gap:16 }}>
-        {photos.map((p,i)=>(
-          <div key={i} onClick={p.onClick} style={{ position:'relative', overflow:'hidden', height:260, cursor:'pointer' }}>
-            <img src={p.src} alt={p.label}
-              style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.7s ease' }}
-              onMouseOver={e=>e.target.style.transform='scale(1.04)'}
-              onMouseOut={e=>e.target.style.transform='scale(1)'}/>
-            <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)' }}/>
-            <div style={{ position:'absolute', bottom:28, left:32, right:32 }}>
-              <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.65)', marginBottom:6 }}>{p.sub}</div>
-              <div style={{ fontFamily:'DM Sans', fontSize:'clamp(16px,2vw,22px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:'#fff', marginBottom:10 }}>{p.label}</div>
-              <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>
-                {i===0 ? 'Order Now →' : i===1 ? 'Reserve a Table →' : 'Inquire About Events →'}
-              </div>
-            </div>
+    <div style={{ padding:32, display:'flex', alignItems:'stretch' }}>
+      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor: onClick ? 'pointer' : 'default', minHeight:360 }}>
+        <img src={src} alt={label||''}
+          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.7s ease' }}
+          onMouseOver={e=>{ if(onClick) e.target.style.transform='scale(1.04)' }}
+          onMouseOut={e=>e.target.style.transform='scale(1)'}/>
+        {label && <>
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}/>
+          <div style={{ position:'absolute', bottom:28, left:28, right:28 }}>
+            {sub && <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.65)', marginBottom:6 }}>{sub}</div>}
+            <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,20px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:'#fff', marginBottom:10 }}>{label}</div>
+            {cta && <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>{cta} →</div>}
           </div>
-        ))}
+        </>}
+      </div>
+    </div>
+  )
+}
+
+// ─── Row 1: About (left) | Order Online photo (right) ────────
+function KpsAbout({ onMenuOpen, activeLoc }) {
+  return (
+    <section style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}` }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', borderRight:`1px solid ${BORDER}` }} className="kps-split-text">
+          <div style={{ fontFamily:'DM Sans', fontSize:10, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:20, opacity:0.6 }}>Houston, Texas</div>
+          <h1 style={{ fontFamily:'DM Sans', fontSize:'clamp(15px,2vw,20px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:24 }}>KP's Kitchen & Bar</h1>
+          <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, textAlign:'justify', marginBottom:36, opacity:0.85 }}>
+            Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
+          </p>
+          <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
+            <button onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
+              style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'14px 0', textAlign:'left', display:'flex', justifyContent:'space-between', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              Make a Reservation <span style={{opacity:0.4}}>→</span>
+            </button>
+            <button onClick={onMenuOpen}
+              style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'14px 0', textAlign:'left', display:'flex', justifyContent:'space-between', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              View Menus <span style={{opacity:0.4}}>→</span>
+            </button>
+          </div>
+        </div>
+        <PaddedImage
+          src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=85"
+          label="Order Online"
+          sub="Curbside & Delivery"
+          cta="Order Now"
+          onClick={()=>window.open(activeLoc.order,'_blank')}
+        />
       </div>
     </section>
   )
 }
 
-// ─── Locations ────────────────────────────────────────────────
+// ─── Row 2: Happy Hour photo (left) | Menus (right) ──────────
+function KpsHoursSection({ onMenuOpen, activeLoc }) {
+  return (
+    <section style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}` }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        <div style={{ borderRight:`1px solid ${BORDER}` }}>
+          <PaddedImage
+            src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85"
+            label="Happy Hour"
+            sub="Mon – Fri · 4 – 6 PM"
+            cta="Reserve a Table"
+            onClick={()=>window.open(activeLoc.resy,'_blank')}
+          />
+        </div>
+        <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center' }} className="kps-split-text">
+          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
+          {[
+            { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM' },
+            { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM' },
+            { label:'Happy Hour', sub:'Mon – Fri · 4:00 – 6:00 PM' },
+            { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close' },
+          ].map((h,i)=>(
+            <button key={i} onClick={onMenuOpen}
+              style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, cursor:'pointer', padding:'16px 0', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'baseline', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              <span style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY }}>{h.label}</span>
+              <span style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic' }}>{h.sub}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Row 3: Locations (left) | Private Dining photo (right) ──
 function HoursDropdown({ hours }) {
   const [open, setOpen] = useState(false)
   const status = getHoursStatus(hours)
   const today = new Date().getDay()
   const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
   return (
-    <div style={{ marginBottom:28 }}>
+    <div style={{ marginBottom:24 }}>
       <button onClick={()=>setOpen(o=>!o)}
         style={{ background:'none', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 0', borderBottom:`1px solid ${BORDER}`, width:'100%' }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <span style={{ width:7, height:7, borderRadius:'50%', background:status.color, display:'inline-block', flexShrink:0 }}/>
+          <span style={{ width:7, height:7, borderRadius:'50%', background:status.color, flexShrink:0, display:'inline-block' }}/>
           <span style={{ fontFamily:'DM Sans', fontSize:13, color:status.color, fontWeight:500 }}>{status.label}</span>
         </div>
         <span style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:MUTED }}>Hours {open?'↑':'↓'}</span>
       </button>
-      {open && (
-        <div style={{ paddingTop:2 }}>
-          {hours.map((h,i)=>{
-            const isToday = dayNames[today] === h.day
-            return (
-              <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'7px 0', borderBottom:`1px solid ${BORDER}` }}>
-                <span style={{ fontFamily:'DM Sans', fontSize:13, color:isToday?NAVY:MUTED, fontWeight:isToday?600:400 }}>{h.day}</span>
-                <span style={{ fontFamily:'DM Sans', fontSize:13, fontStyle:'italic', color:isToday?NAVY:(h.closed?STONE:MUTED) }}>{h.closed?'Closed':h.time}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+      {open && hours.map((h,i)=>{
+        const isToday = dayNames[today]===h.day
+        return (
+          <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'7px 0', borderBottom:`1px solid ${BORDER}` }}>
+            <span style={{ fontFamily:'DM Sans', fontSize:13, color:isToday?NAVY:MUTED, fontWeight:isToday?600:400 }}>{h.day}</span>
+            <span style={{ fontFamily:'DM Sans', fontSize:13, fontStyle:'italic', color:isToday?NAVY:(h.closed?STONE:MUTED) }}>{h.closed?'Closed':h.time}</span>
+          </div>
+        )
+      })}
     </div>
   )
 }
 
 function KpsLocations() {
   return (
-    <section id="kps-locations" style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}`, padding:'80px 48px' }}>
-      <div style={{ maxWidth:640, margin:'0 auto', textAlign:'center' }}>
-        <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, textAlign:'left' }} className="kps-two-col">
-          {[BELLAIRE, MEMORIAL].map((loc,i)=>(
-            <div key={i}>
-              <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:10, opacity:0.6 }}>{loc.name}</div>
-              <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.8, marginBottom:4, fontStyle:'italic' }}>{loc.address}</p>
-              <a href={`tel:${loc.phone}`} style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', textDecoration:'none', display:'block', marginBottom:20, transition:'color 0.2s' }}
-                onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{loc.phone}</a>
-              <HoursDropdown hours={loc.hours}/>
-              <div style={{ display:'flex', gap:20 }}>
-                <a href={loc.resy} target="_blank" rel="noreferrer"
-                  style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, transition:'opacity 0.2s' }}
-                  onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>Reserve</a>
-                <a href={loc.order} target="_blank" rel="noreferrer"
-                  style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:MUTED, textDecoration:'none', borderBottom:`1px solid ${BORDER}`, paddingBottom:3, transition:'color 0.2s' }}
-                  onMouseOver={e=>e.currentTarget.style.color=NAVY} onMouseOut={e=>e.currentTarget.style.color=MUTED}>Order Online</a>
+    <section id="kps-locations" style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}` }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        <div style={{ padding:'72px 56px', borderRight:`1px solid ${BORDER}` }} className="kps-split-text">
+          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:40 }}>
+            {[BELLAIRE, MEMORIAL].map((loc,i)=>(
+              <div key={i}>
+                <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8, opacity:0.6 }}>{loc.name}</div>
+                <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.8, marginBottom:2, fontStyle:'italic' }}>{loc.address}</p>
+                <a href={`tel:${loc.phone}`} style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', textDecoration:'none', display:'block', marginBottom:16, transition:'color 0.2s' }}
+                  onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{loc.phone}</a>
+                <HoursDropdown hours={loc.hours}/>
+                <div style={{ display:'flex', gap:20 }}>
+                  <a href={loc.resy} target="_blank" rel="noreferrer"
+                    style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, transition:'opacity 0.2s' }}
+                    onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>Reserve</a>
+                  <a href={loc.order} target="_blank" rel="noreferrer"
+                    style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:MUTED, textDecoration:'none', borderBottom:`1px solid ${BORDER}`, paddingBottom:3, transition:'color 0.2s' }}
+                    onMouseOver={e=>e.currentTarget.style.color=NAVY} onMouseOut={e=>e.currentTarget.style.color=MUTED}>Order Online</a>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+        <PaddedImage
+          src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1200&q=85"
+          label="Private Dining"
+          sub="Events & Catering"
+          cta="Inquire About Events"
+          onClick={()=>{ window.location.href='mailto:events@kps-kitchen.com' }}
+        />
       </div>
     </section>
   )
@@ -596,9 +593,8 @@ export default function KpsLayout({ data }) {
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#F5F4F0', color:NAVY, overflowX:'hidden' }}>
       <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
       <KpsHero />
-      <KpsAbout onMenuOpen={()=>setMenuOpen(true)} />
-      <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} />
-      <KpsPhotoButtons activeLoc={activeLoc} />
+      <KpsAbout onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
+      <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
       <KpsLocations />
       <KpsFooter />
       <KpsStickyBar activeLoc={activeLoc} />
@@ -611,7 +607,7 @@ export default function KpsLayout({ data }) {
         img{display:block;max-width:100%}
         @media(max-width:768px){
           .kps-split{grid-template-columns:1fr!important}
-          .kps-two-col{grid-template-columns:1fr!important;gap:40px!important}
+          .kps-split-text{border-right:none!important;padding:48px 24px!important;border-bottom:1px solid #E4E0D8}
           nav{padding:0 24px!important}
         }
       `}</style>
