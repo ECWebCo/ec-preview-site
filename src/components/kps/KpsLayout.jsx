@@ -358,7 +358,7 @@ function PaddedImage({ src, onClick, label, sub, cta }) {
 // ─── Row 1: About (left) | Order Online photo (right) ────────
 function KpsAbout({ onMenuOpen, activeLoc }) {
   return (
-    <section style={{ background:'#F5F4F0' }}>
+    <section style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:20, opacity:0.6 }}>Houston, Texas</div>
@@ -388,7 +388,7 @@ function KpsAbout({ onMenuOpen, activeLoc }) {
 // ─── Row 2: Happy Hour photo (left) | Menus (right) ──────────
 function KpsHoursSection({ onMenuOpen, activeLoc }) {
   return (
-    <section style={{ background:'#F5F4F0' }}>
+    <section style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
         <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>window.open(activeLoc.resy,'_blank')}/>
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
@@ -443,7 +443,7 @@ function HoursDropdown({ hours }) {
 
 function KpsLocations({ onEventsOpen }) {
   return (
-    <section id="kps-locations" style={{ background:'#F5F4F0' }}>
+    <section id="kps-locations" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
@@ -467,7 +467,7 @@ function KpsLocations({ onEventsOpen }) {
             ))}
           </div>
         </div>
-        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/privatetables.jpg" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
+        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
       </div>
     </section>
   )
@@ -487,12 +487,12 @@ function EventsModal({ onClose }) {
 
   useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
 
-  const input = { width:'100%', fontFamily:'Georgia,serif', fontSize:14, color:NAVY, background:'#F5F4F0', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'10px 0', outline:'none', marginBottom:20 }
+  const input = { width:'100%', fontFamily:'Georgia,serif', fontSize:14, color:NAVY, background:'#fff', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'10px 0', outline:'none', marginBottom:20 }
 
   return (
     <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', background:'#F5F4F0', width:'min(540px,100vw)', maxHeight:'90vh', overflowY:'auto', padding:'48px 40px' }}>
+      <div style={{ position:'relative', background:'#fff', width:'min(540px,100vw)', maxHeight:'90vh', overflowY:'auto', padding:'48px 40px' }}>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:32 }}>
           <div>
             <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8 }}>Entertain</div>
@@ -590,7 +590,7 @@ export default function KpsLayout({ data }) {
   const { sections } = data
 
   return (
-    <div style={{ fontFamily:'DM Sans,sans-serif', background:'#F5F4F0', color:NAVY, overflowX:'hidden' }}>
+    <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
       <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
       <KpsHero />
       <KpsAbout onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
