@@ -402,7 +402,7 @@ function KpsAbout({ onMenuOpen, activeLoc }) {
 // ─── Row 2: Happy Hour photo (left) | Menus (right) ──────────
 function KpsHoursSection({ onMenuOpen, activeLoc }) {
   return (
-    <section style={{ background:'#fff' }}>
+    <section id="kps-happyhour" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
         <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>window.open(activeLoc.resy,'_blank')}/>
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
@@ -481,7 +481,9 @@ function KpsLocations({ onEventsOpen }) {
             ))}
           </div>
         </div>
-        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
+        <div id="kps-private">
+          <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
+        </div>
       </div>
     </section>
   )
@@ -560,8 +562,10 @@ function KpsFooter() {
             </a>
           ))}
         </div>
+        <a href={`tel:${BELLAIRE.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:4, transition:'color 0.2s' }}
+          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>Bellaire · {BELLAIRE.phone}</a>
         <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:6, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>{MEMORIAL.phone}</a>
+          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>Memorial · {MEMORIAL.phone}</a>
         <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:36, transition:'color 0.2s' }}
           onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>events@kps-kitchen.com</a>
         <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
@@ -573,9 +577,29 @@ function KpsFooter() {
 }
 
 // ─── Sticky Bar ───────────────────────────────────────────────
-function KpsStickyBar({ activeLoc }) {
+function KpsStickyBar({ activeLoc, setActiveLoc }) {
+  const [callPicker, setCallPicker] = useState(false)
+
   return (
     <>
+      {callPicker && (
+        <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'flex-end' }} onClick={()=>setCallPicker(false)}>
+          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.4)' }}/>
+          <div style={{ position:'relative', width:'100%', background:'#fff', paddingBottom:'env(safe-area-inset-bottom)' }} onClick={e=>e.stopPropagation()}>
+            <div style={{ padding:'20px 24px 8px', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:MUTED }}>Choose a Location</div>
+            {[BELLAIRE, MEMORIAL].map(loc=>(
+              <a key={loc.name} href={`tel:${loc.phone}`}
+                style={{ display:'flex', justifyContent:'space-between', padding:'16px 24px', borderTop:`1px solid ${BORDER}`, textDecoration:'none', background:'#fff' }}>
+                <div>
+                  <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, color:NAVY, marginBottom:2 }}>{loc.name}</div>
+                  <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED }}>{loc.phone}</div>
+                </div>
+                <span style={{ fontFamily:'DM Sans', fontSize:12, color:NAVY, alignSelf:'center' }}>Call →</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="kps-sticky" style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:200, display:'none', background:'#fff', borderTop:`1px solid ${BORDER}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
         <button onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:NAVY, color:'#fff', border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:'1px solid rgba(255,255,255,0.1)' }}>
@@ -585,10 +609,10 @@ function KpsStickyBar({ activeLoc }) {
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:`1px solid ${BORDER}` }}>
           Order
         </button>
-        <a href={`tel:${activeLoc.phone}`}
-          style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, textDecoration:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase' }}>
+        <button onClick={()=>setCallPicker(true)}
+          style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase' }}>
           Call
-        </a>
+        </button>
       </div>
       <div className="kps-sticky-spacer" style={{ display:'none', height:56 }}/>
       <style>{`@media(max-width:768px){.kps-sticky{display:flex!important}.kps-sticky-spacer{display:block!important}}`}</style>
@@ -611,7 +635,7 @@ export default function KpsLayout({ data }) {
       <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
       <KpsLocations onEventsOpen={()=>setEventsOpen(true)} />
       <KpsFooter />
-      <KpsStickyBar activeLoc={activeLoc} />
+      <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
       {menuOpen && <MenuModal sections={sections} onClose={()=>setMenuOpen(false)}/>}
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
 
