@@ -555,8 +555,7 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
   const MENU_TABS = ['Lunch','Brunch','Happy Hour','Dinner','Specials']
   return (
     <section id="kps-menu" style={{ background:'#fff' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
-        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tue – Fri 3–6PM · Both Locations" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
           <div style={{ width:'100%', maxWidth:320 }}>
@@ -576,6 +575,7 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
             ))}
           </div>
         </div>
+        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tue – Fri 3–6PM · Both Locations" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
       </div>
     </section>
   )
@@ -612,24 +612,8 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
   return (
     <section id="kps-locations" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
-        {/* Left — photo, fills full height */}
-        <div id="kps-private" style={{ position:'relative', overflow:'hidden', minHeight:560 }}>
-          <img
-            src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png"
-            alt="Private Dining"
-            style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', transition:'transform 0.7s ease' }}
-            onMouseOver={e=>e.target.style.transform='scale(1.03)'}
-            onMouseOut={e=>e.target.style.transform='scale(1)'}
-          />
-          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}/>
-          <div style={{ position:'absolute', bottom:28, left:28, right:28, cursor:'pointer' }} onClick={onEventsOpen}>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.65)', marginBottom:6 }}>Office Lunches · Client Meetings · Celebrations</div>
-            <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,20px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:'#fff', marginBottom:10 }}>Private Dining</div>
-            <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>Inquire About Events →</div>
-          </div>
-        </div>
 
-        {/* Right — location info */}
+        {/* Left — location info */}
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
           <div style={{ display:'flex', flexDirection:'column', gap:48, width:'100%', maxWidth:340 }}>
@@ -654,6 +638,17 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Right — padded private dining image */}
+        <div id="kps-private">
+          <PaddedImage
+            src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png"
+            label="Private Dining"
+            sub="Office Lunches · Client Meetings · Celebrations"
+            cta="Inquire About Events"
+            onClick={onEventsOpen}
+          />
         </div>
       </div>
     </section>
