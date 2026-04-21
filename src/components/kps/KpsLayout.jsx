@@ -567,7 +567,7 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:40, width:'100%', maxWidth:340 }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:48, width:'100%', maxWidth:340 }}>
             {[BELLAIRE, MEMORIAL].map((loc,i)=>(
               <div key={i}>
                 <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8, opacity:0.6 }}>{loc.name}</div>
@@ -575,22 +575,20 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
                 <a href={`tel:${loc.phone}`} style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', textDecoration:'none', display:'block', marginBottom:12, transition:'color 0.2s' }}
                   onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{loc.phone}</a>
                 <HoursDropdown hours={loc.hours}/>
-                <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
+                <div style={{ display:'flex', gap:8, justifyContent:'center', flexWrap:'wrap' }}>
                   <button onClick={()=>onPick('reserve')} style={PILL_BTN}
                     onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
                     onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>Reserve</button>
                   <button onClick={()=>onPick('order')} style={{...PILL_BTN, color:MUTED, borderColor:MUTED}}
                     onMouseOver={e=>{e.currentTarget.style.background=MUTED;e.currentTarget.style.color='#fff'}}
                     onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=MUTED}}>Order</button>
+                  <button onClick={()=>onMenuOpen(loc)} style={{...PILL_BTN, color:MUTED, borderColor:MUTED}}
+                    onMouseOver={e=>{e.currentTarget.style.background=MUTED;e.currentTarget.style.color='#fff'}}
+                    onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=MUTED}}>Menu</button>
                 </div>
               </div>
             ))}
           </div>
-          <button onClick={onMenuOpen} style={{...PILL_BTN, marginTop:36}}
-            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-            View Menus
-          </button>
         </div>
         <div id="kps-private">
           <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Office Lunches · Client Meetings · Celebrations" cta="Inquire About Events" onClick={onEventsOpen}/>
@@ -736,20 +734,23 @@ function KpsStickyBar({ activeLoc, setActiveLoc, onPick }) {
 export default function KpsLayout({ data }) {
   const [activeLoc, setActiveLoc] = useState(MEMORIAL)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [menuLoc, setMenuLoc] = useState(MEMORIAL)
   const [eventsOpen, setEventsOpen] = useState(false)
-  const [picker, setPicker] = useState(null) // 'reserve' | 'order' | 'happyhour'
+  const [picker, setPicker] = useState(null)
   const { sections } = data
+
+  const openMenu = (loc) => { setMenuLoc(loc || activeLoc); setMenuOpen(true) }
 
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
-      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker}/>
+      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>openMenu()} onPick={setPicker}/>
       <KpsHero />
-      <KpsAbout onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
-      <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
-      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
+      <KpsAbout onMenuOpen={()=>openMenu()} onPick={setPicker} />
+      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={openMenu} onPick={setPicker} />
+      <KpsHoursSection onMenuOpen={()=>openMenu()} onPick={setPicker} />
       <KpsFooter />
       <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} onPick={setPicker} />
-      {menuOpen && <MenuModal sections={sections} activeLoc={activeLoc} onClose={()=>setMenuOpen(false)}/>}
+      {menuOpen && <MenuModal sections={sections} activeLoc={menuLoc} onClose={()=>setMenuOpen(false)}/>}
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
       {picker && <LocPicker type={picker} onClose={()=>setPicker(null)}/>}
 
