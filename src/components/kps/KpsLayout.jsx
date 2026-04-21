@@ -285,15 +285,40 @@ function KpsAbout({ onMenuOpen }) {
       backgroundRepeat:'repeat',
       backgroundSize:'auto 200px',
       borderBottom:`1px solid ${BORDER}`,
+      position:'relative',
     }}>
-      {/* Cream overlay so text is legible over pattern */}
-      <div style={{ background:'rgba(250,250,248,0.92)', padding:SECTION_PAD }}>
+      {/* Dark newspaper overlay */}
+      <div style={{ background:'rgba(18,16,12,0.88)', padding:SECTION_PAD, position:'relative' }}>
+
+        {/* Thin rule lines top and bottom like a newspaper */}
+        <div style={{ position:'absolute', top:16, left:48, right:48, height:1, background:'rgba(255,255,255,0.15)' }}/>
+        <div style={{ position:'absolute', top:22, left:48, right:48, height:1, background:'rgba(255,255,255,0.08)' }}/>
+        <div style={{ position:'absolute', bottom:16, left:48, right:48, height:1, background:'rgba(255,255,255,0.15)' }}/>
+        <div style={{ position:'absolute', bottom:22, left:48, right:48, height:1, background:'rgba(255,255,255,0.08)' }}/>
+
         <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', textAlign:'center' }}>
-          <div style={{ ...EYEBROW_STYLE, justifyContent:'center', display:'flex', justifyContent:'center' }}>Houston, Texas</div>
-          <h1 style={{ ...H2_STYLE, marginBottom:20, fontSize:'clamp(32px,4vw,52px)' }}>KP's Kitchen & Bar</h1>
-          <p style={{ ...BODY_STYLE, marginBottom:40, maxWidth:480, margin:'0 auto 40px' }}>
+          {/* Dateline */}
+          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:400, letterSpacing:'4px', textTransform:'uppercase', color:'rgba(255,255,255,0.35)', marginBottom:20 }}>
+            Houston, Texas · Est. 2021
+          </div>
+
+          {/* Masthead-style name */}
+          <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(36px,5vw,72px)', fontWeight:700, fontStyle:'italic', color:'#F5F0E8', lineHeight:1.0, marginBottom:16, letterSpacing:'-0.5px' }}>
+            KP's Kitchen & Bar
+          </h1>
+
+          {/* Rule */}
+          <div style={{ display:'flex', alignItems:'center', gap:16, justifyContent:'center', marginBottom:20 }}>
+            <div style={{ flex:1, maxWidth:80, height:1, background:'rgba(255,255,255,0.2)' }}/>
+            <div style={{ width:4, height:4, background:'rgba(255,255,255,0.3)', transform:'rotate(45deg)' }}/>
+            <div style={{ flex:1, maxWidth:80, height:1, background:'rgba(255,255,255,0.2)' }}/>
+          </div>
+
+          <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:'rgba(255,255,255,0.55)', lineHeight:1.9, maxWidth:520, margin:'0 auto 36px', fontStyle:'italic', fontWeight:400 }}>
             Upscale American comfort food served with neighborhood warmth. Two Houston locations, one kitchen philosophy.
           </p>
+
+          {/* Links */}
           <div style={{ display:'flex', gap:32, justifyContent:'center', flexWrap:'wrap' }}>
             {[
               { label:'Make a Reservation', id:'kps-locations' },
@@ -302,8 +327,9 @@ function KpsAbout({ onMenuOpen }) {
             ].map((item,i)=>(
               <button key={i}
                 onClick={()=> item.action ? item.action() : document.getElementById(item.id)?.scrollIntoView({behavior:'smooth'})}
-                style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, transition:'opacity 0.2s' }}
-                onMouseOver={e=>e.currentTarget.style.opacity='0.45'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+                style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.7)', cursor:'pointer', borderBottom:'1px solid rgba(255,255,255,0.3)', paddingBottom:3, transition:'all 0.2s' }}
+                onMouseOver={e=>{ e.currentTarget.style.color='#fff'; e.currentTarget.style.borderBottomColor='rgba(255,255,255,0.8)' }}
+                onMouseOut={e=>{ e.currentTarget.style.color='rgba(255,255,255,0.7)'; e.currentTarget.style.borderBottomColor='rgba(255,255,255,0.3)' }}>
                 {item.label}
               </button>
             ))}
@@ -418,16 +444,16 @@ function KpsHappyHourAndPrivate({ activeLoc }) {
 function KpsPress() {
   return (
     <section style={{ background:WARM, borderBottom:`1px solid ${BORDER}` }}>
-      <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD }} className="kps-inner">
-        <div style={EYEBROW_STYLE}>As Seen In</div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:0, marginTop:28, borderTop:`1px solid ${BORDER}` }} className="kps-three-col">
+      <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD, textAlign:'center' }} className="kps-inner">
+        <div style={{ ...EYEBROW_STYLE, justifyContent:'center', display:'flex' }}>As Seen In</div>
+        <div style={{ display:'flex', gap:0, marginTop:32, borderTop:`1px solid ${BORDER}` }}>
           {PRESS_ITEMS.map((p,i)=>(
             <a key={i} href={p.url} target="_blank" rel="noreferrer"
-              style={{ padding:'28px 28px 28px 0', paddingLeft:i===0?0:28, borderRight:i<2?`1px solid ${BORDER}`:'none', textDecoration:'none', display:'block', transition:'opacity 0.2s' }}
-              onMouseOver={e=>e.currentTarget.style.opacity='0.65'}
+              style={{ flex:1, padding:'28px 24px', borderRight:i<2?`1px solid ${BORDER}`:'none', textDecoration:'none', display:'block', textAlign:'center', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.6'}
               onMouseOut={e=>e.currentTarget.style.opacity='1'}>
               <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:900, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, opacity:0.25, marginBottom:12 }}>{p.label}</div>
-              <div style={{ fontFamily:'Playfair Display,serif', fontSize:15, fontStyle:'italic', color:NAVY, lineHeight:1.7, opacity:0.75 }}>"{p.quote}"</div>
+              <div style={{ fontFamily:'Playfair Display,serif', fontSize:14, fontStyle:'italic', color:NAVY, lineHeight:1.7, opacity:0.7 }}>"{p.quote}"</div>
             </a>
           ))}
         </div>
@@ -472,10 +498,10 @@ function HoursDropdown({ hours }) {
 function KpsLocations() {
   return (
     <section id="kps-locations" style={{ background:CREAM, borderBottom:`1px solid ${BORDER}` }}>
-      <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD }} className="kps-inner">
-        <div style={EYEBROW_STYLE}>Visit Us</div>
+      <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD, textAlign:'center' }} className="kps-inner">
+        <div style={{ ...EYEBROW_STYLE, display:'flex', justifyContent:'center' }}>Visit Us</div>
         <h2 style={{ ...H2_STYLE, marginBottom:48 }}>Two Houston Locations</h2>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:64 }} className="kps-two-col">
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, textAlign:'left' }} className="kps-two-col">
           {[BELLAIRE, MEMORIAL].map((loc,i)=>(
             <div key={i}>
               <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8 }}>{loc.name}</div>
@@ -582,8 +608,8 @@ export default function KpsLayout({ data }) {
       <KpsAbout onMenuOpen={()=>setMenuOpen(true)} />
       <KpsMenu sections={sections} open={menuOpen} onClose={()=>setMenuOpen(false)}/>
       <KpsHappyHourAndPrivate activeLoc={activeLoc} />
-      <KpsPress />
       <KpsLocations />
+      <KpsPress />
       <KpsFooter />
       <KpsStickyBar activeLoc={activeLoc} />
 
