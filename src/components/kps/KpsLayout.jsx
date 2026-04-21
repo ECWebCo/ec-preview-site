@@ -248,69 +248,172 @@ function PhotoSlide() {
   )
 }
 
+// ─── Menu data ────────────────────────────────────────────────
+const BELLAIRE_MENU = [
+  { name:'Dinner', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
+    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
+    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
+    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
+    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
+    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
+    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
+  ]},
+  { name:'Brunch', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
+    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
+    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
+    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
+    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
+  ]},
+  { name:'Happy Hour', link:'https://www.kps-kitchen.com/bellaire#our-menu', note:'Tue – Fri 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
+    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, sake-based vodka with a twist', price:'7' },
+    { name:'Sour Cherry Lemon Drop', description:'House made cherry-vanilla makes it so special', price:'7' },
+    { name:'Moscow Mule', description:'Ginger laced, sake-based vodka', price:'7' },
+    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
+    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
+    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
+    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
+    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+  ]},
+]
+
+const MEMORIAL_MENU = [
+  { name:'Dinner', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
+    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
+    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
+    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
+    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
+    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
+    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
+  ]},
+  { name:'Brunch', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
+    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
+    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
+    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
+    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
+  ]},
+  { name:'Happy Hour', link:'https://www.kps-kitchen.com/spring-valley#our-menu', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
+    { name:'Grey Goose Martini', description:'You call it · +2', price:'7' },
+    { name:'Woodford Reserve Old Fashion', description:'+2', price:'7' },
+    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
+    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
+    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
+    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+    { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
+    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
+    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
+    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+  ]},
+]
+
 // ─── Menu Modal ───────────────────────────────────────────────
-function MenuModal({ sections, onClose }) {
+function MenuModal({ sections, activeLoc, onClose }) {
   const [activeTab, setActiveTab] = useState(0)
-  const fallback = [
-    { name:'Dinner', items:[
-      { name:"KP's Burger", description:'Prime beef, aged cheddar, house sauce, brioche', price:'18' },
-      { name:'BBQ Ribs', description:'Slow smoked, house BBQ glaze, coleslaw', price:'32' },
-      { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
-      { name:'Meatballs', description:'Braised in San Marzano tomato, ricotta', price:'15' },
-    ]},
-    { name:'Brunch', items:[
-      { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
-      { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
-      { name:'Spinach Dip', description:'House-made, served with grilled bread', price:'13' },
-    ]},
-    { name:'Happy Hour', items:[
-      { name:'House Wine', description:'Red, white & rosé', price:'6' },
-      { name:'Draft Beer', description:'Rotating local taps', price:'7' },
-      { name:'Well Cocktails', description:'House specials', price:'8' },
-      { name:'Select Appetizers', description:'Chosen daily', price:'50% off' },
-    ]},
-  ]
-  const display = sections?.length ? sections : fallback
+  // Mobile accordion open state per tab
+  const [openTab, setOpenTab] = useState(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+
+  const display = sections?.length ? sections
+    : activeLoc?.name === 'Bellaire' ? BELLAIRE_MENU : MEMORIAL_MENU
+
   const items = display[activeTab]?.items || []
+  const activeSection = display[activeTab]
 
   useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+
+  const ItemList = ({ sectionItems, note, link }) => (
+    <div>
+      {note && (
+        <div style={{ padding:'12px 0', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD, borderBottom:`1px solid ${BORDER}` }}>{note}</div>
+      )}
+      {sectionItems.map((item,i)=>(
+        <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:16, padding:'16px 0', borderBottom:`1px solid ${BORDER}` }}>
+          <div>
+            <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?3:0 }}>{item.name}</div>
+            {item.description && <p style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic', lineHeight:1.5 }}>{item.description}</p>}
+          </div>
+          <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>
+            {item.price && (isNaN(item.price) ? item.price : `$${Number(item.price).toFixed(0)}`)}
+          </div>
+        </div>
+      ))}
+      {link && (
+        <a href={link} target="_blank" rel="noreferrer"
+          style={{ display:'block', marginTop:20, fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, width:'fit-content' }}>
+          View Full Menu →
+        </a>
+      )}
+    </div>
+  )
 
   return (
     <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex' }}>
       <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(4px)' }} onClick={onClose}/>
       <div style={{ position:'relative', marginLeft:'auto', width:'min(500px,100vw)', background:'#fff', display:'flex', flexDirection:'column', animation:'slideIn 0.3s ease', maxHeight:'100vh' }}>
 
-        {/* Fixed header — never scrolls */}
-        <div style={{ flexShrink:0, padding:'28px 32px 0', background:'#fff' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24 }}>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, opacity:0.6 }}>Our Menus</div>
+        {/* Fixed header */}
+        <div style={{ flexShrink:0, padding:'24px 28px 0', background:'#fff' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
+            <div>
+              <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, opacity:0.6, marginBottom:2 }}>Our Menus</div>
+              <div style={{ fontFamily:'DM Sans', fontSize:11, color:MUTED, opacity:0.6 }}>{activeLoc?.name} Location</div>
+            </div>
             <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', fontSize:20, color:MUTED, lineHeight:1, padding:4 }}>✕</button>
           </div>
-          {/* Tabs */}
-          <div style={{ display:'flex', overflowX:'auto', gap:0, borderBottom:`1px solid ${BORDER}` }}>
-            {display.map((s,i)=>(
-              <button key={i} onClick={()=>setActiveTab(i)}
-                style={{ padding:'12px 20px', fontSize:11, border:'none', background:'none', fontFamily:'DM Sans', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', color:activeTab===i?NAVY:MUTED, borderBottom:activeTab===i?`2px solid ${NAVY}`:'2px solid transparent', marginBottom:-1, transition:'all 0.2s', flexShrink:0 }}>
-                {s.name}
-              </button>
-            ))}
-          </div>
+
+          {/* Desktop tabs */}
+          {!isMobile && (
+            <div style={{ display:'flex', overflowX:'auto', borderBottom:`1px solid ${BORDER}` }}>
+              {display.map((s,i)=>(
+                <button key={i} onClick={()=>setActiveTab(i)}
+                  style={{ padding:'12px 20px', fontSize:11, border:'none', background:'none', fontFamily:'DM Sans', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', color:activeTab===i?NAVY:MUTED, borderBottom:activeTab===i?`2px solid ${NAVY}`:'2px solid transparent', marginBottom:-1, transition:'all 0.2s', flexShrink:0 }}>
+                  {s.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Scrollable items only */}
-        <div style={{ flex:1, overflowY:'auto', padding:'0 32px 48px' }}>
-          {items.map((item,i)=>(
-            <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:20, padding:'18px 0', borderBottom:`1px solid ${BORDER}` }}>
-              <div>
-                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?4:0 }}>{item.name}</div>
-                {item.description && <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', lineHeight:1.6 }}>{item.description}</p>}
+        {/* Desktop: scrollable items */}
+        {!isMobile && (
+          <div style={{ flex:1, overflowY:'auto', padding:'0 28px 48px' }}>
+            <ItemList sectionItems={items} note={activeSection?.note} link={activeSection?.link}/>
+          </div>
+        )}
+
+        {/* Mobile: accordion */}
+        {isMobile && (
+          <div style={{ flex:1, overflowY:'auto', padding:'0 0 48px' }}>
+            {display.map((s,i)=>(
+              <div key={i}>
+                <button onClick={()=>setOpenTab(openTab===i?null:i)}
+                  style={{ width:'100%', padding:'18px 28px', background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer', transition:'background 0.2s' }}
+                  onMouseOver={e=>e.currentTarget.style.background='#fafafa'}
+                  onMouseOut={e=>e.currentTarget.style.background='none'}>
+                  <span style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY }}>{s.name}</span>
+                  <span style={{ color:MUTED, fontSize:18, transition:'transform 0.2s', display:'inline-block', transform:openTab===i?'rotate(45deg)':'none' }}>+</span>
+                </button>
+                {openTab===i && (
+                  <div style={{ padding:'4px 28px 24px' }}>
+                    <ItemList sectionItems={s.items} note={s.note} link={s.link}/>
+                  </div>
+                )}
               </div>
-              <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>
-                {item.price && (isNaN(item.price) ? item.price : `$${Number(item.price).toFixed(0)}`)}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
       <style>{`@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}`}</style>
     </div>
@@ -342,7 +445,7 @@ function PaddedImage({ src, onClick, label, sub, cta }) {
 
 // ─── Location Picker Modal ────────────────────────────────────
 function LocPicker({ type, onClose }) {
-  const locs = type === 'happyhour' ? [BELLAIRE] : [BELLAIRE, MEMORIAL]
+  const locs = [BELLAIRE, MEMORIAL]
   const href = loc => type === 'reserve' || type === 'happyhour' ? loc.resy : loc.order
   return (
     <div style={{ position:'fixed', inset:0, zIndex:600, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={onClose}>
@@ -406,14 +509,14 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
   return (
     <section id="kps-menu" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
-        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Bellaire Only · Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
+        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tue – Fri 3–6PM · Both Locations" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
           <div style={{ width:'100%', maxWidth:320 }}>
             {[
               { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM' },
               { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM' },
-              { label:'Happy Hour', sub:'Bellaire Only · Mon – Fri · 4 – 6 PM' },
+              { label:'Happy Hour', sub:'Tue – Fri 3–6PM · Both Locations' },
               { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close' },
             ].map((h,i)=>(
               <button key={i} onClick={onMenuOpen}
@@ -490,7 +593,7 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
           </button>
         </div>
         <div id="kps-private">
-          <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
+          <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Office Lunches · Client Meetings · Celebrations" cta="Inquire About Events" onClick={onEventsOpen}/>
         </div>
       </div>
     </section>
@@ -521,6 +624,7 @@ function EventsModal({ onClose }) {
           <div>
             <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8 }}>Entertain</div>
             <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(16px,2vw,20px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY }}>Private Events & Catering</h2>
+            <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', marginTop:8, lineHeight:1.6 }}>Office lunches, client meetings, celebrations & holiday gatherings</p>
           </div>
           <button onClick={onClose} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:MUTED, lineHeight:1, flexShrink:0 }}>✕</button>
         </div>
@@ -645,7 +749,7 @@ export default function KpsLayout({ data }) {
       <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
       <KpsFooter />
       <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} onPick={setPicker} />
-      {menuOpen && <MenuModal sections={sections} onClose={()=>setMenuOpen(false)}/>}
+      {menuOpen && <MenuModal sections={sections} activeLoc={activeLoc} onClose={()=>setMenuOpen(false)}/>}
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
       {picker && <LocPicker type={picker} onClose={()=>setPicker(null)}/>}
 
