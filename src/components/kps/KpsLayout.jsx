@@ -249,7 +249,172 @@ function PhotoSlide() {
 }
 
 // ─── Menu data ────────────────────────────────────────────────
+const SPECIALS = { name:'Specials', items:[
+  { name:'Tuesday', description:'$12 Burger Day + Kids Eat Free (with adult purchase)' },
+  { name:'Wednesday', description:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
+  { name:'Thursday', description:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
+  { name:'Friday', description:'Fish & Chips Night + $1 Champagne' },
+  { name:'Saturday', description:'Brunch + All Day Happy Hour' },
+  { name:'Sunday', description:'Brunch + Fried Chicken Family Meal' },
+]}
+
 const BELLAIRE_MENU = [
+  { name:'Dinner', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
+    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
+    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
+    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
+    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
+    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
+    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
+  ]},
+  { name:'Brunch', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
+    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
+    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
+    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
+    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
+  ]},
+  { name:'Happy Hour', link:'https://www.kps-kitchen.com/bellaire#our-menu', note:'Tue – Fri 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
+    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, sake-based vodka with a twist', price:'7' },
+    { name:'Sour Cherry Lemon Drop', description:'House made cherry-vanilla', price:'7' },
+    { name:'Moscow Mule', description:'Ginger laced, sake-based vodka', price:'7' },
+    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
+    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
+    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
+    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
+    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+  ]},
+  SPECIALS,
+]
+
+const MEMORIAL_MENU = [
+  { name:'Dinner', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
+    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
+    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
+    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
+    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
+    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
+    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
+  ]},
+  { name:'Brunch', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
+    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
+    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
+    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
+    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
+  ]},
+  { name:'Happy Hour', link:'https://www.kps-kitchen.com/spring-valley#our-menu', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
+    { name:'Grey Goose Martini', description:'You call it · +$2', price:'7' },
+    { name:'Woodford Reserve Old Fashion', description:'+$2', price:'7' },
+    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
+    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
+    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
+    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+    { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
+    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
+    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
+    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+  ]},
+  SPECIALS,
+]
+
+// ─── Menu Modal — centered popup, vertical tabs ───────────────
+function MenuModal({ sections, activeLoc, initialTab, onClose }) {
+  const display = sections?.length ? sections
+    : activeLoc?.name === 'Bellaire' ? BELLAIRE_MENU : MEMORIAL_MENU
+  const initIdx = Math.max(0, display.findIndex(s => s.name === initialTab))
+  const [activeTab, setActiveTab] = useState(initIdx)
+  const [openTab, setOpenTab] = useState(initIdx) // mobile accordion
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const fn = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+
+  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+
+  const active = display[activeTab] || display[0]
+
+  const ItemList = ({ items, note, link }) => (
+    <div>
+      {note && <div style={{ padding:'10px 0 14px', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD }}>{note}</div>}
+      {items.map((item,i)=>(
+        <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:16, padding:'14px 0', borderBottom:`1px solid ${BORDER}` }}>
+          <div>
+            <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?3:0 }}>{item.name}</div>
+            {item.description && <p style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic', lineHeight:1.5 }}>{item.description}</p>}
+          </div>
+          {item.price && <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>${Number(item.price).toFixed(0)}</div>}
+        </div>
+      ))}
+      {link && <a href={link} target="_blank" rel="noreferrer" style={{ display:'block', marginTop:20, fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, width:'fit-content' }}>View Full Menu →</a>}
+    </div>
+  )
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.5)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
+      <div style={{ position:'relative', background:'#fff', width:'min(780px,95vw)', maxHeight:'85vh', display:'flex', flexDirection:'column', animation:'fadeUp 0.25s ease' }}>
+
+        {/* Header */}
+        <div style={{ padding:'24px 28px', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
+          <div>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, opacity:0.6, marginBottom:2 }}>Our Menus</div>
+            <div style={{ fontFamily:'DM Sans', fontSize:11, color:MUTED, opacity:0.6 }}>{activeLoc?.name} Location</div>
+          </div>
+          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', fontSize:22, color:MUTED, lineHeight:1 }}>✕</button>
+        </div>
+
+        {/* Desktop: sidebar + content */}
+        {!isMobile && (
+          <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
+            {/* Vertical tab sidebar */}
+            <div style={{ width:160, flexShrink:0, borderRight:`1px solid ${BORDER}`, display:'flex', flexDirection:'column', padding:'16px 0' }}>
+              {display.map((s,i)=>(
+                <button key={i} onClick={()=>setActiveTab(i)}
+                  style={{ padding:'14px 24px', border:'none', background:activeTab===i?WARM:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', cursor:'pointer', color:activeTab===i?NAVY:MUTED, textAlign:'left', transition:'all 0.15s', borderLeft:activeTab===i?`3px solid ${NAVY}`:'3px solid transparent' }}>
+                  {s.name}
+                </button>
+              ))}
+            </div>
+            {/* Content */}
+            <div style={{ flex:1, overflowY:'auto', padding:'24px 32px 40px' }}>
+              <ItemList items={active.items} note={active.note} link={active.link}/>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile: accordion */}
+        {isMobile && (
+          <div style={{ flex:1, overflowY:'auto' }}>
+            {display.map((s,i)=>(
+              <div key={i}>
+                <button onClick={()=>setOpenTab(openTab===i?null:i)}
+                  style={{ width:'100%', padding:'18px 24px', background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer' }}>
+                  <span style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY }}>{s.name}</span>
+                  <span style={{ color:MUTED, fontSize:20, transition:'transform 0.2s', display:'inline-block', transform:openTab===i?'rotate(45deg)':'none' }}>+</span>
+                </button>
+                {openTab===i && (
+                  <div style={{ padding:'8px 24px 24px' }}>
+                    <ItemList items={s.items} note={s.note} link={s.link}/>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`}</style>
+    </div>
+  )
+}
   { name:'Dinner', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
     { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
     { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
@@ -425,11 +590,11 @@ function MenuModal({ sections, activeLoc, onClose }) {
 function PaddedImage({ src, onClick, label, sub, cta }) {
   return (
     <div className="kps-padded-img" style={{ padding:32, display:'flex', alignItems:'stretch' }}>
-      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor: onClick ? 'pointer' : 'default', minHeight:360 }}>
+      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor: onClick ? 'pointer' : 'default', minHeight:360, transition:'transform 0.3s ease, box-shadow 0.3s ease' }}
+        onMouseOver={e=>{ if(onClick){ e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 40px rgba(0,0,0,0.18)' }}}
+        onMouseOut={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none' }}>
         <img src={src} alt={label||''}
-          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.7s ease' }}
-          onMouseOver={e=>{ if(onClick) e.target.style.transform='scale(1.04)' }}
-          onMouseOut={e=>e.target.style.transform='scale(1)'}/>
+          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}/>
         {label && <>
           <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}/>
           <div style={{ position:'absolute', bottom:28, left:28, right:28 }}>
@@ -438,6 +603,54 @@ function PaddedImage({ src, onClick, label, sub, cta }) {
             {cta && <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>{cta} →</div>}
           </div>
         </>}
+      </div>
+    </div>
+  )
+}
+
+// ─── Specials Popup ───────────────────────────────────────────
+const SPECIALS_LIST = [
+  { day:'Tuesday', deal:'$12 Burger Day + Kids Eat Free' },
+  { day:'Wednesday', deal:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
+  { day:'Thursday', deal:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
+  { day:'Friday', deal:'Fish & Chips Night + $1 Champagne' },
+  { day:'Saturday', deal:'Brunch + All Day Happy Hour' },
+  { day:'Sunday', deal:'Brunch + Fried Chicken Family Meal' },
+]
+
+function SpecialsPopup({ onClose, onReserve }) {
+  const today = new Date().getDay() // 0=Sun
+  const dayMap = { 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 0:'Sunday' }
+  const todayName = dayMap[today]
+  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:700, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
+      <div style={{ position:'relative', background:'#fff', width:'min(520px,92vw)', maxHeight:'90vh', overflowY:'auto', animation:'fadeUp 0.3s ease' }}>
+        <div style={{ padding:'32px 32px 0', display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+          <div>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:GOLD, marginBottom:8 }}>Weekly Specials</div>
+            <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(18px,3vw,26px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY, lineHeight:1.2 }}>Deals You Don't Want to Miss</h2>
+          </div>
+          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:22, cursor:'pointer', color:MUTED, lineHeight:1, flexShrink:0, marginLeft:16 }}>✕</button>
+        </div>
+        <div style={{ padding:'24px 32px 32px' }}>
+          {SPECIALS_LIST.map((s,i)=>(
+            <div key={i} style={{ display:'flex', gap:16, padding:'14px 0', borderBottom:`1px solid ${BORDER}`, alignItems:'flex-start' }}>
+              <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:s.day===todayName?GOLD:NAVY, minWidth:90, paddingTop:2, opacity:s.day===todayName?1:0.7 }}>
+                {s.day}
+                {s.day===todayName && <div style={{ fontSize:9, letterSpacing:'1px', color:GOLD, marginTop:2 }}>TODAY</div>}
+              </div>
+              <div style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.7, fontStyle:'italic' }}>{s.deal}</div>
+            </div>
+          ))}
+          <button onClick={onReserve}
+            style={{ ...PILL_BTN, marginTop:28, width:'100%', justifyContent:'center', display:'flex' }}
+            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+            Reserve a Table
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -475,7 +688,7 @@ function LocPicker({ type, onClose }) {
 }
 
 // ─── Row 1: About (left) | Order Online photo (right) ────────
-function KpsAbout({ onMenuOpen, onPick }) {
+function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
   return (
     <section style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
@@ -496,6 +709,11 @@ function KpsAbout({ onMenuOpen, onPick }) {
               onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
               View Menus
             </button>
+            <button onClick={onSpecials} style={{...PILL_BTN, borderColor:GOLD, color:GOLD}}
+              onMouseOver={e=>{e.currentTarget.style.background=GOLD;e.currentTarget.style.color='#fff'}}
+              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=GOLD}}>
+              Specials
+            </button>
           </div>
         </div>
         <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>onPick('order')}/>
@@ -506,6 +724,7 @@ function KpsAbout({ onMenuOpen, onPick }) {
 
 // ─── Row 2: Menus (left) | Locations (right) ─────────────────
 function KpsHoursSection({ onMenuOpen, onPick }) {
+  const MENU_TABS = ['Lunch','Brunch','Happy Hour','Dinner','Specials']
   return (
     <section id="kps-menu" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
@@ -514,12 +733,13 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
           <div style={{ width:'100%', maxWidth:320 }}>
             {[
-              { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM' },
-              { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM' },
-              { label:'Happy Hour', sub:'Tue – Fri 3–6PM · Both Locations' },
-              { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close' },
+              { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM', tab:'Lunch' },
+              { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM', tab:'Brunch' },
+              { label:'Happy Hour', sub:'Tue – Fri 3–6PM · $7 for 7', tab:'Happy Hour' },
+              { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close', tab:'Dinner' },
+              { label:'Specials', sub:'Daily deals you don\'t want to miss', tab:'Specials' },
             ].map((h,i)=>(
-              <button key={i} onClick={onMenuOpen}
+              <button key={i} onClick={()=>onMenuOpen(null, h.tab)}
                 style={{ background:'none', border:'none', cursor:'pointer', padding:'14px 0', width:'100%', textAlign:'center', display:'block', transition:'opacity 0.2s' }}
                 onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
                 <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, marginBottom:3 }}>{h.label}</div>
@@ -533,8 +753,7 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
   )
 }
 
-// ─── Row 3: Locations (left) | Private Dining photo (right) ──
-// ─── Row 3: Locations (left) | Private Dining photo (right) ──
+// ─── Locations ────────────────────────────────────────────────
 function HoursDropdown({ hours }) {
   const [open, setOpen] = useState(false)
   const status = getHoursStatus(hours)
@@ -565,6 +784,24 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
   return (
     <section id="kps-locations" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        {/* Left — photo, fills full height */}
+        <div id="kps-private" style={{ position:'relative', overflow:'hidden', minHeight:560 }}>
+          <img
+            src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png"
+            alt="Private Dining"
+            style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', transition:'transform 0.7s ease' }}
+            onMouseOver={e=>e.target.style.transform='scale(1.03)'}
+            onMouseOut={e=>e.target.style.transform='scale(1)'}
+          />
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}/>
+          <div style={{ position:'absolute', bottom:28, left:28, right:28, cursor:'pointer' }} onClick={onEventsOpen}>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.65)', marginBottom:6 }}>Office Lunches · Client Meetings · Celebrations</div>
+            <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,20px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:'#fff', marginBottom:10 }}>Private Dining</div>
+            <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>Inquire About Events →</div>
+          </div>
+        </div>
+
+        {/* Right — location info */}
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
           <div style={{ display:'flex', flexDirection:'column', gap:48, width:'100%', maxWidth:340 }}>
@@ -589,9 +826,6 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
               </div>
             ))}
           </div>
-        </div>
-        <div id="kps-private">
-          <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Office Lunches · Client Meetings · Celebrations" cta="Inquire About Events" onClick={onEventsOpen}/>
         </div>
       </div>
     </section>
@@ -735,24 +969,36 @@ export default function KpsLayout({ data }) {
   const [activeLoc, setActiveLoc] = useState(MEMORIAL)
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuLoc, setMenuLoc] = useState(MEMORIAL)
+  const [menuTab, setMenuTab] = useState(null)
   const [eventsOpen, setEventsOpen] = useState(false)
   const [picker, setPicker] = useState(null)
+  const [specialsOpen, setSpecialsOpen] = useState(false)
   const { sections } = data
 
-  const openMenu = (loc) => { setMenuLoc(loc || activeLoc); setMenuOpen(true) }
+  // Auto-show specials popup after 2 seconds on first visit
+  useEffect(() => {
+    const seen = sessionStorage.getItem('kps-specials-seen')
+    if (!seen) {
+      const t = setTimeout(() => { setSpecialsOpen(true); sessionStorage.setItem('kps-specials-seen','1') }, 2000)
+      return () => clearTimeout(t)
+    }
+  }, [])
+
+  const openMenu = (loc, tab) => { setMenuLoc(loc || activeLoc); setMenuTab(tab || null); setMenuOpen(true) }
 
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
       <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>openMenu()} onPick={setPicker}/>
       <KpsHero />
-      <KpsAbout onMenuOpen={()=>openMenu()} onPick={setPicker} />
+      <KpsAbout onMenuOpen={()=>openMenu()} onPick={setPicker} onSpecials={()=>setSpecialsOpen(true)} />
       <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={openMenu} onPick={setPicker} />
-      <KpsHoursSection onMenuOpen={()=>openMenu()} onPick={setPicker} />
+      <KpsHoursSection onMenuOpen={(loc,tab)=>openMenu(loc,tab)} onPick={setPicker} />
       <KpsFooter />
       <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} onPick={setPicker} />
-      {menuOpen && <MenuModal sections={sections} activeLoc={menuLoc} onClose={()=>setMenuOpen(false)}/>}
+      {menuOpen && <MenuModal sections={sections} activeLoc={menuLoc} initialTab={menuTab} onClose={()=>setMenuOpen(false)}/>}
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
       {picker && <LocPicker type={picker} onClose={()=>setPicker(null)}/>}
+      {specialsOpen && <SpecialsPopup onClose={()=>setSpecialsOpen(false)} onReserve={()=>{ setSpecialsOpen(false); setPicker('reserve') }}/>}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
