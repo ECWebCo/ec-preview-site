@@ -278,31 +278,36 @@ function KpsPattern() {
 }
 
 // ─── About ────────────────────────────────────────────────────
-function KpsAbout() {
+function KpsAbout({ onMenuOpen }) {
   return (
-    <section style={{ background:CREAM, borderBottom:`1px solid ${BORDER}` }}>
-      <div style={{ maxWidth:1200, margin:'0 auto', display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
-        <div style={{ padding:SECTION_PAD, display:'flex', flexDirection:'column', justifyContent:'center', borderRight:`1px solid ${BORDER}` }} className="kps-split-left">
-          <div style={EYEBROW_STYLE}>Houston, Texas</div>
-          <h1 style={{ ...H2_STYLE, marginBottom:20 }}>KP's Kitchen & Bar</h1>
-          <p style={{ ...BODY_STYLE, marginBottom:36, maxWidth:380 }}>
+    <section style={{
+      backgroundImage:`url(${PATTERN_URL})`,
+      backgroundRepeat:'repeat',
+      backgroundSize:'auto 200px',
+      borderBottom:`1px solid ${BORDER}`,
+    }}>
+      {/* Cream overlay so text is legible over pattern */}
+      <div style={{ background:'rgba(250,250,248,0.92)', padding:SECTION_PAD }}>
+        <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', textAlign:'center' }}>
+          <div style={{ ...EYEBROW_STYLE, justifyContent:'center', display:'flex', justifyContent:'center' }}>Houston, Texas</div>
+          <h1 style={{ ...H2_STYLE, marginBottom:20, fontSize:'clamp(32px,4vw,52px)' }}>KP's Kitchen & Bar</h1>
+          <p style={{ ...BODY_STYLE, marginBottom:40, maxWidth:480, margin:'0 auto 40px' }}>
             Upscale American comfort food served with neighborhood warmth. Two Houston locations, one kitchen philosophy.
           </p>
-          <div>
-            {[['kps-locations','Make a Reservation'],['kps-menu','View Menus'],['kps-private','Private Dining']].map(([id,label])=>(
-              <button key={id} onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
-                style={{ ...LINK_STYLE, padding:'14px 0', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center' }}
+          <div style={{ display:'flex', gap:32, justifyContent:'center', flexWrap:'wrap' }}>
+            {[
+              { label:'Make a Reservation', id:'kps-locations' },
+              { label:'View Menus', action: onMenuOpen },
+              { label:'Private Dining', id:'kps-private' },
+            ].map((item,i)=>(
+              <button key={i}
+                onClick={()=> item.action ? item.action() : document.getElementById(item.id)?.scrollIntoView({behavior:'smooth'})}
+                style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, transition:'opacity 0.2s' }}
                 onMouseOver={e=>e.currentTarget.style.opacity='0.45'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-                {label} <span style={{ fontSize:16, fontWeight:300, opacity:0.5 }}>→</span>
+                {item.label}
               </button>
             ))}
           </div>
-        </div>
-        <div style={{ overflow:'hidden', minHeight:480, position:'relative' }}>
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80" alt="KP's Kitchen"
-            style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.7s ease' }}
-            onMouseOver={e=>e.target.style.transform='scale(1.03)'}
-            onMouseOut={e=>e.target.style.transform='scale(1)'}/>
         </div>
       </div>
     </section>
@@ -368,33 +373,9 @@ function MenuModal({ sections, onClose }) {
   )
 }
 
-function KpsMenu({ sections }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <>
-      <section id="kps-menu" style={{ background:WARM, borderBottom:`1px solid ${BORDER}` }}>
-        <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD }} className="kps-inner">
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, alignItems:'start' }} className="kps-two-col">
-            <div>
-              <div style={EYEBROW_STYLE}>Menus</div>
-              <h2 style={{ ...H2_STYLE, marginBottom:16 }}>Made from scratch,<br/>every day.</h2>
-              <p style={BODY_STYLE}>Seasonal ingredients, classic technique. Everything prepared fresh daily.</p>
-            </div>
-            <div style={{ paddingTop:4 }}>
-              {['Dinner', 'Brunch', 'Happy Hour'].map((label,i)=>(
-                <button key={i} onClick={()=>setOpen(true)}
-                  style={{ ...LINK_STYLE, padding:'14px 0', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center' }}
-                  onMouseOver={e=>e.currentTarget.style.opacity='0.45'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-                  {label} <span style={{ fontSize:16, fontWeight:300, opacity:0.5 }}>→</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      {open && <MenuModal sections={sections} onClose={()=>setOpen(false)}/>}
-    </>
-  )
+function KpsMenu({ sections, open, onClose }) {
+  if (!open) return null
+  return <MenuModal sections={sections} onClose={onClose}/>
 }
 
 // ─── Happy Hour + Private ─────────────────────────────────────
@@ -591,15 +572,15 @@ function KpsStickyBar({ activeLoc }) {
 // ─── Main ─────────────────────────────────────────────────────
 export default function KpsLayout({ data }) {
   const [activeLoc, setActiveLoc] = useState(MEMORIAL)
+  const [menuOpen, setMenuOpen] = useState(false)
   const { sections } = data
 
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:CREAM, color:NAVY, overflowX:'hidden' }}>
       <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
       <KpsHero />
-      <KpsPattern />
-      <KpsAbout />
-      <KpsMenu sections={sections} />
+      <KpsAbout onMenuOpen={()=>setMenuOpen(true)} />
+      <KpsMenu sections={sections} open={menuOpen} onClose={()=>setMenuOpen(false)}/>
       <KpsHappyHourAndPrivate activeLoc={activeLoc} />
       <KpsPress />
       <KpsLocations />
