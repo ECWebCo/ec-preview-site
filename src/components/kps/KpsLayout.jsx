@@ -46,12 +46,6 @@ const MEMORIAL = {
   ]
 }
 
-const HERO_PHOTOS = [
-  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/bellaire.avif',
-  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=80',
-  'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1920&q=80',
-  'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1920&q=80',
-]
 
 // ─── Nav ──────────────────────────────────────────────────────
 function KpsNav({ activeLoc, setActiveLoc, onMenuOpen, onPick }) {
