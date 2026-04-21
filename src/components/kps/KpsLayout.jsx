@@ -58,7 +58,7 @@ const HERO_PHOTOS = [
 function KpsNav({ activeLoc, setActiveLoc }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [locOpen, setLocOpen] = useState(false)
+  const [locPicker, setLocPicker] = useState(null) // 'order' | 'reserve' | null
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > window.innerHeight - 100)
@@ -69,8 +69,42 @@ function KpsNav({ activeLoc, setActiveLoc }) {
   const scrollTo = id => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMenuOpen(false) }
   const textColor = scrolled || menuOpen ? NAVY : '#fff'
 
+  const handlePick = (loc, type) => {
+    setActiveLoc(loc)
+    setLocPicker(null)
+    const url = type === 'order' ? loc.order : loc.resy
+    window.open(url, '_blank')
+  }
+
   return (
     <>
+      {/* Location picker modal */}
+      {locPicker && (
+        <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={()=>setLocPicker(null)}>
+          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(4px)' }}/>
+          <div style={{ position:'relative', background:'#fff', width:360, overflow:'hidden', boxShadow:'0 20px 60px rgba(0,0,0,0.15)' }} onClick={e=>e.stopPropagation()}>
+            <div style={{ padding:'24px 28px 16px', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <div>
+                <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD, marginBottom:4 }}>
+                  {locPicker === 'order' ? 'Order Online' : 'Make a Reservation'}
+                </div>
+                <div style={{ fontFamily:'Playfair Display,serif', fontSize:20, fontWeight:700, fontStyle:'italic', color:NAVY }}>Choose a Location</div>
+              </div>
+              <button onClick={()=>setLocPicker(null)} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:MUTED, lineHeight:1 }}>✕</button>
+            </div>
+            {[BELLAIRE, MEMORIAL].map(loc=>(
+              <button key={loc.name} onClick={()=>handlePick(loc, locPicker)}
+                style={{ display:'flex', flexDirection:'column', width:'100%', padding:'20px 28px', background:'#fff', border:'none', borderBottom:`1px solid ${BORDER}`, textAlign:'left', cursor:'pointer', transition:'background 0.15s' }}
+                onMouseOver={e=>e.currentTarget.style.background=WARM}
+                onMouseOut={e=>e.currentTarget.style.background='#fff'}>
+                <span style={{ fontFamily:'Playfair Display,serif', fontSize:18, fontWeight:700, fontStyle:'italic', color:NAVY, marginBottom:3 }}>KP's Kitchen — {loc.name}</span>
+                <span style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED }}>{loc.address.split(',')[0]}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
         height: 72, display: 'flex', alignItems: 'center',
@@ -80,12 +114,10 @@ function KpsNav({ activeLoc, setActiveLoc }) {
         transition: 'background 0.4s ease, border-color 0.4s ease',
       }}>
 
-        {/* Logo */}
-        <div style={{ flexShrink: 0, width: 64, height: 52, display:'flex', alignItems:'center' }}>
-          <img
-            src={scrolled || menuOpen ? LOGO_BLUE : LOGO_WHITE}
-            alt="KP's Kitchen"
-            style={{ height: 52, width: 'auto', objectFit: 'contain', transition: 'opacity 0.3s' }}
+        {/* Logo — only visible when scrolled */}
+        <div style={{ flexShrink: 0, width: 64, height: 52, display:'flex', alignItems:'center', opacity: scrolled || menuOpen ? 1 : 0, transition: 'opacity 0.4s ease', pointerEvents: scrolled || menuOpen ? 'auto' : 'none' }}>
+          <img src={LOGO_BLUE} alt="KP's Kitchen"
+            style={{ height: 52, width: 'auto', objectFit: 'contain' }}
             onError={e => { e.target.style.display='none' }}
           />
         </div>
@@ -100,32 +132,17 @@ function KpsNav({ activeLoc, setActiveLoc }) {
           ))}
         </div>
 
-        {/* CTAs */}
+        {/* CTAs — no location picker, just Order + Reserve which trigger modal */}
         <div className="kps-nav-cta" style={{ display:'flex', gap:10, alignItems:'center' }}>
-          <div style={{ position:'relative' }}>
-            <button onClick={()=>setLocOpen(!locOpen)} style={{ padding:'7px 14px', background:'none', border:`1px solid ${scrolled?BORDER:'rgba(255,255,255,0.5)'}`, color:textColor, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'all 0.3s' }}>
-              📍 {activeLoc.name}
-            </button>
-            {locOpen && (
-              <div style={{ position:'absolute', top:'calc(100% + 8px)', right:0, background:'#fff', border:`1px solid ${BORDER}`, boxShadow:'0 8px 32px rgba(0,0,0,0.1)', minWidth:180, zIndex:300 }}>
-                {[BELLAIRE, MEMORIAL].map(loc=>(
-                  <button key={loc.name} onClick={()=>{setActiveLoc(loc);setLocOpen(false)}} style={{ display:'block', width:'100%', padding:'12px 16px', background:activeLoc.name===loc.name?WARM:'#fff', border:'none', textAlign:'left', fontSize:13, fontFamily:'DM Sans', color:NAVY, cursor:'pointer', fontWeight:activeLoc.name===loc.name?600:400 }}>
-                    {loc.name}
-                    <div style={{ fontSize:11, color:MUTED, marginTop:2 }}>{loc.address.split(',')[0]}</div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          <a href={activeLoc.order} target="_blank" rel="noreferrer" style={{ padding:'7px 16px', background:'none', border:`1px solid ${scrolled?BORDER:'rgba(255,255,255,0.5)'}`, color:textColor, fontSize:12, fontFamily:'DM Sans', fontWeight:500, textDecoration:'none', transition:'all 0.3s' }}
+          <button onClick={()=>setLocPicker('order')} style={{ padding:'7px 16px', background:'none', border:`1px solid ${scrolled?BORDER:'rgba(255,255,255,0.5)'}`, color:textColor, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.3s' }}
             onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor=NAVY}}
             onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=textColor;e.currentTarget.style.borderColor=scrolled?BORDER:'rgba(255,255,255,0.5)'}}>
             Order
-          </a>
-          <a href={activeLoc.resy} target="_blank" rel="noreferrer" style={{ padding:'7px 20px', background: scrolled ? NAVY : 'rgba(255,255,255,0.15)', border: scrolled ? 'none' : '1px solid rgba(255,255,255,0.6)', color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, textDecoration:'none', transition:'all 0.3s' }}
+          </button>
+          <button onClick={()=>setLocPicker('reserve')} style={{ padding:'7px 20px', background: scrolled ? NAVY : 'rgba(255,255,255,0.15)', border: scrolled ? `1px solid ${NAVY}` : '1px solid rgba(255,255,255,0.6)', color: scrolled ? '#fff' : '#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.3s' }}
             onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
             Reserve
-          </a>
+          </button>
         </div>
 
         {/* Hamburger */}
@@ -170,18 +187,24 @@ function KpsHero() {
   }, [])
 
   return (
-    <div style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:'#111' }}>
+    <div style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM }}>
       {HERO_PHOTOS.map((src, i) => (
         <img key={i} src={src} alt="" style={{
           position:'absolute', inset:0, width:'100%', height:'100%',
           objectFit:'cover', objectPosition:'center',
-          opacity: i === current ? 0.72 : 0,
+          opacity: i === current ? 0.9 : 0,
           transition: 'opacity 1.2s ease',
         }}/>
       ))}
 
-      {/* Subtle gradient at bottom only */}
-      <div style={{ position:'absolute', inset:0, background:'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.0) 40%, rgba(0,0,0,0.35) 100%)' }}/>
+      {/* White vignette fade on all edges — Brasserie 19 style */}
+      <div style={{ position:'absolute', inset:0, pointerEvents:'none',
+        background:`radial-gradient(ellipse at center, transparent 40%, rgba(250,250,248,0.6) 75%, rgba(250,250,248,0.95) 100%)`
+      }}/>
+      {/* Extra fade on top for nav */}
+      <div style={{ position:'absolute', top:0, left:0, right:0, height:160, background:'linear-gradient(to bottom, rgba(250,250,248,0.5) 0%, transparent 100%)', pointerEvents:'none' }}/>
+      {/* Extra fade on bottom */}
+      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:180, background:'linear-gradient(to top, rgba(250,250,248,0.7) 0%, transparent 100%)', pointerEvents:'none' }}/>
 
       {/* Centered logo */}
       <div style={{ position:'relative', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
