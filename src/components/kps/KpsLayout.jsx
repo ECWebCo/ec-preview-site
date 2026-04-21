@@ -16,8 +16,7 @@ const LOGO_BLUE  = 'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/p
 const BELLAIRE = {
   name: 'Bellaire',
   address: '5427 Bissonnet St #400, Bellaire, TX 77401',
-  phone: '(713) 677-0921',
-  resy: 'https://resy.com/cities/houston-tx/venues/kps-kitchen-bellaire',
+  phone: '(346) 240-2678',
   order: 'https://order.toasttab.com/online/kp-kitchen-bellaire?diningOption=takeout',
   hours: [
     { day: 'Monday', closed: true },
@@ -55,7 +54,7 @@ const HERO_PHOTOS = [
 ]
 
 // ─── Nav ──────────────────────────────────────────────────────
-function KpsNav({ activeLoc, setActiveLoc }) {
+function KpsNav({ activeLoc, setActiveLoc, onMenuOpen }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [locPicker, setLocPicker] = useState(null) // 'order' | 'reserve' | null
@@ -152,16 +151,21 @@ function KpsNav({ activeLoc, setActiveLoc }) {
       </nav>
 
       {menuOpen && (
-        <div style={{ position:'fixed', inset:0, background:CREAM, zIndex:199, paddingTop:72, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-          {[['kps-menu','Menu'],['kps-happyhour','Happy Hour'],['kps-private','Private Dining'],['kps-locations','Locations']].map(([id,label])=>(
-            <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, width:'100%', padding:'20px 0', textAlign:'center', fontSize:24, color:NAVY, fontFamily:'Playfair Display,serif', fontStyle:'italic', cursor:'pointer', fontWeight:700 }}>
-              {label}
+        <div style={{ position:'fixed', inset:0, background:'#fff', zIndex:199, paddingTop:72, display:'flex', flexDirection:'column' }}>
+          {[
+            { label:'Menu', action: () => { setMenuOpen(false); onMenuOpen() } },
+            { label:'Happy Hour', id:'kps-happyhour' },
+            { label:'Private Dining', id:'kps-private' },
+            { label:'Locations', id:'kps-locations' },
+          ].map((item,i)=>(
+            <button key={i}
+              onClick={()=> item.action ? item.action() : scrollTo(item.id)}
+              style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'22px 32px', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              <span style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY }}>{item.label}</span>
+              <span style={{ color:MUTED, fontSize:16, opacity:0.4 }}>→</span>
             </button>
           ))}
-          <div style={{ display:'flex', gap:12, marginTop:32, padding:'0 24px', flexWrap:'wrap', justifyContent:'center' }}>
-            <a href={activeLoc.resy} target="_blank" rel="noreferrer" style={{ padding:'13px 28px', background:NAVY, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, textDecoration:'none' }}>Reserve a Table</a>
-            <a href={activeLoc.order} target="_blank" rel="noreferrer" style={{ padding:'12px 28px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, textDecoration:'none' }}>Order Online</a>
-          </div>
         </div>
       )}
 
@@ -601,7 +605,7 @@ export default function KpsLayout({ data }) {
 
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
-      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
+      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>setMenuOpen(true)} />
       <KpsHero />
       <KpsAbout onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
       <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
