@@ -48,7 +48,7 @@ const MEMORIAL = {
 }
 
 const HERO_PHOTOS = [
-  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80',
+  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/bellaire2.jpg',
   'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=80',
   'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1920&q=80',
   'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1920&q=80',
@@ -413,7 +413,7 @@ function KpsAbout({ onMenuOpen, activeLoc }) {
             </button>
           </div>
         </div>
-        <PaddedImage src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&q=85" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>window.open(activeLoc.order,'_blank')}/>
+        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>window.open(activeLoc.order,'_blank')}/>
       </div>
     </section>
   )
@@ -501,7 +501,7 @@ function KpsLocations({ onEventsOpen }) {
             ))}
           </div>
         </div>
-        <PaddedImage src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1200&q=85" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
+        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/privatetables.jpg" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
       </div>
     </section>
   )
