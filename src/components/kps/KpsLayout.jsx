@@ -297,31 +297,41 @@ function MenuModal({ sections, onClose }) {
   ]
   const display = sections?.length ? sections : fallback
   const items = display[activeTab]?.items || []
+
   useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+
   return (
     <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex' }}>
       <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(4px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', marginLeft:'auto', width:'min(500px,100vw)', background:'#fff', overflowY:'auto', display:'flex', flexDirection:'column', animation:'slideIn 0.3s ease' }}>
-        <div style={{ padding:'24px 32px', display:'flex', justifyContent:'space-between', alignItems:'center', position:'sticky', top:0, background:'#fff', zIndex:10, borderBottom:`1px solid ${BORDER}` }}>
-          <div style={{ fontFamily:'Playfair Display,serif', fontSize:20, fontWeight:400, fontStyle:'italic', color:NAVY }}>Our Menus</div>
-          <button onClick={onClose} style={{ background:'none', border:`1px solid ${BORDER}`, width:32, height:32, cursor:'pointer', fontSize:15, color:MUTED, display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+      <div style={{ position:'relative', marginLeft:'auto', width:'min(500px,100vw)', background:'#fff', display:'flex', flexDirection:'column', animation:'slideIn 0.3s ease', maxHeight:'100vh' }}>
+
+        {/* Fixed header — never scrolls */}
+        <div style={{ flexShrink:0, padding:'28px 32px 0', background:'#fff' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24 }}>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, opacity:0.6 }}>Our Menus</div>
+            <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', fontSize:20, color:MUTED, lineHeight:1, padding:4 }}>✕</button>
+          </div>
+          {/* Tabs */}
+          <div style={{ display:'flex', overflowX:'auto', gap:0, borderBottom:`1px solid ${BORDER}` }}>
+            {display.map((s,i)=>(
+              <button key={i} onClick={()=>setActiveTab(i)}
+                style={{ padding:'12px 20px', fontSize:11, border:'none', background:'none', fontFamily:'DM Sans', fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', color:activeTab===i?NAVY:MUTED, borderBottom:activeTab===i?`2px solid ${NAVY}`:'2px solid transparent', marginBottom:-1, transition:'all 0.2s', flexShrink:0 }}>
+                {s.name}
+              </button>
+            ))}
+          </div>
         </div>
-        <div style={{ display:'flex', borderBottom:`1px solid ${BORDER}`, padding:'0 32px', overflowX:'auto', flexShrink:0 }}>
-          {display.map((s,i)=>(
-            <button key={i} onClick={()=>setActiveTab(i)} style={{ padding:'12px 16px', fontSize:11, border:'none', background:'none', fontFamily:'DM Sans', fontWeight:600, letterSpacing:'1.5px', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', color:activeTab===i?NAVY:MUTED, borderBottom:activeTab===i?`2px solid ${NAVY}`:'2px solid transparent', marginBottom:-1, transition:'all 0.2s' }}>
-              {s.name}
-            </button>
-          ))}
-        </div>
-        <div style={{ padding:'0 32px 48px' }}>
+
+        {/* Scrollable items only */}
+        <div style={{ flex:1, overflowY:'auto', padding:'0 32px 48px' }}>
           {items.map((item,i)=>(
-            <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:20, padding:'16px 0', borderBottom:`1px solid ${BORDER}` }}>
+            <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:20, padding:'18px 0', borderBottom:`1px solid ${BORDER}` }}>
               <div>
-                <div style={{ fontFamily:'Playfair Display,serif', fontSize:16, fontStyle:'italic', color:NAVY, marginBottom:item.description?3:0 }}>{item.name}</div>
-                {item.description&&<p style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, fontWeight:300, lineHeight:1.5 }}>{item.description}</p>}
+                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?4:0 }}>{item.name}</div>
+                {item.description && <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', lineHeight:1.6 }}>{item.description}</p>}
               </div>
-              <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:500 }}>
-                {item.price&&(isNaN(item.price)?item.price:`$${Number(item.price).toFixed(0)}`)}
+              <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>
+                {item.price && (isNaN(item.price) ? item.price : `$${Number(item.price).toFixed(0)}`)}
               </div>
             </div>
           ))}
