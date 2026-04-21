@@ -54,10 +54,9 @@ const HERO_PHOTOS = [
 ]
 
 // ─── Nav ──────────────────────────────────────────────────────
-function KpsNav({ activeLoc, setActiveLoc, onMenuOpen }) {
+function KpsNav({ activeLoc, setActiveLoc, onMenuOpen, onPick }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [locPicker, setLocPicker] = useState(null) // 'order' | 'reserve' | null
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > window.innerHeight - 100)
@@ -68,42 +67,8 @@ function KpsNav({ activeLoc, setActiveLoc, onMenuOpen }) {
   const scrollTo = id => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMenuOpen(false) }
   const textColor = NAVY
 
-  const handlePick = (loc, type) => {
-    setActiveLoc(loc)
-    setLocPicker(null)
-    const url = type === 'order' ? loc.order : loc.resy
-    window.open(url, '_blank')
-  }
-
   return (
     <>
-      {/* Location picker modal */}
-      {locPicker && (
-        <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={()=>setLocPicker(null)}>
-          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.4)', backdropFilter:'blur(4px)' }}/>
-          <div style={{ position:'relative', background:'#fff', width:360, overflow:'hidden', boxShadow:'0 20px 60px rgba(0,0,0,0.15)' }} onClick={e=>e.stopPropagation()}>
-            <div style={{ padding:'24px 28px 16px', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-              <div>
-                <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD, marginBottom:4 }}>
-                  {locPicker === 'order' ? 'Order Online' : 'Make a Reservation'}
-                </div>
-                <div style={{ fontFamily:'Playfair Display,serif', fontSize:20, fontWeight:700, fontStyle:'italic', color:NAVY }}>Choose a Location</div>
-              </div>
-              <button onClick={()=>setLocPicker(null)} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:MUTED, lineHeight:1 }}>✕</button>
-            </div>
-            {[BELLAIRE, MEMORIAL].map(loc=>(
-              <button key={loc.name} onClick={()=>handlePick(loc, locPicker)}
-                style={{ display:'flex', flexDirection:'column', width:'100%', padding:'20px 28px', background:'#fff', border:'none', borderBottom:`1px solid ${BORDER}`, textAlign:'left', cursor:'pointer', transition:'background 0.15s' }}
-                onMouseOver={e=>e.currentTarget.style.background=WARM}
-                onMouseOut={e=>e.currentTarget.style.background='#fff'}>
-                <span style={{ fontFamily:'Playfair Display,serif', fontSize:18, fontWeight:700, fontStyle:'italic', color:NAVY, marginBottom:3 }}>KP's Kitchen — {loc.name}</span>
-                <span style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED }}>{loc.address.split(',')[0]}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
         height: 72, display: 'flex', alignItems: 'center',
@@ -133,12 +98,12 @@ function KpsNav({ activeLoc, setActiveLoc, onMenuOpen }) {
 
         {/* CTAs — no location picker, just Order + Reserve which trigger modal */}
         <div className="kps-nav-cta" style={{ display:'flex', gap:10, alignItems:'center' }}>
-          <button onClick={()=>setLocPicker('order')} style={{ padding:'8px 18px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.2s' }}
+          <button onClick={()=>onPick('order')} style={{ padding:'8px 18px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.2s' }}
             onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
             onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
             Order
           </button>
-          <button onClick={()=>setLocPicker('reserve')} style={{ padding:'8px 20px', background:NAVY, border:`1px solid ${NAVY}`, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.2s' }}
+          <button onClick={()=>onPick('reserve')} style={{ padding:'8px 20px', background:NAVY, border:`1px solid ${NAVY}`, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.2s' }}
             onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
             Reserve
           </button>
@@ -182,11 +147,23 @@ function KpsNav({ activeLoc, setActiveLoc, onMenuOpen }) {
 }
 
 // ─── Hero Slideshow ───────────────────────────────────────────
+const HERO_PHOTOS = [
+  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_26%20PM.png',
+  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_31%20PM.png',
+  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_36%20PM.png',
+]
+
 function KpsHero() {
+  const [current, setCurrent] = useState(0)
+  useEffect(() => {
+    const t = setInterval(() => setCurrent(c => (c+1) % HERO_PHOTOS.length), 5000)
+    return () => clearInterval(t)
+  }, [])
   return (
     <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM, paddingTop:72 }}>
-      <img src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_45_04%20PM.png"
-        alt="KP's Kitchen" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }}/>
+      {HERO_PHOTOS.map((src,i) => (
+        <img key={i} src={src} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', opacity:i===current?1:0, transition:'opacity 1.2s ease' }}/>
+      ))}
       <div style={{ position:'absolute', top:0, left:0, right:0, height:160, background:'linear-gradient(to bottom, rgba(250,250,248,1) 0%, rgba(250,250,248,0.6) 50%, transparent 100%)', pointerEvents:'none' }}/>
       <div style={{ position:'relative', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
         <img src={LOGO_WHITE} alt="KP's Kitchen"
@@ -206,7 +183,7 @@ const PATTERN_URL = 'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/
 const EYEBROW_STYLE = { fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:14 }
 const H2_STYLE = { fontFamily:'Playfair Display,serif', fontSize:'clamp(26px,3.5vw,42px)', fontWeight:400, fontStyle:'italic', color:NAVY, lineHeight:1.15 }
 const BODY_STYLE = { fontFamily:'DM Sans', fontSize:14, color:MUTED, lineHeight:1.85, fontWeight:300 }
-const LINK_STYLE = { background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', textAlign:'left', transition:'opacity 0.2s', width:'100%' }
+const PILL_BTN = { background:'none', border:`1px solid ${NAVY}`, borderRadius:999, fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'11px 24px', transition:'all 0.2s' }
 
 const PRESS_ITEMS = [
   { label:'EATER', quote:"One of Houston's best hidden gem restaurants.", url:'https://houston.eater.com/maps/best-hidden-gem-underrated-restaurants-houston' },
@@ -369,8 +346,39 @@ function PaddedImage({ src, onClick, label, sub, cta }) {
   )
 }
 
+// ─── Location Picker Modal ────────────────────────────────────
+function LocPicker({ type, onClose }) {
+  const locs = type === 'happyhour' ? [BELLAIRE] : [BELLAIRE, MEMORIAL]
+  const href = loc => type === 'reserve' || type === 'happyhour' ? loc.resy : loc.order
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:600, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={onClose}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)' }}/>
+      <div style={{ position:'relative', background:'#fff', width:'min(400px,90vw)', padding:'36px 32px' }} onClick={e=>e.stopPropagation()}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:28 }}>
+          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED }}>
+            {type==='reserve'||type==='happyhour' ? 'Reserve a Table' : 'Order Online'}
+          </div>
+          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:18, cursor:'pointer', color:MUTED }}>✕</button>
+        </div>
+        {locs.map(loc => (
+          <a key={loc.name} href={href(loc)} target="_blank" rel="noreferrer"
+            style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 0', borderTop:`1px solid ${BORDER}`, textDecoration:'none', transition:'opacity 0.2s' }}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.6'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            <div>
+              <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:2 }}>{loc.name}</div>
+              <div style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic' }}>{loc.address.split(',')[0]}</div>
+              {type==='happyhour' && <div style={{ fontFamily:'DM Sans', fontSize:10, color:MUTED, marginTop:4, letterSpacing:'1px' }}>Mon – Fri · 4:00 – 6:00 PM</div>}
+            </div>
+            <span style={{ fontFamily:'DM Sans', fontSize:11, color:NAVY, fontWeight:600, letterSpacing:'2px' }}>→</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Row 1: About (left) | Order Online photo (right) ────────
-function KpsAbout({ onMenuOpen, activeLoc }) {
+function KpsAbout({ onMenuOpen, onPick }) {
   return (
     <section style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
@@ -380,38 +388,38 @@ function KpsAbout({ onMenuOpen, activeLoc }) {
           <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, marginBottom:36, opacity:0.85, maxWidth:380 }}>
             Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
           </p>
-          <div style={{ display:'flex', flexDirection:'column', gap:0, width:'100%', maxWidth:280 }}>
-            <button onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
-              style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'14px 0', textAlign:'center', transition:'opacity 0.2s' }}
-              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-              Make a Reservation
+          <div style={{ display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center' }}>
+            <button onClick={()=>onPick('reserve')} style={PILL_BTN}
+              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+              Reserve
             </button>
-            <button onClick={onMenuOpen}
-              style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'14px 0', textAlign:'center', transition:'opacity 0.2s' }}
-              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            <button onClick={onMenuOpen} style={PILL_BTN}
+              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
               View Menus
             </button>
           </div>
         </div>
-        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>window.open(activeLoc.order,'_blank')}/>
+        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>onPick('order')}/>
       </div>
     </section>
   )
 }
 
-// ─── Row 2: Happy Hour photo (left) | Menus (right) ──────────
-function KpsHoursSection({ onMenuOpen, activeLoc }) {
+// ─── Row 2: Menus (left) | Locations (right) ─────────────────
+function KpsHoursSection({ onMenuOpen, onPick }) {
   return (
-    <section id="kps-happyhour" style={{ background:'#fff' }}>
+    <section id="kps-menu" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
-        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>window.open(activeLoc.resy,'_blank')}/>
+        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Bellaire Only · Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
           <div style={{ width:'100%', maxWidth:320 }}>
             {[
               { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM' },
               { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM' },
-              { label:'Happy Hour', sub:'Mon – Fri · 4:00 – 6:00 PM' },
+              { label:'Happy Hour', sub:'Bellaire Only · Mon – Fri · 4 – 6 PM' },
               { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close' },
             ].map((h,i)=>(
               <button key={i} onClick={onMenuOpen}
@@ -428,6 +436,7 @@ function KpsHoursSection({ onMenuOpen, activeLoc }) {
   )
 }
 
+// ─── Row 3: Locations (left) | Private Dining photo (right) ──
 // ─── Row 3: Locations (left) | Private Dining photo (right) ──
 function HoursDropdown({ hours }) {
   const [open, setOpen] = useState(false)
@@ -455,7 +464,7 @@ function HoursDropdown({ hours }) {
   )
 }
 
-function KpsLocations({ onEventsOpen }) {
+function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
   return (
     <section id="kps-locations" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
@@ -469,17 +478,22 @@ function KpsLocations({ onEventsOpen }) {
                 <a href={`tel:${loc.phone}`} style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', textDecoration:'none', display:'block', marginBottom:12, transition:'color 0.2s' }}
                   onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{loc.phone}</a>
                 <HoursDropdown hours={loc.hours}/>
-                <div style={{ display:'flex', gap:20, justifyContent:'center' }}>
-                  <a href={loc.resy} target="_blank" rel="noreferrer"
-                    style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, transition:'opacity 0.2s' }}
-                    onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>Reserve</a>
-                  <a href={loc.order} target="_blank" rel="noreferrer"
-                    style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:MUTED, textDecoration:'none', transition:'color 0.2s' }}
-                    onMouseOver={e=>e.currentTarget.style.color=NAVY} onMouseOut={e=>e.currentTarget.style.color=MUTED}>Order Online</a>
+                <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
+                  <button onClick={()=>onPick('reserve')} style={PILL_BTN}
+                    onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+                    onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>Reserve</button>
+                  <button onClick={()=>onPick('order')} style={{...PILL_BTN, color:MUTED, borderColor:MUTED}}
+                    onMouseOver={e=>{e.currentTarget.style.background=MUTED;e.currentTarget.style.color='#fff'}}
+                    onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=MUTED}}>Order</button>
                 </div>
               </div>
             ))}
           </div>
+          <button onClick={onMenuOpen} style={{...PILL_BTN, marginTop:36}}
+            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+            View Menus
+          </button>
         </div>
         <div id="kps-private">
           <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
@@ -577,7 +591,7 @@ function KpsFooter() {
 }
 
 // ─── Sticky Bar ───────────────────────────────────────────────
-function KpsStickyBar({ activeLoc, setActiveLoc }) {
+function KpsStickyBar({ activeLoc, setActiveLoc, onPick }) {
   const [callPicker, setCallPicker] = useState(false)
 
   return (
@@ -601,11 +615,11 @@ function KpsStickyBar({ activeLoc, setActiveLoc }) {
         </div>
       )}
       <div className="kps-sticky" style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:200, display:'none', background:'#fff', borderTop:`1px solid ${BORDER}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
-        <button onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
+        <button onClick={()=>onPick('reserve')}
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:NAVY, color:'#fff', border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:'1px solid rgba(255,255,255,0.1)' }}>
           Reserve
         </button>
-        <button onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
+        <button onClick={()=>onPick('order')}
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:`1px solid ${BORDER}` }}>
           Order
         </button>
@@ -625,19 +639,21 @@ export default function KpsLayout({ data }) {
   const [activeLoc, setActiveLoc] = useState(MEMORIAL)
   const [menuOpen, setMenuOpen] = useState(false)
   const [eventsOpen, setEventsOpen] = useState(false)
+  const [picker, setPicker] = useState(null) // 'reserve' | 'order' | 'happyhour'
   const { sections } = data
 
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
-      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>setMenuOpen(true)} />
+      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker}/>
       <KpsHero />
-      <KpsAbout onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
-      <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
-      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} />
+      <KpsAbout onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
+      <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
+      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={()=>setMenuOpen(true)} onPick={setPicker} />
       <KpsFooter />
-      <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
+      <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} onPick={setPicker} />
       {menuOpen && <MenuModal sections={sections} onClose={()=>setMenuOpen(false)}/>}
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
+      {picker && <LocPicker type={picker} onClose={()=>setPicker(null)}/>}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
@@ -649,7 +665,6 @@ export default function KpsLayout({ data }) {
           .kps-split-text{padding:48px 24px!important}
           .kps-hero{height:75vh!important;padding-top:0!important}
           nav{padding:0 24px!important}
-          /* Mobile: text first, photo second in each row */
           .kps-photo-first .kps-split-text{order:1}
           .kps-photo-first .kps-padded-img{order:2}
         }
