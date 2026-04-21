@@ -491,10 +491,19 @@ function KpsLocations() {
     <section id="kps-locations" style={{ background:CREAM, borderBottom:`1px solid ${BORDER}` }}>
       <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD, textAlign:'center' }} className="kps-inner">
         <div style={{ ...EYEBROW_STYLE, display:'flex', justifyContent:'center' }}>Visit Us</div>
-        <h2 style={{ ...H2_STYLE, marginBottom:48 }}>Two Houston Locations</h2>
+        <h2 style={{ ...H2_STYLE, marginBottom:56 }}>Two Houston Locations</h2>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, textAlign:'left' }} className="kps-two-col">
           {[BELLAIRE, MEMORIAL].map((loc,i)=>(
             <div key={i}>
+              {/* Circle map */}
+              <a href={`https://maps.google.com?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer"
+                style={{ display:'block', width:160, height:160, borderRadius:'50%', overflow:'hidden', marginBottom:24, border:`1px solid ${BORDER}`, textDecoration:'none', flexShrink:0 }}>
+                <iframe
+                  title={`map-${loc.name}`} width="320" height="320"
+                  style={{ border:0, display:'block', filter:'grayscale(20%)', pointerEvents:'none', marginLeft:-80, marginTop:-80 }}
+                  loading="lazy" referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed&zoom=15`}/>
+              </a>
               <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8 }}>{loc.name}</div>
               <h3 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(20px,2.5vw,30px)', fontWeight:400, fontStyle:'italic', color:NAVY, marginBottom:16 }}>KP's Kitchen</h3>
               <p style={{ fontFamily:'DM Sans', fontSize:14, color:MUTED, marginBottom:2, lineHeight:1.6 }}>{loc.address}</p>
@@ -521,41 +530,71 @@ function KpsLocations() {
   )
 }
 
+// ─── Press ────────────────────────────────────────────────────
+function KpsPress() {
+  return (
+    <section style={{ background:WARM, borderBottom:`1px solid ${BORDER}` }}>
+      <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:SECTION_PAD, textAlign:'center' }} className="kps-inner">
+        <div style={{ ...EYEBROW_STYLE, display:'flex', justifyContent:'center' }}>As Seen In</div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', marginTop:40, borderTop:`1px solid ${BORDER}` }}>
+          {PRESS_ITEMS.map((p,i)=>(
+            <a key={i} href={p.url} target="_blank" rel="noreferrer"
+              style={{ padding:'32px 28px', borderRight:i<2?`1px solid ${BORDER}`:'none', textDecoration:'none', textAlign:'center', display:'block', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.6'}
+              onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              <div style={{ fontFamily:'Playfair Display,serif', fontSize:11, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY, opacity:0.3, marginBottom:14 }}>{p.label}</div>
+              <div style={{ fontFamily:'Playfair Display,serif', fontSize:14, fontStyle:'italic', color:NAVY, lineHeight:1.8, opacity:0.75 }}>"{p.quote}"</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
-  const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })
   return (
-    <footer style={{ background:NAVY, padding:'56px 64px 36px' }} className="kps-footer-outer">
+    <footer style={{ background:CREAM, borderTop:`1px solid ${BORDER}`, padding:'56px 64px 40px' }} className="kps-footer-outer">
       <div style={{ maxWidth:SECTION_MAX, margin:'0 auto' }}>
-        <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr', gap:56, marginBottom:40, paddingBottom:40, borderBottom:'1px solid rgba(255,255,255,0.08)' }} className="kps-footer-grid">
+
+        {/* Logo centered */}
+        <div style={{ textAlign:'center', marginBottom:40, paddingBottom:40, borderBottom:`1px solid ${BORDER}` }}>
+          <img src={LOGO_BLUE} alt="KP's Kitchen" style={{ height:72, width:'auto', objectFit:'contain', opacity:0.85 }} onError={e=>e.target.style.display='none'}/>
+        </div>
+
+        {/* Three columns of links */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:32, marginBottom:40, textAlign:'center' }} className="kps-footer-grid">
           <div>
-            <img src={LOGO_WHITE} alt="KP's Kitchen" style={{ height:52, width:'auto', objectFit:'contain', marginBottom:14, opacity:0.85 }} onError={e=>e.target.style.display='none'}/>
-            <p style={{ fontFamily:'DM Sans', fontSize:13, color:'rgba(255,255,255,0.35)', lineHeight:1.7, maxWidth:260, fontWeight:300 }}>
-              Upscale American cuisine with neighborhood hospitality. Two Houston locations.
-            </p>
+            <div style={{ ...EYEBROW_STYLE, justifyContent:'center', display:'flex', marginBottom:16 }}>Visit</div>
+            <a href={BELLAIRE.resy} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:MUTED, textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>Bellaire · Reserve</a>
+            <a href={BELLAIRE.order} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:MUTED, textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>Bellaire · Order Online</a>
+            <a href={MEMORIAL.resy} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:MUTED, textDecoration:'none', padding:'4px 0', marginTop:8, transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>Memorial · Reserve</a>
+            <a href={MEMORIAL.order} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:MUTED, textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>Memorial · Order Online</a>
           </div>
           <div>
-            <p style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:GOLD, marginBottom:14 }}>Navigate</p>
-            {[['kps-menu','Menu'],['kps-happyhour','Happy Hour'],['kps-private','Private Dining'],['kps-locations','Locations']].map(([id,label])=>(
-              <button key={id} onClick={()=>scrollTo(id)} style={{ display:'block', background:'none', border:'none', fontFamily:'DM Sans', fontSize:13, color:'rgba(255,255,255,0.4)', cursor:'pointer', padding:'4px 0', textAlign:'left', transition:'color 0.2s' }}
-                onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>
-                {label}
-              </button>
+            <div style={{ ...EYEBROW_STYLE, justifyContent:'center', display:'flex', marginBottom:16 }}>Menu</div>
+            {['Dinner', 'Brunch', 'Happy Hour', 'Private Dining'].map(label=>(
+              <div key={label} style={{ fontFamily:'DM Sans', fontSize:13, color:MUTED, padding:'4px 0' }}>{label}</div>
             ))}
           </div>
           <div>
-            <p style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:GOLD, marginBottom:14 }}>Reserve</p>
-            <a href={BELLAIRE.resy} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:'rgba(255,255,255,0.4)', textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
-              onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Bellaire</a>
-            <a href={MEMORIAL.resy} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:'rgba(255,255,255,0.4)', textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
-              onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Memorial</a>
-            <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:'rgba(255,255,255,0.4)', textDecoration:'none', padding:'4px 0', marginTop:12, transition:'color 0.2s' }}
-              onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.4)'}>Private Events</a>
+            <div style={{ ...EYEBROW_STYLE, justifyContent:'center', display:'flex', marginBottom:16 }}>Connect</div>
+            <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:MUTED, textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>Private Events</a>
+            <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'DM Sans', fontSize:13, color:MUTED, textDecoration:'none', padding:'4px 0', transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{MEMORIAL.phone}</a>
           </div>
         </div>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
-          <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)', fontFamily:'DM Sans' }}>© {new Date().getFullYear()} KP's Kitchen & Bar. All rights reserved.</div>
-          <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)', fontFamily:'DM Sans' }}>Website by <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:GOLD, textDecoration:'none' }}>EC Web Co</a></div>
+
+        <div style={{ textAlign:'center', borderTop:`1px solid ${BORDER}`, paddingTop:24 }}>
+          <div style={{ fontSize:11, color:MUTED, fontFamily:'DM Sans', opacity:0.6 }}>
+            © {new Date().getFullYear()} KP's Kitchen & Bar · Houston, Texas · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:MUTED, textDecoration:'none' }}>Website by EC Web Co</a>
+          </div>
         </div>
       </div>
     </footer>
