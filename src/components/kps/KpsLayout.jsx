@@ -424,6 +424,7 @@ function KpsHoursSection({ onMenuOpen, activeLoc }) {
   return (
     <section style={{ background:'#F5F4F0' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
+        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>window.open(activeLoc.resy,'_blank')}/>
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
           <div style={{ width:'100%', maxWidth:320 }}>
