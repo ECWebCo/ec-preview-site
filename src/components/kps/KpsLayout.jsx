@@ -370,7 +370,7 @@ function MenuModal({ sections, onClose }) {
 // ─── Shared padded image ─────────────────────────────────────
 function PaddedImage({ src, onClick, label, sub, cta }) {
   return (
-    <div style={{ padding:32, display:'flex', alignItems:'stretch' }}>
+    <div className="kps-padded-img" style={{ padding:32, display:'flex', alignItems:'stretch' }}>
       <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor: onClick ? 'pointer' : 'default', minHeight:360 }}>
         <img src={src} alt={label||''}
           style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.7s ease' }}
@@ -423,8 +423,7 @@ function KpsAbout({ onMenuOpen, activeLoc }) {
 function KpsHoursSection({ onMenuOpen, activeLoc }) {
   return (
     <section style={{ background:'#F5F4F0' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
-        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Mon – Fri · 4 – 6 PM" cta="Reserve a Table" onClick={()=>window.open(activeLoc.resy,'_blank')}/>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split kps-photo-first">
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
           <div style={{ width:'100%', maxWidth:320 }}>
@@ -475,7 +474,7 @@ function HoursDropdown({ hours }) {
   )
 }
 
-function KpsLocations() {
+function KpsLocations({ onEventsOpen }) {
   return (
     <section id="kps-locations" style={{ background:'#F5F4F0' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
@@ -501,25 +500,73 @@ function KpsLocations() {
             ))}
           </div>
         </div>
-        <PaddedImage src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1200&q=85" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={()=>{ window.location.href='mailto:events@kps-kitchen.com' }}/>
+        <PaddedImage src="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1200&q=85" label="Private Dining" sub="Events & Catering" cta="Inquire About Events" onClick={onEventsOpen}/>
       </div>
     </section>
+  )
+}
+
+// ─── Events Form Modal ────────────────────────────────────────
+function EventsModal({ onClose }) {
+  const [form, setForm] = useState({ name:'', email:'', phone:'', date:'', guests:'', message:'' })
+  const [sent, setSent] = useState(false)
+  const set = k => e => setForm(f=>({...f,[k]:e.target.value}))
+
+  const handleSubmit = () => {
+    const body = `Name: ${form.name}%0AEmail: ${form.email}%0APhone: ${form.phone}%0ADate: ${form.date}%0AGuests: ${form.guests}%0AMessage: ${form.message}`
+    window.location.href = `mailto:events@kps-kitchen.com?subject=Private Event Inquiry&body=${body}`
+    setSent(true)
+  }
+
+  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+
+  const input = { width:'100%', fontFamily:'Georgia,serif', fontSize:14, color:NAVY, background:'#F5F4F0', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'10px 0', outline:'none', marginBottom:20 }
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)' }} onClick={onClose}/>
+      <div style={{ position:'relative', background:'#F5F4F0', width:'min(540px,100vw)', maxHeight:'90vh', overflowY:'auto', padding:'48px 40px' }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:32 }}>
+          <div>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8 }}>Entertain</div>
+            <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(16px,2vw,20px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY }}>Private Events & Catering</h2>
+          </div>
+          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:MUTED, lineHeight:1, flexShrink:0 }}>✕</button>
+        </div>
+
+        {sent ? (
+          <div style={{ textAlign:'center', padding:'24px 0' }}>
+            <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, marginBottom:12 }}>Thank You</div>
+            <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', lineHeight:1.8 }}>
+              Your inquiry has been sent. We'll be in touch shortly to discuss your event.
+            </p>
+            <button onClick={onClose} style={{ marginTop:24, background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', borderBottom:`1px solid ${NAVY}`, paddingBottom:3 }}>Close</button>
+          </div>
+        ) : (
+          <>
+            <input style={input} placeholder="Your Name" value={form.name} onChange={set('name')}/>
+            <input style={input} placeholder="Email Address" value={form.email} onChange={set('email')}/>
+            <input style={input} placeholder="Phone Number" value={form.phone} onChange={set('phone')}/>
+            <input style={input} placeholder="Event Date" value={form.date} onChange={set('date')}/>
+            <input style={input} placeholder="Number of Guests" value={form.guests} onChange={set('guests')}/>
+            <textarea style={{...input, resize:'vertical', minHeight:80, marginBottom:32}} placeholder="Tell us about your event" value={form.message} onChange={set('message')}/>
+            <button onClick={handleSubmit}
+              style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              Send Inquiry
+            </button>
+          </>
+        )}
+      </div>
+    </div>
   )
 }
 
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
   return (
-    <footer style={{
-      backgroundImage: `url(https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_20_00%20PM.png)`,
-      backgroundRepeat: 'repeat',
-      backgroundSize: 'auto 280px',
-      padding:'56px 48px 40px',
-      textAlign:'center',
-      position:'relative',
-    }}>
-      <div style={{ position:'absolute', inset:0, background:'rgba(27,43,75,0.82)' }}/>
-      <div style={{ maxWidth:640, margin:'0 auto', position:'relative' }}>
+    <footer style={{ background:NAVY, padding:'56px 48px 40px', textAlign:'center' }}>
+      <div style={{ maxWidth:640, margin:'0 auto' }}>
         <div style={{ display:'flex', gap:24, justifyContent:'center', flexWrap:'wrap', marginBottom:16 }}>
           {[
             ['5427 Bissonnet St, Bellaire TX', `https://maps.google.com?q=${encodeURIComponent(BELLAIRE.address)}`],
@@ -572,6 +619,7 @@ function KpsStickyBar({ activeLoc }) {
 export default function KpsLayout({ data }) {
   const [activeLoc, setActiveLoc] = useState(MEMORIAL)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [eventsOpen, setEventsOpen] = useState(false)
   const { sections } = data
 
   return (
@@ -580,10 +628,11 @@ export default function KpsLayout({ data }) {
       <KpsHero />
       <KpsAbout onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
       <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} activeLoc={activeLoc} />
-      <KpsLocations />
+      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} />
       <KpsFooter />
       <KpsStickyBar activeLoc={activeLoc} />
       {menuOpen && <MenuModal sections={sections} onClose={()=>setMenuOpen(false)}/>}
+      {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
@@ -592,9 +641,12 @@ export default function KpsLayout({ data }) {
         img{display:block;max-width:100%}
         @media(max-width:768px){
           .kps-split{grid-template-columns:1fr!important}
-          .kps-split-text{border-right:none!important;padding:48px 24px!important;border-bottom:1px solid #E4E0D8}
+          .kps-split-text{padding:48px 24px!important}
           .kps-hero{height:75vh!important}
           nav{padding:0 24px!important}
+          /* Mobile: text first, photo second in each row */
+          .kps-photo-first .kps-split-text{order:1}
+          .kps-photo-first .kps-padded-img{order:2}
         }
       `}</style>
     </div>
