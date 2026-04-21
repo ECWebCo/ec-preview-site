@@ -414,45 +414,6 @@ function KpsHappyHourAndPrivate({ activeLoc }) {
 }
 
 // ─── Press ────────────────────────────────────────────────────
-function KpsPress() {
-  return (
-    <section style={{ background:'#F2EFE7', borderBottom:`1px solid #C8C4B8`, borderTop:`1px solid #C8C4B8` }}>
-      <div style={{ maxWidth:SECTION_MAX, margin:'0 auto', padding:'48px 64px' }} className="kps-inner">
-
-        {/* Newspaper masthead rule */}
-        <div style={{ borderTop:'3px double #1a1a1a', borderBottom:'1px solid #1a1a1a', padding:'8px 0', marginBottom:28, textAlign:'center' }}>
-          <span style={{ fontFamily:'Playfair Display,serif', fontSize:11, fontWeight:700, letterSpacing:'6px', textTransform:'uppercase', color:'#1a1a1a' }}>
-            As Seen In
-          </span>
-        </div>
-
-        {/* Three columns like a newspaper */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1px 1fr 1px 1fr', gap:0 }} className="kps-press-news">
-          {PRESS_ITEMS.map((p,i)=>(
-            <>
-              <a key={`item-${i}`} href={p.url} target="_blank" rel="noreferrer"
-                style={{ padding:'0 32px', paddingLeft:i===0?0:32, textDecoration:'none', display:'block', transition:'opacity 0.2s' }}
-                onMouseOver={e=>e.currentTarget.style.opacity='0.6'}
-                onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-                {/* Publication name */}
-                <div style={{ fontFamily:'Playfair Display,serif', fontSize:13, fontWeight:700, fontStyle:'italic', color:'#1a1a1a', marginBottom:10, letterSpacing:'0.5px' }}>{p.label}</div>
-                {/* Thin rule */}
-                <div style={{ height:1, background:'#1a1a1a', opacity:0.2, marginBottom:10 }}/>
-                {/* Quote in newspaper column style */}
-                <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:'#2a2a2a', lineHeight:1.8, fontStyle:'italic' }}>"{p.quote}"</p>
-              </a>
-              {i < 2 && <div key={`div-${i}`} style={{ background:'#1a1a1a', opacity:0.15 }}/>}
-            </>
-          ))}
-        </div>
-
-        {/* Bottom rule */}
-        <div style={{ borderTop:'1px solid #1a1a1a', borderBottom:'3px double #1a1a1a', padding:'6px 0', marginTop:28 }}/>
-      </div>
-    </section>
-  )
-}
-
 // ─── Locations ────────────────────────────────────────────────
 function HoursDropdown({ hours }) {
   const [open, setOpen] = useState(false)
@@ -495,11 +456,9 @@ function KpsLocations() {
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, textAlign:'left' }} className="kps-two-col">
           {[BELLAIRE, MEMORIAL].map((loc,i)=>(
             <div key={i}>
-              {/* Circle map */}
               <a href={`https://maps.google.com?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer"
-                style={{ display:'block', width:160, height:160, borderRadius:'50%', overflow:'hidden', marginBottom:24, border:`1px solid ${BORDER}`, textDecoration:'none', flexShrink:0 }}>
-                <iframe
-                  title={`map-${loc.name}`} width="320" height="320"
+                style={{ display:'block', width:160, height:160, borderRadius:'50%', overflow:'hidden', marginBottom:24, border:`1px solid ${BORDER}`, textDecoration:'none' }}>
+                <iframe title={`map-${loc.name}`} width="320" height="320"
                   style={{ border:0, display:'block', filter:'grayscale(20%)', pointerEvents:'none', marginLeft:-80, marginTop:-80 }}
                   loading="lazy" referrerPolicy="no-referrer-when-downgrade"
                   src={`https://maps.google.com/maps?q=${encodeURIComponent(loc.address)}&output=embed&zoom=15`}/>
@@ -513,14 +472,10 @@ function KpsLocations() {
               <div style={{ display:'flex', gap:24 }}>
                 <a href={loc.resy} target="_blank" rel="noreferrer"
                   style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, transition:'opacity 0.2s' }}
-                  onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-                  Reserve
-                </a>
+                  onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>Reserve</a>
                 <a href={loc.order} target="_blank" rel="noreferrer"
                   style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'2.5px', textTransform:'uppercase', color:MUTED, textDecoration:'none', borderBottom:`1px solid ${BORDER}`, paddingBottom:3, transition:'color 0.2s' }}
-                  onMouseOver={e=>e.currentTarget.style.color=NAVY} onMouseOut={e=>e.currentTarget.style.color=MUTED}>
-                  Order Online
-                </a>
+                  onMouseOver={e=>e.currentTarget.style.color=NAVY} onMouseOut={e=>e.currentTarget.style.color=MUTED}>Order Online</a>
               </div>
             </div>
           ))}
