@@ -48,7 +48,7 @@ const MEMORIAL = {
 }
 
 const HERO_PHOTOS = [
-  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/bellaire2.jpg',
+  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/bellaire.avif',
   'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1920&q=80',
   'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1920&q=80',
   'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=1920&q=80',
@@ -179,46 +179,12 @@ function KpsNav({ activeLoc, setActiveLoc }) {
 
 // ─── Hero Slideshow ───────────────────────────────────────────
 function KpsHero() {
-  const [current, setCurrent] = useState(0)
-
-  useEffect(() => {
-    const t = setInterval(() => setCurrent(c => (c + 1) % HERO_PHOTOS.length), 5000)
-    return () => clearInterval(t)
-  }, [])
-
-  const prev = () => setCurrent(c => (c - 1 + HERO_PHOTOS.length) % HERO_PHOTOS.length)
-  const next = () => setCurrent(c => (c + 1) % HERO_PHOTOS.length)
-
   return (
     <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM }}>
-      {HERO_PHOTOS.map((src, i) => (
-        <img key={i} src={src} alt="" style={{
-          position:'absolute', inset:0, width:'100%', height:'100%',
-          objectFit:'cover', objectPosition:'center',
-          opacity: i === current ? 0.9 : 0,
-          transition: 'opacity 1.2s ease',
-        }}/>
-      ))}
-
-      {/* White fade on top only */}
+      <img src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_45_04%20PM.png"
+        alt="KP's Kitchen" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }}/>
       <div style={{ position:'absolute', top:0, left:0, right:0, height:200, background:'linear-gradient(to bottom, rgba(250,250,248,0.85) 0%, rgba(250,250,248,0.3) 50%, transparent 100%)', pointerEvents:'none' }}/>
-
-      {/* Left arrow */}
-      <button onClick={prev} style={{ position:'absolute', left:24, top:'50%', transform:'translateY(-50%)', background:'rgba(255,255,255,0.25)', border:'1px solid rgba(255,255,255,0.5)', backdropFilter:'blur(4px)', width:44, height:44, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20, transition:'background 0.2s', zIndex:10 }}
-        onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.45)'}
-        onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.25)'}>
-        ‹
-      </button>
-
-      {/* Right arrow */}
-      <button onClick={next} style={{ position:'absolute', right:24, top:'50%', transform:'translateY(-50%)', background:'rgba(255,255,255,0.25)', border:'1px solid rgba(255,255,255,0.5)', backdropFilter:'blur(4px)', width:44, height:44, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20, transition:'background 0.2s', zIndex:10 }}
-        onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.45)'}
-        onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.25)'}>
-        ›
-      </button>
-
-      {/* Centered logo */}
-      <div style={{ position:'relative', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
+      <div style={{ position:'relative', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
         <img src={LOGO_WHITE} alt="KP's Kitchen"
           style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))' }}
           onError={e=>e.target.style.display='none'}/>
