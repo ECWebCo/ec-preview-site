@@ -67,7 +67,7 @@ function KpsNav({ activeLoc, setActiveLoc }) {
   }, [])
 
   const scrollTo = id => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMenuOpen(false) }
-  const textColor = scrolled || menuOpen ? NAVY : '#fff'
+  const textColor = NAVY
 
   const handlePick = (loc, type) => {
     setActiveLoc(loc)
@@ -134,12 +134,12 @@ function KpsNav({ activeLoc, setActiveLoc }) {
 
         {/* CTAs — no location picker, just Order + Reserve which trigger modal */}
         <div className="kps-nav-cta" style={{ display:'flex', gap:10, alignItems:'center' }}>
-          <button onClick={()=>setLocPicker('order')} style={{ padding:'7px 16px', background:'none', border:`1px solid ${scrolled?BORDER:'rgba(255,255,255,0.5)'}`, color:textColor, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.3s' }}
-            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor=NAVY}}
-            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=textColor;e.currentTarget.style.borderColor=scrolled?BORDER:'rgba(255,255,255,0.5)'}}>
+          <button onClick={()=>setLocPicker('order')} style={{ padding:'8px 18px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.2s' }}
+            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
             Order
           </button>
-          <button onClick={()=>setLocPicker('reserve')} style={{ padding:'7px 20px', background: scrolled ? NAVY : 'rgba(255,255,255,0.15)', border: scrolled ? `1px solid ${NAVY}` : '1px solid rgba(255,255,255,0.6)', color: scrolled ? '#fff' : '#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.3s' }}
+          <button onClick={()=>setLocPicker('reserve')} style={{ padding:'8px 20px', background:NAVY, border:`1px solid ${NAVY}`, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.2s' }}
             onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
             Reserve
           </button>
@@ -197,19 +197,13 @@ function KpsHero() {
         }}/>
       ))}
 
-      {/* White vignette fade on all edges — Brasserie 19 style */}
-      <div style={{ position:'absolute', inset:0, pointerEvents:'none',
-        background:`radial-gradient(ellipse at center, transparent 40%, rgba(250,250,248,0.6) 75%, rgba(250,250,248,0.95) 100%)`
-      }}/>
-      {/* Extra fade on top for nav */}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:160, background:'linear-gradient(to bottom, rgba(250,250,248,0.5) 0%, transparent 100%)', pointerEvents:'none' }}/>
-      {/* Extra fade on bottom */}
-      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:180, background:'linear-gradient(to top, rgba(250,250,248,0.7) 0%, transparent 100%)', pointerEvents:'none' }}/>
+      {/* White fade on top only */}
+      <div style={{ position:'absolute', top:0, left:0, right:0, height:200, background:'linear-gradient(to bottom, rgba(250,250,248,0.85) 0%, rgba(250,250,248,0.3) 50%, transparent 100%)', pointerEvents:'none' }}/>
 
       {/* Centered logo */}
       <div style={{ position:'relative', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
         <img src={LOGO_WHITE} alt="KP's Kitchen"
-          style={{ width:'clamp(160px,22vw,280px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 2px 16px rgba(0,0,0,0.25))' }}
+          style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 2px 16px rgba(0,0,0,0.25))' }}
           onError={e=>e.target.style.display='none'}/>
 
         {/* Slideshow dots */}
