@@ -186,6 +186,9 @@ function KpsHero() {
     return () => clearInterval(t)
   }, [])
 
+  const prev = () => setCurrent(c => (c - 1 + HERO_PHOTOS.length) % HERO_PHOTOS.length)
+  const next = () => setCurrent(c => (c + 1) % HERO_PHOTOS.length)
+
   return (
     <div style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM }}>
       {HERO_PHOTOS.map((src, i) => (
@@ -200,18 +203,25 @@ function KpsHero() {
       {/* White fade on top only */}
       <div style={{ position:'absolute', top:0, left:0, right:0, height:200, background:'linear-gradient(to bottom, rgba(250,250,248,0.85) 0%, rgba(250,250,248,0.3) 50%, transparent 100%)', pointerEvents:'none' }}/>
 
-      {/* Centered logo */}
-      <div style={{ position:'relative', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-        <img src={LOGO_WHITE} alt="KP's Kitchen"
-          style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 2px 16px rgba(0,0,0,0.25))' }}
-          onError={e=>e.target.style.display='none'}/>
+      {/* Left arrow */}
+      <button onClick={prev} style={{ position:'absolute', left:24, top:'50%', transform:'translateY(-50%)', background:'rgba(255,255,255,0.25)', border:'1px solid rgba(255,255,255,0.5)', backdropFilter:'blur(4px)', width:44, height:44, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20, transition:'background 0.2s', zIndex:10 }}
+        onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.45)'}
+        onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.25)'}>
+        ‹
+      </button>
 
-        {/* Slideshow dots */}
-        <div style={{ position:'absolute', bottom:28, display:'flex', gap:8 }}>
-          {HERO_PHOTOS.map((_,i)=>(
-            <button key={i} onClick={()=>setCurrent(i)} style={{ width:i===current?20:7, height:7, borderRadius:4, background:i===current?'#fff':'rgba(255,255,255,0.4)', border:'none', cursor:'pointer', transition:'all 0.35s', padding:0 }}/>
-          ))}
-        </div>
+      {/* Right arrow */}
+      <button onClick={next} style={{ position:'absolute', right:24, top:'50%', transform:'translateY(-50%)', background:'rgba(255,255,255,0.25)', border:'1px solid rgba(255,255,255,0.5)', backdropFilter:'blur(4px)', width:44, height:44, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontSize:20, transition:'background 0.2s', zIndex:10 }}
+        onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.45)'}
+        onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.25)'}>
+        ›
+      </button>
+
+      {/* Centered logo */}
+      <div style={{ position:'relative', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
+        <img src={LOGO_WHITE} alt="KP's Kitchen"
+          style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))' }}
+          onError={e=>e.target.style.display='none'}/>
       </div>
     </div>
   )
@@ -219,48 +229,65 @@ function KpsHero() {
 
 // ─── About ────────────────────────────────────────────────────
 function KpsAbout({ activeLoc }) {
-  const FOOD = [
-    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80',
-    'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80',
-    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80',
-    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80',
-    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80',
-    'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80',
-  ]
-
   return (
-    <section style={{ background:CREAM, padding:'80px 0 0' }}>
-      {/* Text block */}
-      <div style={{ maxWidth:720, margin:'0 auto', padding:'0 48px', textAlign:'center', marginBottom:56 }}>
-        <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(32px,4vw,52px)', fontWeight:700, fontStyle:'italic', color:NAVY, lineHeight:1.1, marginBottom:20 }}>
+    <section style={{ background:CREAM, padding:'80px 0' }}>
+
+      {/* City label + name — Tiny Boxwoods style */}
+      <div style={{ textAlign:'center', padding:'0 48px', marginBottom:64 }}>
+        <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:20 }}>Houston, Texas</div>
+        <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(36px,5vw,64px)', fontWeight:400, fontStyle:'italic', color:NAVY, lineHeight:1.0, marginBottom:24, letterSpacing:'-0.5px' }}>
           KP's Kitchen & Bar
         </h1>
-        <p style={{ fontFamily:'DM Sans', fontSize:16, color:MUTED, lineHeight:1.9, fontWeight:300 }}>
+        <p style={{ fontFamily:'DM Sans', fontSize:16, color:MUTED, lineHeight:1.9, fontWeight:300, maxWidth:560, margin:'0 auto 36px' }}>
           Upscale American comfort food served with neighborhood warmth. From scratch-made classics to thoughtfully crafted cocktails — two Houston locations, one kitchen philosophy.
         </p>
-        <div style={{ display:'flex', gap:12, justifyContent:'center', marginTop:32, flexWrap:'wrap' }}>
-          <a href={activeLoc.resy} target="_blank" rel="noreferrer" style={{ padding:'13px 28px', background:NAVY, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, textDecoration:'none', letterSpacing:'1px', textTransform:'uppercase', transition:'opacity 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.8'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+        <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap' }}>
+          <button style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'4px 0', borderBottom:`1px solid ${NAVY}`, transition:'opacity 0.2s' }}
+            onClick={()=>document.getElementById('kps-locations')?.scrollIntoView({behavior:'smooth'})}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.6'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
             Make a Reservation
-          </a>
-          <a href={activeLoc.order} target="_blank" rel="noreferrer" style={{ padding:'12px 28px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, textDecoration:'none', letterSpacing:'1px', textTransform:'uppercase', transition:'all 0.2s' }}
-            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-            Order Online
-          </a>
+          </button>
+          <span style={{ color:BORDER, fontFamily:'DM Sans' }}>·</span>
+          <button style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'4px 0', borderBottom:`1px solid ${NAVY}`, transition:'opacity 0.2s' }}
+            onClick={()=>document.getElementById('kps-menu')?.scrollIntoView({behavior:'smooth'})}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.6'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            View Menus
+          </button>
+          <span style={{ color:BORDER, fontFamily:'DM Sans' }}>·</span>
+          <button style={{ background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'4px 0', borderBottom:`1px solid ${NAVY}`, transition:'opacity 0.2s' }}
+            onClick={()=>document.getElementById('kps-private')?.scrollIntoView({behavior:'smooth'})}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.6'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            Private Dining
+          </button>
         </div>
       </div>
 
-      {/* Photo grid — Clark's style */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:3 }} className="kps-photo-grid">
-        {FOOD.map((src,i)=>(
-          <div key={i} style={{ overflow:'hidden', aspectRatio:'1', background:STONE }}>
-            <img src={src} alt="" style={{ width:'100%', height:'100%', objectFit:'cover', transition:'transform 0.6s ease' }}
-              onMouseOver={e=>e.target.style.transform='scale(1.05)'}
+      {/* Editorial photo layout — not a grid, asymmetric */}
+      <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 48px', display:'grid', gridTemplateColumns:'3fr 2fr', gap:4, alignItems:'stretch' }} className="kps-about-photos">
+        {/* Large left photo — tall */}
+        <div style={{ overflow:'hidden', position:'relative' }}>
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80" alt=""
+            style={{ width:'100%', height:'100%', minHeight:480, objectFit:'cover', objectPosition:'center', transition:'transform 0.7s ease' }}
+            onMouseOver={e=>e.target.style.transform='scale(1.03)'}
+            onMouseOut={e=>e.target.style.transform='scale(1)'}/>
+        </div>
+        {/* Right column — two stacked */}
+        <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+          <div style={{ overflow:'hidden', flex:1 }}>
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80" alt=""
+              style={{ width:'100%', height:'100%', minHeight:232, objectFit:'cover', transition:'transform 0.7s ease' }}
+              onMouseOver={e=>e.target.style.transform='scale(1.03)'}
               onMouseOut={e=>e.target.style.transform='scale(1)'}/>
           </div>
-        ))}
+          <div style={{ overflow:'hidden', flex:1 }}>
+            <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80" alt=""
+              style={{ width:'100%', height:'100%', minHeight:232, objectFit:'cover', transition:'transform 0.7s ease' }}
+              onMouseOver={e=>e.target.style.transform='scale(1.03)'}
+              onMouseOut={e=>e.target.style.transform='scale(1)'}/>
+          </div>
+        </div>
       </div>
+
     </section>
   )
 }
@@ -621,7 +648,7 @@ export default function KpsLayout({ data }) {
         html{scroll-behavior:smooth}
         img{display:block;max-width:100%}
         @media(max-width:900px){
-          .kps-photo-grid{grid-template-columns:repeat(2,1fr)!important}
+          .kps-about-photos{grid-template-columns:1fr!important;padding:0!important}
           .kps-hh-grid{grid-template-columns:1fr!important}
           .kps-hh-right{padding:48px 24px!important}
           .kps-private-grid{grid-template-columns:1fr!important}
