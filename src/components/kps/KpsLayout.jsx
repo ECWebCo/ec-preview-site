@@ -409,11 +409,11 @@ function KpsAbout({ onMenuOpen }) {
 }
 
 // ─── Hours ────────────────────────────────────────────────────
-function KpsHoursSection() {
+function KpsHoursSection({ onMenuOpen }) {
   return (
     <section style={{ background:'#F5F4F0', borderBottom:`1px solid ${BORDER}`, padding:'72px 48px', textAlign:'center' }}>
       <div style={{ maxWidth:640, margin:'0 auto' }}>
-        <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Hours</div>
+        <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Menus</div>
 
         {[
           { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM' },
@@ -422,14 +422,13 @@ function KpsHoursSection() {
           { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close' },
         ].map((h,i)=>(
           <div key={i} style={{ marginBottom:36 }}>
-            <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,18px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY, marginBottom:8 }}>{h.label}</div>
-            <div style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic' }}>{h.sub}</div>
+            <button onClick={onMenuOpen} style={{ background:'none', border:'none', cursor:'pointer', display:'block', width:'100%', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,18px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY, marginBottom:8 }}>{h.label}</div>
+              <div style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic' }}>{h.sub}</div>
+            </button>
           </div>
         ))}
-
-        <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', marginTop:24, lineHeight:1.8, opacity:0.8 }}>
-          We welcome both reservations and walk-ins at both locations.
-        </p>
       </div>
     </section>
   )
@@ -530,7 +529,7 @@ function KpsLocations() {
       <div style={{ maxWidth:640, margin:'0 auto' }}>
         <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, textAlign:'left' }} className="kps-two-col">
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, textAlign:'center' }} className="kps-two-col">
           {[BELLAIRE, MEMORIAL].map((loc,i)=>(
             <div key={i}>
               <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:10, opacity:0.6 }}>{loc.name}</div>
@@ -557,27 +556,27 @@ function KpsLocations() {
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
   return (
-    <footer style={{ background:'#F5F4F0', padding:'56px 48px 40px', textAlign:'center', borderTop:`1px solid ${BORDER}` }}>
+    <footer style={{ background:NAVY, padding:'56px 48px 40px', textAlign:'center' }}>
       <div style={{ maxWidth:640, margin:'0 auto' }}>
-        <img src={LOGO_BLUE} alt="KP's Kitchen" style={{ height:64, width:'auto', objectFit:'contain', marginBottom:28, opacity:0.8 }} onError={e=>e.target.style.display='none'}/>
-        <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap', marginBottom:24 }}>
+        <img src={LOGO_WHITE} alt="KP's Kitchen" style={{ height:64, width:'auto', objectFit:'contain', marginBottom:28, opacity:0.85 }} onError={e=>e.target.style.display='none'}/>
+        <div style={{ display:'flex', gap:24, justifyContent:'center', flexWrap:'wrap', marginBottom:16 }}>
           {[
-            ['5427 Bissonnet St #400, Bellaire TX', `https://maps.google.com?q=${encodeURIComponent(BELLAIRE.address)}`],
-            ['8412 I-10 Frontage Rd #350, Houston TX', `https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`],
+            ['5427 Bissonnet St, Bellaire TX', `https://maps.google.com?q=${encodeURIComponent(BELLAIRE.address)}`],
+            ['8412 I-10 Frontage Rd, Houston TX', `https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`],
           ].map(([label, href], i) => (
             <a key={i} href={href} target="_blank" rel="noreferrer"
-              style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', textDecoration:'none', transition:'color 0.2s' }}
-              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>
+              style={{ fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', transition:'color 0.2s' }}
+              onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>
               {label}
             </a>
           ))}
         </div>
-        <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', textDecoration:'none', marginBottom:8, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{MEMORIAL.phone}</a>
-        <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', textDecoration:'none', marginBottom:32, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>events@kps-kitchen.com</a>
-        <div style={{ borderTop:`1px solid ${BORDER}`, paddingTop:24, fontFamily:'DM Sans', fontSize:11, color:MUTED, letterSpacing:'1px', opacity:0.6 }}>
-          © {new Date().getFullYear()} KP's Kitchen & Bar · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:MUTED, textDecoration:'none' }}>Website by EC Web Co</a>
+        <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:6, transition:'color 0.2s' }}
+          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>{MEMORIAL.phone}</a>
+        <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:36, transition:'color 0.2s' }}
+          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>events@kps-kitchen.com</a>
+        <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
+          © {new Date().getFullYear()} KP's Kitchen & Bar · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
         </div>
       </div>
     </footer>
@@ -619,8 +618,7 @@ export default function KpsLayout({ data }) {
       <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} />
       <KpsHero />
       <KpsAbout onMenuOpen={()=>setMenuOpen(true)} />
-      <KpsHoursSection />
-      <KpsMenuSection onMenuOpen={()=>setMenuOpen(true)} />
+      <KpsHoursSection onMenuOpen={()=>setMenuOpen(true)} />
       <KpsHappyHourAndPrivate activeLoc={activeLoc} />
       <KpsLocations />
       <KpsFooter />
