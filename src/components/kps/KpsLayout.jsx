@@ -142,9 +142,7 @@ function KpsNav({ activeLoc, setActiveLoc, onMenuOpen, onPick }) {
 
 // ─── Hero Slideshow ───────────────────────────────────────────
 const HERO_PHOTOS = [
-  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_26%20PM.png',
-  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_31%20PM.png',
-  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_36%20PM.png',
+  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2007_21_20%20PM.png',
 ]
 
 function KpsHero() {
