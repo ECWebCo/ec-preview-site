@@ -498,7 +498,7 @@ function LocPicker({ type, onClose }) {
 function PaddedImage({ src, onClick, label, sub, cta }) {
   return (
     <div className="kps-padded-img" style={{ padding:32, display:'flex', alignItems:'stretch' }}>
-      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor:onClick?'pointer':'default', minHeight:360, transition:'transform 0.3s ease, box-shadow 0.3s ease' }}
+      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor:onClick?'pointer':'default', minHeight:480, transition:'transform 0.3s ease, box-shadow 0.3s ease' }}
         onMouseOver={e=>{ if(onClick){ e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 40px rgba(0,0,0,0.18)' }}}
         onMouseOut={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none' }}>
         <img src={src} alt={label||''} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}/>
@@ -526,7 +526,7 @@ function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
           <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, marginBottom:36, opacity:0.85, maxWidth:380 }}>
             Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
           </p>
-          <div style={{ display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center' }}>
+          <div style={{ display:'flex', gap:10, flexWrap:'nowrap', justifyContent:'center' }}>
             <button onClick={()=>onPick('reserve')} style={PILL_BTN}
               onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
               onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
@@ -535,7 +535,7 @@ function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
             <button onClick={onMenuOpen} style={PILL_BTN}
               onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
               onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-              View Menus
+              <span className="kps-btn-full">View </span>Menus
             </button>
             <button onClick={onSpecials} style={{...PILL_BTN, borderColor:GOLD, color:GOLD}}
               onMouseOver={e=>{e.currentTarget.style.background=GOLD;e.currentTarget.style.color='#fff'}}
@@ -575,7 +575,9 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
             ))}
           </div>
         </div>
-        <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tue – Fri 3–6PM · Both Locations" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
+        <div id="kps-happyhour">
+          <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tue – Fri 3–6PM · Both Locations" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
+        </div>
       </div>
     </section>
   )
@@ -832,6 +834,7 @@ export default function KpsLayout({ data }) {
           nav{padding:0 24px!important}
           .kps-photo-first .kps-split-text{order:1}
           .kps-photo-first .kps-padded-img{order:2}
+          .kps-btn-full{display:none}
         }
       `}</style>
     </div>
