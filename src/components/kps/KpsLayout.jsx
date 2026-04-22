@@ -613,7 +613,18 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
     <section id="kps-locations" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
 
-        {/* Left — location info */}
+        {/* Left — padded private dining image */}
+        <div id="kps-private" className="kps-padded-img-col">
+          <PaddedImage
+            src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png"
+            label="Private Dining"
+            sub="Office Lunches · Client Meetings · Celebrations"
+            cta="Inquire About Events"
+            onClick={onEventsOpen}
+          />
+        </div>
+
+        {/* Right — location info */}
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
           <div style={{ display:'flex', flexDirection:'column', gap:48, width:'100%', maxWidth:340 }}>
@@ -638,17 +649,6 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Right — padded private dining image */}
-        <div id="kps-private">
-          <PaddedImage
-            src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png"
-            label="Private Dining"
-            sub="Office Lunches · Client Meetings · Celebrations"
-            cta="Inquire About Events"
-            onClick={onEventsOpen}
-          />
         </div>
       </div>
     </section>
@@ -800,11 +800,8 @@ export default function KpsLayout({ data }) {
 
   // Auto-show specials popup after 2 seconds on first visit
   useEffect(() => {
-    const seen = sessionStorage.getItem('kps-specials-seen')
-    if (!seen) {
-      const t = setTimeout(() => { setSpecialsOpen(true); sessionStorage.setItem('kps-specials-seen','1') }, 2000)
+    const t = setTimeout(() => setSpecialsOpen(true), 2000)
       return () => clearTimeout(t)
-    }
   }, [])
 
   const openMenu = (loc, tab) => { setMenuLoc(loc || activeLoc); setMenuTab(tab || null); setMenuOpen(true) }
