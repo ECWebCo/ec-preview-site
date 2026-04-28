@@ -1,17 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getRestaurantData, trackEvent } from './lib/supabase'
-import KpsLayout from './components/kps/KpsLayout'
-import Nav from './components/Nav'
-import Hero from './components/Hero'
-import MenuSection from './components/MenuSection'
-import GallerySection from './components/GallerySection'
-import LocationSection from './components/LocationSection'
-import TextureSection from './components/TextureSection'
-import SocialSection from './components/SocialSection'
-import Footer from './components/Footer'
-import StickyButtons from './components/StickyButtons'
-
-const RESTAURANT_SLUG = window.location.pathname.replace(/^\//, '').split('/')[0] || 'ec-web-co'
+import RestaurantSite from './components/RestaurantSite'
 
 function applyColors(r) {
   const root = document.documentElement
@@ -22,53 +11,13 @@ function applyColors(r) {
   }
 }
 
-function useScrollReveal() {
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }),
-      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
-    )
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
-      .forEach(el => obs.observe(el))
-    return () => obs.disconnect()
-  }, [])
-}
-
-function AppContent({ data }) {
-  useScrollReveal()
-  const { restaurant, sections, hours, links, photos, heroPhoto, locations } = data
-  const primaryStorefront = locations?.[0]
-  const storefrontLinks = primaryStorefront?.location_links?.[0]
-  const activeLinks = (storefrontLinks && (storefrontLinks.phone || storefrontLinks.order_url || storefrontLinks.reservation_url))
-    ? storefrontLinks : links
-  const activeHours = primaryStorefront?.location_hours?.length > 0
-    ? primaryStorefront.location_hours : hours
-
-  return (
-    <>
-      <Nav restaurant={restaurant} links={activeLinks} locations={locations} />
-      <Hero restaurant={restaurant} heroPhoto={heroPhoto} />
-      <div className="section-divider-green" />
-      <MenuSection sections={sections} />
-      <div className="section-divider" />
-      <GallerySection photos={photos} restaurant={restaurant} />
-      <TextureSection restaurant={restaurant} links={activeLinks} />
-      <LocationSection restaurant={restaurant} hours={hours} links={links} locations={locations} />
-      <SocialSection restaurant={restaurant} />
-      <Footer restaurant={restaurant} />
-      <StickyButtons restaurant={restaurant} links={activeLinks} locations={locations} />
-    </>
-  )
-}
-
 export default function App() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    if (!RESTAURANT_SLUG) { setError(true); setLoading(false); return }
-    getRestaurantData(RESTAURANT_SLUG).then(d => {
+    getRestaurantData().then(d => {
       if (d) {
         setData(d)
         document.title = d.restaurant.name
@@ -81,20 +30,46 @@ export default function App() {
     })
   }, [])
 
-  if (loading) return (
-    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF8' }}>
-      <span style={{ fontFamily:'Playfair Display,serif',fontSize:24,fontStyle:'italic',color:'#1B2B4B' }}>Loading…</span>
-    </div>
-  )
+  if (loading)
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#FAFAF8',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: 'Playfair Display,serif',
+            fontSize: 24,
+            fontStyle: 'italic',
+            color: '#1B2B4B',
+          }}
+        >
+          Loading…
+        </span>
+      </div>
+    )
 
-  if (error) return (
-    <div style={{ minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF8' }}>
-      <p style={{ color:'#aaa',fontFamily:'DM Sans' }}>Restaurant not found.</p>
-    </div>
-  )
+  if (error)
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#FAFAF8',
+        }}
+      >
+        <p style={{ color: '#aaa', fontFamily: 'DM Sans' }}>
+          Restaurant not found.
+        </p>
+      </div>
+    )
 
-  // Custom layouts
-  if (data.restaurant.slug === 'kp-s-kitchen') return <KpsLayout data={data} />
-
-  return <AppContent data={data} />
+  return <RestaurantSite data={data} />
 }
