@@ -426,7 +426,7 @@ function Hero({ restaurant, heroPhotos }) {
             src={lightLogo || fallbackLogo}
             alt={restaurant.name}
             style={{
-              width: 'clamp(200px,28vw,340px)', height: 'auto',
+              width: 'clamp(400px,56vw,680px)', height: 'auto',
               objectFit: 'contain',
               filter: lightLogo
                 ? 'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))'
