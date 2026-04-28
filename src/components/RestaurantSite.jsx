@@ -202,7 +202,7 @@ function Nav({ restaurant, locations, onMenuOpen, onPick }) {
       <nav
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
-          height: 120, display: 'flex', alignItems: 'center',
+          height: 100, display: 'flex', alignItems: 'center',
           padding: '0 48px', justifyContent: 'space-between',
           background: scrolled || menuOpen ? 'rgba(250,250,248,0.97)' : 'transparent',
           borderBottom: scrolled ? `1px solid ${BORDER}` : 'none',
@@ -211,7 +211,7 @@ function Nav({ restaurant, locations, onMenuOpen, onPick }) {
       >
         <div
           style={{
-            flexShrink: 0, width: 128, height: 104, display: 'flex', alignItems: 'center',
+            flexShrink: 0, width: 96, height: 73, display: 'flex', alignItems: 'center',
             opacity: scrolled || menuOpen ? 1 : 0,
             transition: 'opacity 0.4s ease',
             pointerEvents: scrolled || menuOpen ? 'auto' : 'none',
@@ -221,7 +221,7 @@ function Nav({ restaurant, locations, onMenuOpen, onPick }) {
             <img
               src={logoSrc}
               alt={restaurant.name}
-              style={{ height: 104, width: 'auto', objectFit: 'contain' }}
+              style={{ height: 78, width: 'auto', objectFit: 'contain' }}
               onError={e => { e.target.style.display = 'none' }}
             />
           )}
