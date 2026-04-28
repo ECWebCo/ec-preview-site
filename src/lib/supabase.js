@@ -5,18 +5,13 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-/**
- * Resolve which restaurant to show based on the current URL.
- * - On preview.ecwebco.com or localhost → use first path segment as slug
- * - On any other host (custom domain) → look up by custom_domain
- */
 function resolveRestaurantQuery() {
   const host = window.location.hostname
   const isPreview =
     host === 'preview.ecwebco.com' ||
     host === 'localhost' ||
     host === '127.0.0.1' ||
-    host.endsWith('.vercel.app') // preview deployments
+    host.endsWith('.vercel.app')
 
   if (isPreview) {
     const slug = window.location.pathname.replace(/^\//, '').split('/')[0] || ''
@@ -52,14 +47,19 @@ export async function getRestaurantData() {
   const allSections = sectionsRes.data || []
   const allItems = itemsRes.data || []
 
-  // Build sections-with-items, attaching location_id so the layout can filter
   const sections = allSections.map(s => ({
     ...s,
     items: allItems.filter(i => i.section_id === s.id),
   }))
 
   const photos = photosRes.data || []
-  const heroPhotos = photos.filter(p => p.is_hero) // ordered by sort_order from query
+
+  // Group photos by section
+  const heroPhotos = photos.filter(p => p.section === 'hero' || (p.is_hero && !p.section))
+  const collage1 = photos.filter(p => p.section === 'collage_1')
+  const collage2 = photos.filter(p => p.section === 'collage_2')
+  const collage3 = photos.filter(p => p.section === 'collage_3')
+
   const locations = locationsRes.data || []
 
   return {
@@ -67,6 +67,7 @@ export async function getRestaurantData() {
     sections,
     photos,
     heroPhotos,
+    collages: { collage_1: collage1, collage_2: collage2, collage_3: collage3 },
     locations,
   }
 }
@@ -76,17 +77,9 @@ export async function trackEvent(restaurantId, eventType) {
     await supabase
       .from('analytics_events')
       .insert({ restaurant_id: restaurantId, event_type: eventType })
-  } catch (e) {
-    /* swallow — analytics shouldn't break the site */
-  }
+  } catch (e) {}
 }
 
-/**
- * Submit an inquiry from the contact / events form.
- * Calls the /api/inquiry serverless function (built in step 3).
- * If the function returns { fallback: 'mailto', email }, the caller
- * should redirect to mailto: as a graceful degradation.
- */
 export async function submitInquiry(payload) {
   try {
     const res = await fetch('/api/inquiry', {

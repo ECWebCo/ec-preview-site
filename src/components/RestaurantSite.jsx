@@ -35,7 +35,6 @@ function fmtTime(t) {
 }
 
 function locationHoursToDisplay(locHours) {
-  // Returns array of { day, time, closed } in Sun-first order
   return DAYS_FULL.map((day, i) => {
     const h = locHours?.find(r => r.day_of_week === i)
     if (!h || h.closed) return { day, closed: true }
@@ -64,10 +63,113 @@ function getLocLinks(loc) {
   return loc?.location_links?.[0] || {}
 }
 
-/* Picks the best link for a CTA across all locations.
-   Used for nav/sticky-bar CTAs in single-location mode. */
 function anyLocationHas(locations, field) {
   return locations.some(l => getLocLinks(l)[field] || (field === 'phone' && l.phone))
+}
+
+/* ─── Photo Collage (artsy, asymmetric, slight rotations) ───── */
+function PhotoCollage({ photos, slot }) {
+  // slot 1, 2, 3 — rotate slightly differently per slot for variety
+  if (!photos || photos.length === 0) return null
+
+  // Different layouts depending on photo count and slot
+  // Configs are tuned to feel hand-arranged
+  const configs = [
+    {
+      // 1 photo — big, slight tilt
+      1: [{ x: '10%', y: '10%', w: '80%', h: '80%', rot: -2.5, z: 1 }],
+      // 2 photos — large + smaller offset
+      2: [
+        { x: '5%',  y: '8%',  w: '60%', h: '70%', rot: -3,   z: 1 },
+        { x: '50%', y: '38%', w: '48%', h: '55%', rot: 4,    z: 2 },
+      ],
+      // 3 photos — anchor + two accents
+      3: [
+        { x: '8%',  y: '14%', w: '52%', h: '58%', rot: -3,   z: 2 },
+        { x: '52%', y: '6%',  w: '44%', h: '46%', rot: 3.5,  z: 1 },
+        { x: '40%', y: '52%', w: '48%', h: '42%', rot: -1.5, z: 3 },
+      ],
+    },
+    {
+      1: [{ x: '8%', y: '12%', w: '78%', h: '78%', rot: 2.5, z: 1 }],
+      2: [
+        { x: '38%', y: '6%',  w: '58%', h: '66%', rot: 3,    z: 1 },
+        { x: '5%',  y: '34%', w: '50%', h: '58%', rot: -2.5, z: 2 },
+      ],
+      3: [
+        { x: '40%', y: '8%',  w: '54%', h: '54%', rot: 3,    z: 2 },
+        { x: '8%',  y: '24%', w: '44%', h: '48%', rot: -2.5, z: 3 },
+        { x: '36%', y: '50%', w: '50%', h: '44%', rot: 1.5,  z: 1 },
+      ],
+    },
+    {
+      1: [{ x: '12%', y: '8%', w: '76%', h: '82%', rot: -2, z: 1 }],
+      2: [
+        { x: '8%',  y: '12%', w: '52%', h: '64%', rot: 2,    z: 2 },
+        { x: '46%', y: '40%', w: '50%', h: '54%', rot: -3.5, z: 1 },
+      ],
+      3: [
+        { x: '6%',  y: '10%', w: '48%', h: '52%', rot: 2.5,  z: 1 },
+        { x: '50%', y: '20%', w: '46%', h: '50%', rot: -3,   z: 3 },
+        { x: '20%', y: '52%', w: '52%', h: '44%', rot: 2,    z: 2 },
+      ],
+    },
+  ]
+
+  const slotConfig = configs[(slot - 1) % configs.length]
+  const count = Math.min(photos.length, 3)
+  const layout = slotConfig[count]
+
+  return (
+    <div
+      className="site-collage"
+      style={{
+        position: 'relative',
+        width: '100%',
+        // collage uses padding-bottom trick to maintain aspect ratio
+        paddingBottom: '95%',
+        height: 0,
+      }}
+    >
+      {photos.slice(0, 3).map((photo, i) => {
+        const cfg = layout[i]
+        if (!cfg) return null
+        return (
+          <div
+            key={photo.id || i}
+            style={{
+              position: 'absolute',
+              left: cfg.x,
+              top: cfg.y,
+              width: cfg.w,
+              height: cfg.h,
+              transform: `rotate(${cfg.rot}deg)`,
+              zIndex: cfg.z,
+              transition: 'transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.10)',
+              overflow: 'hidden',
+              background: '#fff',
+              padding: 6,
+            }}
+            onMouseOver={e => {
+              e.currentTarget.style.transform = `rotate(${cfg.rot}deg) scale(1.03)`
+              e.currentTarget.style.zIndex = 10
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.transform = `rotate(${cfg.rot}deg) scale(1)`
+              e.currentTarget.style.zIndex = cfg.z
+            }}
+          >
+            <img
+              src={photo.url}
+              alt=""
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 /* ─── Nav ───────────────────────────────────────────────────── */
@@ -260,7 +362,9 @@ function Hero({ restaurant, heroPhotos }) {
     return () => clearInterval(t)
   }, [photos.length])
 
+  // Auto-fallback: if no light logo, apply CSS filter to primary
   const lightLogo = restaurant.logo_light_url
+  const fallbackLogo = !lightLogo ? restaurant.logo_url : null
 
   return (
     <div
@@ -302,7 +406,6 @@ function Hero({ restaurant, heroPhotos }) {
         </div>
       )}
 
-      {/* top fade so the nav area stays clean */}
       <div
         style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: 160,
@@ -311,7 +414,7 @@ function Hero({ restaurant, heroPhotos }) {
         }}
       />
 
-      {lightLogo && (
+      {(lightLogo || fallbackLogo) && (
         <div
           style={{
             position: 'relative', height: '100%',
@@ -320,13 +423,14 @@ function Hero({ restaurant, heroPhotos }) {
           }}
         >
           <img
-            src={lightLogo}
+            src={lightLogo || fallbackLogo}
             alt={restaurant.name}
             style={{
               width: 'clamp(200px,28vw,340px)', height: 'auto',
               objectFit: 'contain',
-              filter:
-                'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))',
+              filter: lightLogo
+                ? 'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))'
+                : 'brightness(0) invert(1) drop-shadow(0 4px 24px rgba(0,0,0,0.55))',
             }}
             onError={e => (e.target.style.display = 'none')}
           />
@@ -336,98 +440,21 @@ function Hero({ restaurant, heroPhotos }) {
   )
 }
 
-/* ─── PaddedImage tile (used for buttons across the homepage) ── */
-function PaddedImage({ src, onClick, label, sub, cta }) {
-  return (
-    <div className="site-padded-img" style={{ padding: 32, display: 'flex', alignItems: 'stretch' }}>
-      <div
-        onClick={onClick}
-        style={{
-          position: 'relative', overflow: 'hidden', width: '100%',
-          cursor: onClick ? 'pointer' : 'default', minHeight: 480,
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        }}
-        onMouseOver={e => {
-          if (onClick) {
-            e.currentTarget.style.transform = 'translateY(-4px)'
-            e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.18)'
-          }
-        }}
-        onMouseOut={e => {
-          e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.boxShadow = 'none'
-        }}
-      >
-        <img
-          src={src}
-          alt={label || ''}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-        />
-        {label && (
-          <>
-            <div
-              style={{
-                position: 'absolute', inset: 0,
-                background:
-                  'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)',
-              }}
-            />
-            <div style={{ position: 'absolute', bottom: 28, left: 28, right: 28 }}>
-              {sub && (
-                <div
-                  style={{
-                    fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
-                    letterSpacing: '3px', textTransform: 'uppercase',
-                    color: 'rgba(255,255,255,0.65)', marginBottom: 6,
-                  }}
-                >
-                  {sub}
-                </div>
-              )}
-              <div
-                style={{
-                  fontFamily: 'DM Sans', fontSize: 'clamp(14px,2vw,20px)', fontWeight: 700,
-                  letterSpacing: '4px', textTransform: 'uppercase', color: '#fff', marginBottom: 10,
-                }}
-              >
-                {label}
-              </div>
-              {cta && (
-                <div
-                  style={{
-                    fontFamily: 'DM Sans', fontSize: 11, fontWeight: 600,
-                    letterSpacing: '2px', textTransform: 'uppercase',
-                    color: '#fff', borderBottom: '1px solid rgba(255,255,255,0.5)',
-                    display: 'inline-block', paddingBottom: 2,
-                  }}
-                >
-                  {cta} →
-                </div>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-
-/* ─── About row: copy + Order Online tile ───────────────────── */
-function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSpecials }) {
-  // Use the first storefront's order_image_url; tile only renders if both link and image exist
-  const firstLoc = locations[0]
-  const links = getLocLinks(firstLoc)
-  const orderImg = links.order_image_url
-  const orderUrl = links.order_url
-  const showOrderTile = orderImg && (orderUrl || locations.some(l => getLocLinks(l).order_url))
-
+/* ─── About row (text + collage) ─────────────────────────────── */
+function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSpecials, collage }) {
   return (
     <section style={{ background: '#fff' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: showOrderTile ? '1fr 1fr' : '1fr' }} className="site-split">
+      <div
+        className="site-split site-row-text-left"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr',
+        }}
+      >
         <div
-          className="site-split-text"
+          className="site-text-col"
           style={{
-            padding: '72px 56px',
+            padding: '96px 56px',
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             alignItems: 'center', textAlign: 'center',
           }}
@@ -478,7 +505,7 @@ function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSp
               onMouseOver={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.color = '#fff' }}
               onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = NAVY }}
             >
-              <span className="site-btn-full">View </span>Menu
+              Menus
             </button>
             {hasSpecials && (
               <button
@@ -493,113 +520,17 @@ function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSp
           </div>
         </div>
 
-        {showOrderTile && (
-          <PaddedImage
-            src={orderImg}
-            label="Order Online"
-            sub="Curbside & Delivery"
-            cta="Order Now"
-            onClick={() => onPick('order')}
-          />
+        {collage?.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={collage} slot={1} />
+          </div>
         )}
       </div>
     </section>
   )
 }
 
-/* ─── Feature tiles row (Happy Hour, Private Dining, Events) ──── */
-function FeatureTiles({ locations, onPick, onEventsOpen, onMenuOpen, sections }) {
-  // Build list of tiles to show, based on whether image+context exists.
-  // Tiles render in pairs (two-column rows). Empty rows are skipped.
-  const firstLoc = locations[0]
-  const links = getLocLinks(firstLoc)
-
-  const tiles = []
-
-  // Happy Hour tile: needs an image; we treat it as a sub-menu shortcut
-  const hasHappyHour = sections.some(s => /happy\s*hour/i.test(s.name))
-  if (links.happy_hour_image_url && hasHappyHour) {
-    tiles.push({
-      key: 'happy_hour',
-      src: links.happy_hour_image_url,
-      label: 'Happy Hour',
-      sub: 'Tap to view',
-      cta: 'View Menu',
-      onClick: () => onMenuOpen(null, 'Happy Hour'),
-    })
-  }
-
-  // Private Dining tile → opens events form
-  if (links.private_dining_image_url) {
-    tiles.push({
-      key: 'private_dining',
-      src: links.private_dining_image_url,
-      label: 'Private Dining',
-      sub: 'Office Lunches · Celebrations',
-      cta: 'Inquire About Events',
-      onClick: onEventsOpen,
-    })
-  }
-
-  // Events tile → also opens events form (used by restaurants with no private dining label)
-  if (links.events_image_url && !links.private_dining_image_url) {
-    tiles.push({
-      key: 'events',
-      src: links.events_image_url,
-      label: 'Events & Catering',
-      sub: 'Get in Touch',
-      cta: 'Send Inquiry',
-      onClick: onEventsOpen,
-    })
-  }
-
-  // Reservation tile (extra, optional)
-  if (links.reservation_image_url && anyLocationHas(locations, 'reservation_url')) {
-    tiles.push({
-      key: 'reserve',
-      src: links.reservation_image_url,
-      label: 'Reserve a Table',
-      sub: 'Plan Your Visit',
-      cta: 'Reserve',
-      onClick: () => onPick('reserve'),
-    })
-  }
-
-  if (tiles.length === 0) return null
-
-  // Render in rows of two
-  const rows = []
-  for (let i = 0; i < tiles.length; i += 2) rows.push(tiles.slice(i, i + 2))
-
-  return (
-    <>
-      {rows.map((row, ri) => (
-        <section key={ri} style={{ background: '#fff' }}>
-          <div
-            className="site-split"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: row.length === 2 ? '1fr 1fr' : '1fr',
-            }}
-          >
-            {row.map(t => (
-              <PaddedImage
-                key={t.key}
-                src={t.src}
-                label={t.label}
-                sub={t.sub}
-                cta={t.cta}
-                onClick={t.onClick}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
-    </>
-  )
-}
-
-/* ─── Hours dropdown (per-location) ─────────────────────────── */
+/* ─── Hours dropdown ───────────────────────────────────────── */
 function HoursDropdown({ locHours }) {
   const [open, setOpen] = useState(false)
   const status = getHoursStatus(locHours || [])
@@ -648,15 +579,26 @@ function HoursDropdown({ locHours }) {
   )
 }
 
-/* ─── Locations section ─────────────────────────────────────── */
-function LocationsSection({ restaurant, locations, onPick, onMenuOpen }) {
+/* ─── Locations row (collage left, locations right) ─────────── */
+function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
   return (
     <section id="site-locations" style={{ background: '#fff' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
+      <div
+        className="site-split site-row-text-right"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr',
+        }}
+      >
+        {collage?.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={collage} slot={2} />
+          </div>
+        )}
         <div
-          className="site-split-text"
+          className="site-text-col"
           style={{
-            padding: '72px 56px',
+            padding: '96px 56px',
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             alignItems: 'center', textAlign: 'center',
           }}
@@ -665,18 +607,12 @@ function LocationsSection({ restaurant, locations, onPick, onMenuOpen }) {
             style={{
               fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
               letterSpacing: '5px', textTransform: 'uppercase',
-              color: MUTED, marginBottom: 48, opacity: 0.6,
+              color: MUTED, marginBottom: 36, opacity: 0.6,
             }}
           >
             Visit Us
           </div>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: locations.length > 1 ? 'repeat(auto-fit, minmax(280px, 1fr))' : '1fr',
-              gap: 48, width: '100%', maxWidth: locations.length > 1 ? 760 : 380,
-            }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 40, width: '100%', maxWidth: 380 }}>
             {locations.map((loc, i) => {
               const links = getLocLinks(loc)
               const phone = loc.phone || links.phone
@@ -759,9 +695,82 @@ function LocationsSection({ restaurant, locations, onPick, onMenuOpen }) {
   )
 }
 
-/* ─── Menu Modal (location-aware) ───────────────────────────── */
+/* ─── Menu Links row (collage left, menu items right) ──────── */
+function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, onPick, collage }) {
+  const highlights = restaurant.menu_highlights || []
+  const hasHighlights = Array.isArray(highlights) && highlights.length > 0
+
+  if (!hasHighlights) return null
+
+  return (
+    <section id="site-menu" style={{ background: '#fff' }}>
+      <div
+        className="site-split site-row-text-right"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr',
+        }}
+      >
+        {collage?.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={collage} slot={3} />
+          </div>
+        )}
+        <div
+          className="site-text-col"
+          style={{
+            padding: '96px 56px',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            alignItems: 'center', textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
+              letterSpacing: '5px', textTransform: 'uppercase',
+              color: MUTED, marginBottom: 36, opacity: 0.6,
+            }}
+          >
+            Menus
+          </div>
+          <div style={{ width: '100%', maxWidth: 320 }}>
+            {highlights.map((h, i) => (
+              <button
+                key={i}
+                onClick={() => onMenuOpen(null, h.section_name || h.label)}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  padding: '14px 0', width: '100%', textAlign: 'center',
+                  display: 'block', transition: 'opacity 0.2s',
+                }}
+                onMouseOver={e => (e.currentTarget.style.opacity = '0.6')}
+                onMouseOut={e => (e.currentTarget.style.opacity = '1')}
+              >
+                <div
+                  style={{
+                    fontFamily: 'DM Sans', fontSize: 13, fontWeight: 700,
+                    letterSpacing: '4px', textTransform: 'uppercase',
+                    color: NAVY, marginBottom: 3,
+                  }}
+                >
+                  {h.label}
+                </div>
+                {h.time && (
+                  <div style={{ fontFamily: 'Georgia,serif', fontSize: 12, color: MUTED, fontStyle: 'italic' }}>
+                    {h.time}
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── Menu Modal ────────────────────────────────────────────── */
 function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onClose }) {
-  // Filter sections by location when per_location mode
   const filteredSections = useMemo(() => {
     if (restaurant.menu_mode === 'per_location' && activeLoc?.id) {
       return sections.filter(s => s.location_id === activeLoc.id)
@@ -796,13 +805,7 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
     return (
       <div>
         {section.note && (
-          <div
-            style={{
-              padding: '10px 0 14px',
-              fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
-              letterSpacing: '3px', textTransform: 'uppercase', color: GOLD,
-            }}
-          >
+          <div style={{ padding: '10px 0 14px', fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: GOLD }}>
             {section.note}
           </div>
         )}
@@ -817,33 +820,17 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
             }}
           >
             <div>
-              <div
-                style={{
-                  fontFamily: 'DM Sans', fontSize: 12, fontWeight: 700,
-                  letterSpacing: '1.5px', textTransform: 'uppercase',
-                  color: NAVY, marginBottom: item.description ? 3 : 0,
-                }}
-              >
+              <div style={{ fontFamily: 'DM Sans', fontSize: 12, fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', color: NAVY, marginBottom: item.description ? 3 : 0 }}>
                 {item.name}
               </div>
               {item.description && (
-                <p
-                  style={{
-                    fontFamily: 'Georgia,serif', fontSize: 12, color: MUTED,
-                    fontStyle: 'italic', lineHeight: 1.5,
-                  }}
-                >
+                <p style={{ fontFamily: 'Georgia,serif', fontSize: 12, color: MUTED, fontStyle: 'italic', lineHeight: 1.5 }}>
                   {item.description}
                 </p>
               )}
             </div>
             {item.price && (
-              <div
-                style={{
-                  fontFamily: 'DM Sans', fontSize: 12, color: MUTED,
-                  flexShrink: 0, fontWeight: 600,
-                }}
-              >
+              <div style={{ fontFamily: 'DM Sans', fontSize: 12, color: MUTED, flexShrink: 0, fontWeight: 600 }}>
                 ${Number(item.price).toFixed(0)}
               </div>
             )}
@@ -871,10 +858,7 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div
-        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }}
-        onClick={onClose}
-      />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }} onClick={onClose} />
       <div
         style={{
           position: 'relative', background: '#fff',
@@ -883,34 +867,16 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
           animation: 'fadeUp 0.25s ease',
         }}
       >
-        <div
-          style={{
-            padding: '24px 28px', borderBottom: `1px solid ${BORDER}`,
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0,
-          }}
-        >
+        <div style={{ padding: '24px 28px', borderBottom: `1px solid ${BORDER}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
           <div>
-            <div
-              style={{
-                fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
-                letterSpacing: '4px', textTransform: 'uppercase',
-                color: MUTED, opacity: 0.6, marginBottom: 2,
-              }}
-            >
+            <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, opacity: 0.6, marginBottom: 2 }}>
               {restaurant.menu_mode === 'per_location' ? 'Our Menu' : 'Menu'}
             </div>
             {restaurant.menu_mode === 'per_location' && activeLoc?.name && (
-              <div style={{ fontFamily: 'DM Sans', fontSize: 11, color: MUTED, opacity: 0.6 }}>
-                {activeLoc.name}
-              </div>
+              <div style={{ fontFamily: 'DM Sans', fontSize: 11, color: MUTED, opacity: 0.6 }}>{activeLoc.name}</div>
             )}
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: MUTED, lineHeight: 1 }}
-          >
-            ✕
-          </button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: MUTED, lineHeight: 1 }}>✕</button>
         </div>
 
         {filteredSections.length === 0 ? (
@@ -919,12 +885,7 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
           </div>
         ) : !isMobile ? (
           <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-            <div
-              style={{
-                width: 160, flexShrink: 0, borderRight: `1px solid ${BORDER}`,
-                display: 'flex', flexDirection: 'column', padding: '16px 0',
-              }}
-            >
+            <div style={{ width: 160, flexShrink: 0, borderRight: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', padding: '16px 0' }}>
               {filteredSections.map((s, i) => (
                 <button
                   key={s.id || i}
@@ -961,28 +922,10 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
                     cursor: 'pointer',
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily: 'DM Sans', fontSize: 12, fontWeight: 700,
-                      letterSpacing: '3px', textTransform: 'uppercase', color: NAVY,
-                    }}
-                  >
-                    {s.name}
-                  </span>
-                  <span
-                    style={{
-                      color: MUTED, fontSize: 20, transition: 'transform 0.2s',
-                      display: 'inline-block', transform: openTab === i ? 'rotate(45deg)' : 'none',
-                    }}
-                  >
-                    +
-                  </span>
+                  <span style={{ fontFamily: 'DM Sans', fontSize: 12, fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: NAVY }}>{s.name}</span>
+                  <span style={{ color: MUTED, fontSize: 20, transition: 'transform 0.2s', display: 'inline-block', transform: openTab === i ? 'rotate(45deg)' : 'none' }}>+</span>
                 </button>
-                {openTab === i && (
-                  <div style={{ padding: '8px 24px 24px' }}>
-                    <ItemList section={s} />
-                  </div>
-                )}
+                {openTab === i && <div style={{ padding: '8px 24px 24px' }}><ItemList section={s} /></div>}
               </div>
             ))}
           </div>
@@ -993,7 +936,9 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
   )
 }
 
-/* ─── Location Picker Modal (multi-location CTAs) ───────────── */
+/* ─── Location Picker / Events / Announcement / Footer / Sticky bar ── */
+/* (Unchanged from previous version — same components.) */
+
 function LocPicker({ locations, type, onClose, onTrack }) {
   const getUrl = loc => {
     const l = getLocLinks(loc)
@@ -1004,36 +949,14 @@ function LocPicker({ locations, type, onClose, onTrack }) {
   const validLocs = locations.filter(l => getUrl(l) && getUrl(l) !== 'tel:')
 
   return (
-    <div
-      style={{
-        position: 'fixed', inset: 0, zIndex: 600,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}
-      onClick={onClose}
-    >
+    <div style={{ position: 'fixed', inset: 0, zIndex: 600, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }} />
-      <div
-        style={{
-          position: 'relative', background: '#fff',
-          width: 'min(400px,90vw)', padding: '36px 32px',
-        }}
-        onClick={e => e.stopPropagation()}
-      >
+      <div style={{ position: 'relative', background: '#fff', width: 'min(400px,90vw)', padding: '36px 32px' }} onClick={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-          <div
-            style={{
-              fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
-              letterSpacing: '4px', textTransform: 'uppercase', color: MUTED,
-            }}
-          >
+          <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED }}>
             {type === 'reserve' ? 'Reserve a Table' : type === 'order' ? 'Order Online' : 'Call Us'}
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: MUTED }}
-          >
-            ✕
-          </button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: MUTED }}>✕</button>
         </div>
         {validLocs.map(loc => (
           <a
@@ -1042,37 +965,15 @@ function LocPicker({ locations, type, onClose, onTrack }) {
             target={type !== 'call' ? '_blank' : undefined}
             rel="noreferrer"
             onClick={() => onTrack && onTrack(`${type}_click`)}
-            style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              padding: '16px 0', borderTop: `1px solid ${BORDER}`,
-              textDecoration: 'none', transition: 'opacity 0.2s',
-            }}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 0', borderTop: `1px solid ${BORDER}`, textDecoration: 'none', transition: 'opacity 0.2s' }}
             onMouseOver={e => (e.currentTarget.style.opacity = '0.6')}
             onMouseOut={e => (e.currentTarget.style.opacity = '1')}
           >
             <div>
-              <div
-                style={{
-                  fontFamily: 'DM Sans', fontSize: 13, fontWeight: 700,
-                  letterSpacing: '2px', textTransform: 'uppercase',
-                  color: NAVY, marginBottom: 2,
-                }}
-              >
-                {loc.name}
-              </div>
-              {loc.address && (
-                <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: MUTED, fontStyle: 'italic' }}>
-                  {loc.address.split(',')[0]}
-                </div>
-              )}
+              <div style={{ fontFamily: 'DM Sans', fontSize: 13, fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: NAVY, marginBottom: 2 }}>{loc.name}</div>
+              {loc.address && <div style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: MUTED, fontStyle: 'italic' }}>{loc.address.split(',')[0]}</div>}
             </div>
-            <span
-              style={{
-                fontFamily: 'DM Sans', fontSize: 11, color: NAVY, fontWeight: 600, letterSpacing: '2px',
-              }}
-            >
-              →
-            </span>
+            <span style={{ fontFamily: 'DM Sans', fontSize: 11, color: NAVY, fontWeight: 600, letterSpacing: '2px' }}>→</span>
           </a>
         ))}
       </div>
@@ -1080,7 +981,6 @@ function LocPicker({ locations, type, onClose, onTrack }) {
   )
 }
 
-/* ─── Events / Contact Modal ────────────────────────────────── */
 function EventsModal({ restaurant, onClose }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', date: '', guests: '', message: '' })
   const [sent, setSent] = useState(false)
@@ -1104,7 +1004,6 @@ function EventsModal({ restaurant, onClose }) {
     })
 
     if (result.fallback === 'mailto') {
-      // Email domain not yet verified — fall back to mailto:
       const target = result.email || restaurant.events_email || restaurant.email
       if (target) {
         const subject = encodeURIComponent(hasEvents ? 'Private Event Inquiry' : 'Inquiry')
@@ -1137,78 +1036,22 @@ function EventsModal({ restaurant, onClose }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div
-        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}
-        onClick={onClose}
-      />
-      <div
-        style={{
-          position: 'relative', background: '#fff',
-          width: 'min(540px,100vw)', maxHeight: '90vh',
-          overflowY: 'auto', padding: '48px 40px',
-        }}
-      >
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }} onClick={onClose} />
+      <div style={{ position: 'relative', background: '#fff', width: 'min(540px,100vw)', maxHeight: '90vh', overflowY: 'auto', padding: '48px 40px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
           <div>
-            <div
-              style={{
-                fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
-                letterSpacing: '4px', textTransform: 'uppercase',
-                color: MUTED, marginBottom: 8,
-              }}
-            >
-              {eyebrow}
-            </div>
-            <h2
-              style={{
-                fontFamily: 'DM Sans', fontSize: 'clamp(16px,2vw,20px)', fontWeight: 700,
-                letterSpacing: '5px', textTransform: 'uppercase', color: NAVY,
-              }}
-            >
-              {heading}
-            </h2>
-            <p
-              style={{
-                fontFamily: 'Georgia,serif', fontSize: 13, color: MUTED,
-                fontStyle: 'italic', marginTop: 8, lineHeight: 1.6,
-              }}
-            >
-              {subline}
-            </p>
+            <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, marginBottom: 8 }}>{eyebrow}</div>
+            <h2 style={{ fontFamily: 'DM Sans', fontSize: 'clamp(16px,2vw,20px)', fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: NAVY }}>{heading}</h2>
+            <p style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: MUTED, fontStyle: 'italic', marginTop: 8, lineHeight: 1.6 }}>{subline}</p>
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: MUTED, lineHeight: 1, flexShrink: 0 }}
-          >
-            ✕
-          </button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: MUTED, lineHeight: 1, flexShrink: 0 }}>✕</button>
         </div>
 
         {sent ? (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
-            <div
-              style={{
-                fontFamily: 'DM Sans', fontSize: 13, fontWeight: 700,
-                letterSpacing: '3px', textTransform: 'uppercase',
-                color: NAVY, marginBottom: 12,
-              }}
-            >
-              Thank You
-            </div>
-            <p style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: MUTED, fontStyle: 'italic', lineHeight: 1.8 }}>
-              Your message has been sent. We'll be in touch shortly.
-            </p>
-            <button
-              onClick={onClose}
-              style={{
-                marginTop: 24, background: 'none', border: 'none',
-                fontFamily: 'DM Sans', fontSize: 11, fontWeight: 700,
-                letterSpacing: '3px', textTransform: 'uppercase', color: NAVY,
-                cursor: 'pointer', borderBottom: `1px solid ${NAVY}`, paddingBottom: 3,
-              }}
-            >
-              Close
-            </button>
+            <div style={{ fontFamily: 'DM Sans', fontSize: 13, fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: NAVY, marginBottom: 12 }}>Thank You</div>
+            <p style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: MUTED, fontStyle: 'italic', lineHeight: 1.8 }}>Your message has been sent. We'll be in touch shortly.</p>
+            <button onClick={onClose} style={{ marginTop: 24, background: 'none', border: 'none', fontFamily: 'DM Sans', fontSize: 11, fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: NAVY, cursor: 'pointer', borderBottom: `1px solid ${NAVY}`, paddingBottom: 3 }}>Close</button>
           </div>
         ) : (
           <>
@@ -1217,12 +1060,7 @@ function EventsModal({ restaurant, onClose }) {
             <input style={input} placeholder="Phone Number" value={form.phone} onChange={set('phone')} />
             {hasEvents && <input style={input} placeholder="Event Date" value={form.date} onChange={set('date')} />}
             {hasEvents && <input style={input} placeholder="Number of Guests" value={form.guests} onChange={set('guests')} />}
-            <textarea
-              style={{ ...input, resize: 'vertical', minHeight: 80, marginBottom: 32 }}
-              placeholder={hasEvents ? 'Tell us about your event' : 'Your message'}
-              value={form.message}
-              onChange={set('message')}
-            />
+            <textarea style={{ ...input, resize: 'vertical', minHeight: 80, marginBottom: 32 }} placeholder={hasEvents ? 'Tell us about your event' : 'Your message'} value={form.message} onChange={set('message')} />
             <button
               onClick={handleSubmit}
               disabled={submitting || !form.name || !form.email}
@@ -1233,7 +1071,6 @@ function EventsModal({ restaurant, onClose }) {
                 letterSpacing: '4px', textTransform: 'uppercase',
                 cursor: submitting ? 'wait' : 'pointer',
                 opacity: submitting || !form.name || !form.email ? 0.6 : 1,
-                transition: 'opacity 0.2s',
               }}
             >
               {submitting ? 'Sending…' : 'Send Inquiry'}
@@ -1245,7 +1082,6 @@ function EventsModal({ restaurant, onClose }) {
   )
 }
 
-/* ─── Announcement / Specials Popup ─────────────────────────── */
 function AnnouncementPopup({ restaurant, onClose, onReserve }) {
   const items = restaurant.announcement_items || []
   const today = new Date().getDay()
@@ -1258,82 +1094,33 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div
-        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
-        onClick={onClose}
-      />
-      <div
-        style={{
-          position: 'relative', background: '#fff',
-          width: 'min(520px,92vw)', maxHeight: '90vh', overflowY: 'auto',
-          animation: 'fadeUp 0.3s ease',
-        }}
-      >
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }} onClick={onClose} />
+      <div style={{ position: 'relative', background: '#fff', width: 'min(520px,92vw)', maxHeight: '90vh', overflowY: 'auto', animation: 'fadeUp 0.3s ease' }}>
         <div style={{ padding: '32px 32px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             {restaurant.announcement_eyebrow && (
-              <div
-                style={{
-                  fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700,
-                  letterSpacing: '4px', textTransform: 'uppercase',
-                  color: GOLD, marginBottom: 8,
-                }}
-              >
+              <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: GOLD, marginBottom: 8 }}>
                 {restaurant.announcement_eyebrow}
               </div>
             )}
-            <h2
-              style={{
-                fontFamily: 'DM Sans', fontSize: 'clamp(18px,3vw,26px)', fontWeight: 700,
-                letterSpacing: '5px', textTransform: 'uppercase', color: NAVY, lineHeight: 1.2,
-              }}
-            >
+            <h2 style={{ fontFamily: 'DM Sans', fontSize: 'clamp(18px,3vw,26px)', fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: NAVY, lineHeight: 1.2 }}>
               {restaurant.announcement_title || 'Announcements'}
             </h2>
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: MUTED, lineHeight: 1, flexShrink: 0, marginLeft: 16 }}
-          >
-            ✕
-          </button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: MUTED, lineHeight: 1, flexShrink: 0, marginLeft: 16 }}>✕</button>
         </div>
         <div style={{ padding: '24px 32px 32px' }}>
           {items.map((s, i) => {
             const isToday = s.label === dayName
             return (
-              <div
-                key={i}
-                style={{
-                  display: 'flex', gap: 16, padding: '14px 0',
-                  borderBottom: `1px solid ${BORDER}`, alignItems: 'flex-start',
-                }}
-              >
+              <div key={i} style={{ display: 'flex', gap: 16, padding: '14px 0', borderBottom: `1px solid ${BORDER}`, alignItems: 'flex-start' }}>
                 {s.label && (
-                  <div
-                    style={{
-                      fontFamily: 'DM Sans', fontSize: 11, fontWeight: 700,
-                      letterSpacing: '2px', textTransform: 'uppercase',
-                      color: isToday ? GOLD : NAVY,
-                      minWidth: 90, paddingTop: 2, opacity: isToday ? 1 : 0.7,
-                    }}
-                  >
+                  <div style={{ fontFamily: 'DM Sans', fontSize: 11, fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: isToday ? GOLD : NAVY, minWidth: 90, paddingTop: 2, opacity: isToday ? 1 : 0.7 }}>
                     {s.label}
-                    {isToday && (
-                      <div style={{ fontSize: 9, letterSpacing: '1px', color: GOLD, marginTop: 2 }}>
-                        TODAY
-                      </div>
-                    )}
+                    {isToday && <div style={{ fontSize: 9, letterSpacing: '1px', color: GOLD, marginTop: 2 }}>TODAY</div>}
                   </div>
                 )}
-                <div
-                  style={{
-                    fontFamily: 'Georgia,serif', fontSize: 14, color: NAVY,
-                    lineHeight: 1.7, fontStyle: 'italic', flex: 1,
-                  }}
-                >
-                  {s.text}
-                </div>
+                <div style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: NAVY, lineHeight: 1.7, fontStyle: 'italic', flex: 1 }}>{s.text}</div>
               </div>
             )
           })}
@@ -1353,7 +1140,6 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
   )
 }
 
-/* ─── Footer ────────────────────────────────────────────────── */
 function Footer({ restaurant, locations }) {
   return (
     <footer style={{ background: NAVY, padding: '56px 48px 40px', textAlign: 'center' }}>
@@ -1361,16 +1147,8 @@ function Footer({ restaurant, locations }) {
         <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
           {locations.map((loc, i) =>
             loc.address ? (
-              <a
-                key={i}
-                href={`https://maps.google.com?q=${encodeURIComponent(loc.address)}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  fontFamily: 'Georgia,serif', fontSize: 13,
-                  color: 'rgba(255,255,255,0.5)', fontStyle: 'italic',
-                  textDecoration: 'none', transition: 'color 0.2s',
-                }}
+              <a key={i} href={`https://maps.google.com?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer"
+                style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', textDecoration: 'none', transition: 'color 0.2s' }}
                 onMouseOver={e => (e.target.style.color = '#fff')}
                 onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}
               >
@@ -1383,14 +1161,8 @@ function Footer({ restaurant, locations }) {
           const phone = loc.phone || getLocLinks(loc).phone
           if (!phone) return null
           return (
-            <a
-              key={i}
-              href={`tel:${phone}`}
-              style={{
-                display: 'block', fontFamily: 'Georgia,serif', fontSize: 13,
-                color: 'rgba(255,255,255,0.5)', fontStyle: 'italic',
-                textDecoration: 'none', marginBottom: 4, transition: 'color 0.2s',
-              }}
+            <a key={i} href={`tel:${phone}`}
+              style={{ display: 'block', fontFamily: 'Georgia,serif', fontSize: 13, color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', textDecoration: 'none', marginBottom: 4, transition: 'color 0.2s' }}
               onMouseOver={e => (e.target.style.color = '#fff')}
               onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}
             >
@@ -1399,36 +1171,23 @@ function Footer({ restaurant, locations }) {
           )
         })}
         {restaurant.events_email && (
-          <a
-            href={`mailto:${restaurant.events_email}`}
-            style={{
-              display: 'block', fontFamily: 'Georgia,serif', fontSize: 13,
-              color: 'rgba(255,255,255,0.5)', fontStyle: 'italic',
-              textDecoration: 'none', marginBottom: 6, marginTop: 8, transition: 'color 0.2s',
-            }}
+          <a href={`mailto:${restaurant.events_email}`}
+            style={{ display: 'block', fontFamily: 'Georgia,serif', fontSize: 13, color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', textDecoration: 'none', marginBottom: 6, marginTop: 8, transition: 'color 0.2s' }}
             onMouseOver={e => (e.target.style.color = '#fff')}
             onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}
           >
             {restaurant.events_email}
           </a>
         )}
-        <div
-          style={{
-            borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 24, marginTop: 24,
-            fontFamily: 'DM Sans', fontSize: 11, color: 'rgba(255,255,255,0.25)', letterSpacing: '1px',
-          }}
-        >
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 24, marginTop: 24, fontFamily: 'DM Sans', fontSize: 11, color: 'rgba(255,255,255,0.25)', letterSpacing: '1px' }}>
           © {new Date().getFullYear()} {restaurant.name} ·{' '}
-          <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.25)', textDecoration: 'none' }}>
-            Website by EC Web Co
-          </a>
+          <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.25)', textDecoration: 'none' }}>Website by EC Web Co</a>
         </div>
       </div>
     </footer>
   )
 }
 
-/* ─── Sticky Bar (mobile only) ──────────────────────────────── */
 function StickyBar({ locations, onPick }) {
   const hasOrder = anyLocationHas(locations, 'order_url')
   const hasReserve = anyLocationHas(locations, 'reservation_url')
@@ -1455,14 +1214,7 @@ function StickyBar({ locations, onPick }) {
 
   return (
     <>
-      <div
-        className="site-sticky"
-        style={{
-          position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200,
-          display: 'none', background: '#fff', borderTop: `1px solid ${BORDER}`,
-          paddingBottom: 'env(safe-area-inset-bottom)',
-        }}
-      >
+      <div className="site-sticky" style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 200, display: 'none', background: '#fff', borderTop: `1px solid ${BORDER}`, paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {hasReserve && btn('Reserve', () => onPick('reserve'), true)}
         {hasOrder && btn('Order', () => onPick('order'))}
         {hasPhone && btn('Call', () => onPick('call'))}
@@ -1475,9 +1227,8 @@ function StickyBar({ locations, onPick }) {
 
 /* ─── Main layout ───────────────────────────────────────────── */
 export default function RestaurantSite({ data }) {
-  const { restaurant, sections, heroPhotos, locations } = data
+  const { restaurant, sections, heroPhotos, locations, collages } = data
 
-  // Default first storefront for menu/single-location flows
   const [activeLoc, setActiveLoc] = useState(locations[0] || null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuLoc, setMenuLoc] = useState(locations[0] || null)
@@ -1489,7 +1240,6 @@ export default function RestaurantSite({ data }) {
   const isMulti = locations.length > 1
   const hasAnnouncement = restaurant.announcement_enabled && (restaurant.announcement_items || []).length > 0
 
-  // Auto-show announcement after 2s on first visit (per session)
   useEffect(() => {
     if (!hasAnnouncement) return
     const seen = sessionStorage.getItem(`ann_${restaurant.id}`)
@@ -1503,7 +1253,6 @@ export default function RestaurantSite({ data }) {
 
   function handlePick(type) {
     if (type === 'call') {
-      // multi: open picker; single: go straight to tel:
       if (!isMulti) {
         const phone = locations[0]?.phone || getLocLinks(locations[0]).phone
         if (phone) {
@@ -1536,12 +1285,7 @@ export default function RestaurantSite({ data }) {
 
   return (
     <div style={{ fontFamily: 'DM Sans,sans-serif', background: '#fff', color: NAVY, overflowX: 'hidden' }}>
-      <Nav
-        restaurant={restaurant}
-        locations={locations}
-        onMenuOpen={() => openMenu()}
-        onPick={handlePick}
-      />
+      <Nav restaurant={restaurant} locations={locations} onMenuOpen={() => openMenu()} onPick={handlePick} />
 
       <Hero restaurant={restaurant} heroPhotos={heroPhotos} />
 
@@ -1552,21 +1296,24 @@ export default function RestaurantSite({ data }) {
         onPick={handlePick}
         onSpecials={() => setAnnouncementOpen(true)}
         hasSpecials={hasAnnouncement}
+        collage={collages?.collage_1 || []}
       />
 
-      <FeatureTiles
-        locations={locations}
-        sections={sections}
-        onPick={handlePick}
-        onEventsOpen={() => setEventsOpen(true)}
-        onMenuOpen={openMenu}
-      />
-
-      <LocationsSection
+      <LocationsRow
         restaurant={restaurant}
         locations={locations}
         onPick={handlePick}
         onMenuOpen={openMenu}
+        collage={collages?.collage_2 || []}
+      />
+
+      <MenuLinksRow
+        restaurant={restaurant}
+        sections={sections}
+        locations={locations}
+        onMenuOpen={openMenu}
+        onPick={handlePick}
+        collage={collages?.collage_3 || []}
       />
 
       <Footer restaurant={restaurant} locations={locations} />
@@ -1574,33 +1321,17 @@ export default function RestaurantSite({ data }) {
       <StickyBar locations={locations} onPick={handlePick} />
 
       {menuOpen && (
-        <MenuModal
-          restaurant={restaurant}
-          sections={sections}
-          locations={locations}
-          activeLoc={menuLoc}
-          initialTab={menuTab}
-          onClose={() => setMenuOpen(false)}
-        />
+        <MenuModal restaurant={restaurant} sections={sections} locations={locations} activeLoc={menuLoc} initialTab={menuTab} onClose={() => setMenuOpen(false)} />
       )}
       {eventsOpen && <EventsModal restaurant={restaurant} onClose={() => setEventsOpen(false)} />}
       {picker && (
-        <LocPicker
-          locations={locations}
-          type={picker}
-          onClose={() => setPicker(null)}
-          onTrack={evt => trackEvent(restaurant.id, evt)}
-        />
+        <LocPicker locations={locations} type={picker} onClose={() => setPicker(null)} onTrack={evt => trackEvent(restaurant.id, evt)} />
       )}
       {announcementOpen && (
         <AnnouncementPopup
           restaurant={restaurant}
           onClose={() => setAnnouncementOpen(false)}
-          onReserve={
-            anyLocationHas(locations, 'reservation_url')
-              ? () => { setAnnouncementOpen(false); handlePick('reserve') }
-              : null
-          }
+          onReserve={anyLocationHas(locations, 'reservation_url') ? () => { setAnnouncementOpen(false); handlePick('reserve') } : null}
         />
       )}
 
@@ -1609,14 +1340,16 @@ export default function RestaurantSite({ data }) {
         *{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
         img{display:block;max-width:100%}
+
         @media(max-width:768px){
           .site-split{grid-template-columns:1fr!important}
-          .site-split-text{padding:48px 24px!important}
+          .site-text-col{padding:64px 24px!important}
+          .site-collage-col{padding:32px 24px 64px!important}
           .site-hero{height:75vh!important;padding-top:0!important}
           nav{padding:0 24px!important}
-          .site-padded-img{padding:16px!important}
-          .site-padded-img > div{min-height:280px!important}
-          .site-btn-full{display:none}
+          /* On mobile, always render text first then collage (regardless of desktop side) */
+          .site-row-text-right .site-text-col{order:1}
+          .site-row-text-right .site-collage-col{order:2}
         }
       `}</style>
     </div>
