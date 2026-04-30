@@ -64,12 +64,13 @@ export async function getRestaurantData() {
   const locations = locationsRes.data || []
 
   return {
-    restaurant,
-    sections,
-    photos,
-    heroPhotos,
-    collages: { collage_1: collage1, collage_2: collage2, collage_3: collage3, collage_4: collage4 },
-  }
+  restaurant,
+  sections,
+  photos,
+  heroPhotos,
+  collages: { collage_1: collage1, collage_2: collage2, collage_3: collage3, collage_4: collage4 },
+  locations,
+}
 }
 
 export async function trackEvent(restaurantId, eventType) {
