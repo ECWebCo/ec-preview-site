@@ -1195,12 +1195,12 @@ export default function RestaurantSite({ data }) {
       />
 
       {showPrivateEvents && (
-        <PrivateEventsRow
-          restaurant={restaurant}
-          onEventsOpen={() => setInquiry('events')}
-          collage={collages?.collage_2 || []}
-        />
-      )}
+  <PrivateEventsRow
+    restaurant={restaurant}
+    onEventsOpen={() => setInquiry('events')}
+    collage={collages?.collage_4 || []}
+  />
+)}
 
       <LocationsRow
         restaurant={restaurant}

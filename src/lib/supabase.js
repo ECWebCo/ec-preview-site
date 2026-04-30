@@ -59,6 +59,7 @@ export async function getRestaurantData() {
   const collage1 = photos.filter(p => p.section === 'collage_1')
   const collage2 = photos.filter(p => p.section === 'collage_2')
   const collage3 = photos.filter(p => p.section === 'collage_3')
+  const collage4 = photos.filter(p => p.section === 'collage_4')
 
   const locations = locationsRes.data || []
 
@@ -67,7 +68,7 @@ export async function getRestaurantData() {
     sections,
     photos,
     heroPhotos,
-    collages: { collage_1: collage1, collage_2: collage2, collage_3: collage3 },
+    collages: { collage_1: collage1, collage_2: collage2, collage_3: collage3, collage_4: collage4 },3 },
     locations,
   }
 }
