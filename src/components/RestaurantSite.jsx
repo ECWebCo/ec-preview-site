@@ -66,7 +66,7 @@ function getLocLinks(loc) {
 }
 
 function anyLocationHas(locations, field) {
-  return locations.some(l => getLocLinks(l)[field] || (field === 'phone' && l.phone))
+  return (locations || []).some(l => getLocLinks(l)[field] || (field === 'phone' && l.phone))
 }
 
 function normalizeSocialUrl(value, platform) {
@@ -74,7 +74,6 @@ function normalizeSocialUrl(value, platform) {
   const v = value.trim()
   if (!v) return null
   if (v.startsWith('http')) return v
-  // strip @, leading slash
   const handle = v.replace(/^@/, '').replace(/^\//, '')
   if (platform === 'instagram') return `https://instagram.com/${handle}`
   if (platform === 'facebook') return `https://facebook.com/${handle}`
@@ -82,7 +81,7 @@ function normalizeSocialUrl(value, platform) {
   return v
 }
 
-/* ─── Photo Collage ─────────────────────────────────────────── */
+/* ─── Photo Collage — handles 1, 2, or 3 photos defensively ── */
 function PhotoCollage({ photos, slot }) {
   if (!photos || photos.length === 0) return null
 
@@ -123,11 +122,25 @@ function PhotoCollage({ photos, slot }) {
         { x: '20%', y: '52%', w: '52%', h: '44%', rot: 2,    z: 2 },
       ],
     },
+    {
+      1: [{ x: '11%', y: '11%', w: '78%', h: '78%', rot: 1.5, z: 1 }],
+      2: [
+        { x: '7%',  y: '20%', w: '52%', h: '58%', rot: -3,   z: 1 },
+        { x: '48%', y: '8%',  w: '46%', h: '52%', rot: 3.5,  z: 2 },
+      ],
+      3: [
+        { x: '10%', y: '6%',  w: '48%', h: '50%', rot: -2,   z: 1 },
+        { x: '46%', y: '36%', w: '50%', h: '52%', rot: 3,    z: 3 },
+        { x: '20%', y: '54%', w: '46%', h: '40%', rot: -3,   z: 2 },
+      ],
+    },
   ]
 
-  const slotConfig = configs[(slot - 1) % configs.length]
+  const slotIndex = ((slot || 1) - 1) % configs.length
+  const slotConfig = configs[slotIndex]
   const count = Math.min(photos.length, 3)
-  const layout = slotConfig[count]
+  const layout = slotConfig[count] || slotConfig[1]
+  if (!layout) return null
 
   return (
     <div className="site-collage" style={{ position: 'relative', width: '100%', paddingBottom: '95%', height: 0 }}>
@@ -183,11 +196,10 @@ function Nav({ restaurant, locations, onMenuOpen, onPick, onEventsOpen, onContac
   const hasEvents = !!restaurant.events_email
   const logoSrc = restaurant.logo_url
 
-  // Build nav items dynamically: Menu always, Private Events if events_email, Location(s) always, Contact always
   const navItems = []
   navItems.push({ label: 'Menu', action: () => { setMenuOpen(false); onMenuOpen() } })
   if (hasEvents) navItems.push({ label: 'Private Events', action: () => { setMenuOpen(false); onEventsOpen() } })
-  navItems.push({ label: locations.length > 1 ? 'Locations' : 'Location', id: 'site-locations' })
+  navItems.push({ label: (locations?.length || 0) > 1 ? 'Locations' : 'Location', id: 'site-locations' })
   navItems.push({ label: 'Contact', action: () => { setMenuOpen(false); onContactOpen() } })
 
   return (
@@ -337,7 +349,7 @@ function Nav({ restaurant, locations, onMenuOpen, onPick, onEventsOpen, onContac
 /* ─── Hero ──────────────────────────────────────────────────── */
 function Hero({ restaurant, heroPhotos }) {
   const [current, setCurrent] = useState(0)
-  const photos = heroPhotos.length > 0 ? heroPhotos : []
+  const photos = heroPhotos || []
 
   useEffect(() => {
     if (photos.length <= 1) return
@@ -405,9 +417,10 @@ function Hero({ restaurant, heroPhotos }) {
 
 /* ─── About row ─────────────────────────────────────────────── */
 function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSpecials, collage }) {
+  const safeCollage = collage || []
   return (
     <section style={{ background: '#fff' }}>
-      <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr' }}>
+      <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           {restaurant.city && (
             <div style={{ fontFamily: 'DM Sans', fontSize: 10, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, marginBottom: 20, opacity: 0.6 }}>
@@ -444,9 +457,9 @@ function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSp
             )}
           </div>
         </div>
-        {collage?.length > 0 && (
+        {safeCollage.length > 0 && (
           <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={collage} slot={1} />
+            <PhotoCollage photos={safeCollage} slot={1} />
           </div>
         )}
       </div>
@@ -488,12 +501,13 @@ function HoursDropdown({ locHours }) {
 
 /* ─── Locations row ─────────────────────────────────────────── */
 function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
+  const safeCollage = collage || []
   return (
     <section id="site-locations" style={{ background: '#fff' }}>
-      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr' }}>
-        {collage?.length > 0 && (
+      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+        {safeCollage.length > 0 && (
           <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={collage} slot={2} />
+            <PhotoCollage photos={safeCollage} slot={2} />
           </div>
         )}
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
@@ -501,12 +515,12 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
             Visit Us
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 40, width: '100%', maxWidth: 380 }}>
-            {locations.map((loc, i) => {
+            {(locations || []).map((loc, i) => {
               const links = getLocLinks(loc)
               const phone = loc.phone || links.phone
               return (
                 <div key={loc.id || i}>
-                  {locations.length > 1 && (
+                  {(locations.length > 1) && (
                     <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, marginBottom: 8, opacity: 0.6 }}>
                       {loc.name}
                     </div>
@@ -553,15 +567,11 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
 function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) {
   const highlights = restaurant.menu_highlights || []
   if (!Array.isArray(highlights) || highlights.length === 0) return null
+  const safeCollage = collage || []
 
   return (
-    <section id="site-menu" style={{ background: '#fff' }}>
-      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr' }}>
-        {collage?.length > 0 && (
-          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={collage} slot={3} />
-          </div>
-        )}
+    <section id="site-menu" style={{ background: WARM }}>
+      <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: MUTED, marginBottom: 36, opacity: 0.6 }}>
             Menus
@@ -587,6 +597,11 @@ function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) 
             ))}
           </div>
         </div>
+        {safeCollage.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={safeCollage} slot={3} />
+          </div>
+        )}
       </div>
     </section>
   )
@@ -595,6 +610,7 @@ function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) 
 /* ─── Private Events row ────────────────────────────────────── */
 function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
   if (!restaurant.events_email) return null
+  const safeCollage = collage || []
 
   const title = restaurant.private_events_title || 'Private Events & Catering'
   const body = restaurant.private_events_body ||
@@ -602,7 +618,12 @@ function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
 
   return (
     <section id="site-events" style={{ background: WARM }}>
-      <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: collage?.length ? '1fr 1fr' : '1fr' }}>
+      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+        {safeCollage.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={safeCollage} slot={4} />
+          </div>
+        )}
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: GOLD, marginBottom: 24 }}>
             Entertain
@@ -622,11 +643,6 @@ function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
             Inquire About Events
           </button>
         </div>
-        {collage?.length > 0 && (
-          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={collage} slot={2} />
-          </div>
-        )}
       </div>
     </section>
   )
@@ -636,9 +652,9 @@ function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
 function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onClose }) {
   const filteredSections = useMemo(() => {
     if (restaurant.menu_mode === 'per_location' && activeLoc?.id) {
-      return sections.filter(s => s.location_id === activeLoc.id)
+      return (sections || []).filter(s => s.location_id === activeLoc.id)
     }
-    return sections.filter(s => !s.location_id || restaurant.menu_mode !== 'per_location')
+    return (sections || []).filter(s => !s.location_id || restaurant.menu_mode !== 'per_location')
   }, [sections, activeLoc, restaurant.menu_mode])
 
   const initIdx = Math.max(0, filteredSections.findIndex(s => s.name === initialTab))
@@ -662,8 +678,8 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
   const ItemList = ({ section }) => {
     if (!section) return null
     const items = [
-      ...(section.items || []).filter(i => i.available !== false),
-      ...(section.items || []).filter(i => i.available === false),
+      ...((section.items || []).filter(i => i.available !== false)),
+      ...((section.items || []).filter(i => i.available === false)),
     ]
     return (
       <div>
@@ -768,7 +784,7 @@ function LocPicker({ locations, type, onClose, onTrack }) {
     if (type === 'order') return l.order_url
     return `tel:${l.phone || loc.phone || ''}`
   }
-  const validLocs = locations.filter(l => getUrl(l) && getUrl(l) !== 'tel:')
+  const validLocs = (locations || []).filter(l => getUrl(l) && getUrl(l) !== 'tel:')
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 600, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
@@ -797,14 +813,13 @@ function LocPicker({ locations, type, onClose, onTrack }) {
   )
 }
 
-/* ─── Inquiry Modal (events or contact mode) ────────────────── */
+/* ─── Inquiry Modal ─────────────────────────────────────────── */
 function InquiryModal({ restaurant, mode, onClose }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', date: '', guests: '', message: '' })
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }))
 
-  // Mode forces the framing. 'events' shows date/guests fields, 'contact' is a simple form.
   const isEvents = mode === 'events'
   const eyebrow = isEvents ? 'Entertain' : 'Contact'
   const heading = isEvents ? 'Private Events & Catering' : 'Get in Touch'
@@ -1015,7 +1030,7 @@ function Footer({ restaurant, locations, onContactOpen, onEventsOpen }) {
     <footer style={{ background: NAVY, padding: '56px 48px 40px', textAlign: 'center' }}>
       <div style={{ maxWidth: 640, margin: '0 auto' }}>
         <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
-          {locations.map((loc, i) =>
+          {(locations || []).map((loc, i) =>
             loc.address ? (
               <a key={i} href={`https://maps.google.com?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer"
                 style={{ fontFamily: 'Georgia,serif', fontSize: 13, color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', textDecoration: 'none', transition: 'color 0.2s' }}
@@ -1026,7 +1041,7 @@ function Footer({ restaurant, locations, onContactOpen, onEventsOpen }) {
             ) : null
           )}
         </div>
-        {locations.map((loc, i) => {
+        {(locations || []).map((loc, i) => {
           const phone = loc.phone || getLocLinks(loc).phone
           if (!phone) return null
           return (
@@ -1071,7 +1086,7 @@ function Footer({ restaurant, locations, onContactOpen, onEventsOpen }) {
 function StickyBar({ locations, onPick }) {
   const hasOrder = anyLocationHas(locations, 'order_url')
   const hasReserve = anyLocationHas(locations, 'reservation_url')
-  const hasPhone = locations.some(l => l.phone || getLocLinks(l).phone)
+  const hasPhone = (locations || []).some(l => l.phone || getLocLinks(l).phone)
 
   if (!hasOrder && !hasReserve && !hasPhone) return null
 
@@ -1105,13 +1120,17 @@ function StickyBar({ locations, onPick }) {
 
 /* ─── Main ──────────────────────────────────────────────────── */
 export default function RestaurantSite({ data }) {
-  const { restaurant, sections, heroPhotos, locations, collages } = data
+  const restaurant = data?.restaurant || {}
+  const sections = data?.sections || []
+  const heroPhotos = data?.heroPhotos || []
+  const locations = data?.locations || []
+  const collages = data?.collages || {}
 
   const [activeLoc, setActiveLoc] = useState(locations[0] || null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuLoc, setMenuLoc] = useState(locations[0] || null)
   const [menuTab, setMenuTab] = useState(null)
-  const [inquiry, setInquiry] = useState(null) // 'events' | 'contact' | null
+  const [inquiry, setInquiry] = useState(null)
   const [picker, setPicker] = useState(null)
   const [announcementOpen, setAnnouncementOpen] = useState(false)
 
@@ -1162,13 +1181,6 @@ export default function RestaurantSite({ data }) {
     setMenuOpen(true)
   }
 
-  // Collage assignments — when Private Events section exists, it takes collage 2,
-  // and Locations + Menu Links shift collages 3 + (no third available).
-  // To keep it simple: collage_1 = About, collage_2 = Locations, collage_3 = Menu Links.
-  // Private Events reuses collage_2 visually but only if the events section is present;
-  // for visual variety we'll just give it the same collage_2.
-  // (Owner can vary photos by uploading distinct sets.)
-
   const showPrivateEvents = !!restaurant.events_email
 
   return (
@@ -1191,23 +1203,23 @@ export default function RestaurantSite({ data }) {
         onPick={handlePick}
         onSpecials={() => setAnnouncementOpen(true)}
         hasSpecials={hasAnnouncement}
-        collage={collages?.collage_1 || []}
+        collage={collages.collage_1}
       />
 
       {showPrivateEvents && (
-  <PrivateEventsRow
-    restaurant={restaurant}
-    onEventsOpen={() => setInquiry('events')}
-    collage={collages?.collage_4 || []}
-  />
-)}
+        <PrivateEventsRow
+          restaurant={restaurant}
+          onEventsOpen={() => setInquiry('events')}
+          collage={collages.collage_4}
+        />
+      )}
 
       <LocationsRow
         restaurant={restaurant}
         locations={locations}
         onPick={handlePick}
         onMenuOpen={openMenu}
-        collage={collages?.collage_2 || []}
+        collage={collages.collage_2}
       />
 
       <MenuLinksRow
@@ -1215,8 +1227,7 @@ export default function RestaurantSite({ data }) {
         sections={sections}
         locations={locations}
         onMenuOpen={openMenu}
-        onPick={handlePick}
-        collage={collages?.collage_3 || []}
+        collage={collages.collage_3}
       />
 
       <Footer
