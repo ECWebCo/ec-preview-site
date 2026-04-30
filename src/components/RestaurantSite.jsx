@@ -81,7 +81,7 @@ function normalizeSocialUrl(value, platform) {
   return v
 }
 
-/* ─── Photo Collage — handles 1, 2, or 3 photos defensively ── */
+/* ─── Photo Collage ─────────────────────────────────────────── */
 function PhotoCollage({ photos, slot }) {
   if (!photos || photos.length === 0) return null
 
@@ -415,12 +415,13 @@ function Hero({ restaurant, heroPhotos }) {
   )
 }
 
-/* ─── About row ─────────────────────────────────────────────── */
+/* ─── About row — text LEFT, collage RIGHT ──────────────────── */
 function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSpecials, collage }) {
   const safeCollage = collage || []
   return (
     <section style={{ background: '#fff' }}>
       <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+        {/* TEXT (left on desktop, top on mobile) */}
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           {restaurant.city && (
             <div style={{ fontFamily: 'DM Sans', fontSize: 10, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, marginBottom: 20, opacity: 0.6 }}>
@@ -457,6 +458,8 @@ function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSp
             )}
           </div>
         </div>
+
+        {/* COLLAGE (right on desktop, bottom on mobile) */}
         {safeCollage.length > 0 && (
           <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
             <PhotoCollage photos={safeCollage} slot={1} />
@@ -499,17 +502,13 @@ function HoursDropdown({ locHours }) {
   )
 }
 
-/* ─── Locations row ─────────────────────────────────────────── */
+/* ─── Locations row — text LEFT, collage RIGHT (desktop) ────── */
 function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
   const safeCollage = collage || []
   return (
     <section id="site-locations" style={{ background: '#fff' }}>
-      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
-        {safeCollage.length > 0 && (
-          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={safeCollage} slot={2} />
-          </div>
-        )}
+      <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+        {/* TEXT (left on desktop, top on mobile) */}
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: MUTED, marginBottom: 36, opacity: 0.6 }}>
             Visit Us
@@ -520,7 +519,7 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
               const phone = loc.phone || links.phone
               return (
                 <div key={loc.id || i}>
-                  {(locations.length > 1) && (
+                  {locations.length > 1 && (
                     <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, marginBottom: 8, opacity: 0.6 }}>
                       {loc.name}
                     </div>
@@ -558,12 +557,19 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
             })}
           </div>
         </div>
+
+        {/* COLLAGE (right on desktop, bottom on mobile) */}
+        {safeCollage.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={safeCollage} slot={2} />
+          </div>
+        )}
       </div>
     </section>
   )
 }
 
-/* ─── Menu Links row ────────────────────────────────────────── */
+/* ─── Menu Links row — collage LEFT, text RIGHT (desktop) ──── */
 function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) {
   const highlights = restaurant.menu_highlights || []
   if (!Array.isArray(highlights) || highlights.length === 0) return null
@@ -571,7 +577,14 @@ function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) 
 
   return (
     <section id="site-menu" style={{ background: WARM }}>
-      <div className="site-split site-row-text-left" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+        {/* COLLAGE (left on desktop, bottom on mobile via CSS order) */}
+        {safeCollage.length > 0 && (
+          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
+            <PhotoCollage photos={safeCollage} slot={3} />
+          </div>
+        )}
+        {/* TEXT (right on desktop, top on mobile via CSS order) */}
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: MUTED, marginBottom: 36, opacity: 0.6 }}>
             Menus
@@ -597,17 +610,12 @@ function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) 
             ))}
           </div>
         </div>
-        {safeCollage.length > 0 && (
-          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={safeCollage} slot={3} />
-          </div>
-        )}
       </div>
     </section>
   )
 }
 
-/* ─── Private Events row ────────────────────────────────────── */
+/* ─── Private Events row — collage LEFT, text RIGHT (desktop) ─ */
 function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
   if (!restaurant.events_email) return null
   const safeCollage = collage || []
@@ -619,11 +627,13 @@ function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
   return (
     <section id="site-events" style={{ background: WARM }}>
       <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
+        {/* COLLAGE (left on desktop, bottom on mobile) */}
         {safeCollage.length > 0 && (
           <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
             <PhotoCollage photos={safeCollage} slot={4} />
           </div>
         )}
+        {/* TEXT (right on desktop, top on mobile) */}
         <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: GOLD, marginBottom: 24 }}>
             Entertain
@@ -1266,6 +1276,7 @@ export default function RestaurantSite({ data }) {
           .site-collage-col{padding:32px 24px 64px!important}
           .site-hero{height:75vh!important;padding-top:0!important}
           nav{padding:0 24px!important}
+          /* On mobile, ALWAYS show text first then collage, regardless of desktop side */
           .site-row-text-right .site-text-col{order:1}
           .site-row-text-right .site-collage-col{order:2}
         }
