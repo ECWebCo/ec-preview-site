@@ -364,7 +364,7 @@ function Hero({ restaurant, heroPhotos }) {
     <div
       className="site-hero"
       style={{
-        height: '100vh', minHeight: 600, position: 'relative', overflow: 'hidden',
+        height: '85vh', minHeight: 500, position: 'relative', overflow: 'hidden',
         background: CREAM, paddingTop: NAV_HEIGHT,
       }}
     >
@@ -375,7 +375,7 @@ function Hero({ restaurant, heroPhotos }) {
           alt=""
           style={{
             position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'top center',
+            objectFit: 'cover', objectPosition: 'center',
             opacity: i === current ? 1 : 0, transition: 'opacity 1.2s ease',
           }}
         />
