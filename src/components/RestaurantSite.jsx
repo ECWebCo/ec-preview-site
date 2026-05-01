@@ -668,9 +668,12 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
     return (sections || []).filter(s => !s.location_id || restaurant.menu_mode !== 'per_location')
   }, [sections, activeLoc, restaurant.menu_mode])
 
-  const initIdx = Math.max(0, filteredSections.findIndex(s => s.name === initialTab))
-  const [activeTab, setActiveTab] = useState(initIdx >= 0 ? initIdx : 0)
-  const [openTab, setOpenTab] = useState(initIdx >= 0 ? initIdx : 0)
+  const initIdx = initialTab
+  ? filteredSections.findIndex(s => s.name?.toLowerCase().trim() === initialTab.toLowerCase().trim())
+  : 0
+const safeInitIdx = initIdx >= 0 ? initIdx : 0
+  const [activeTab, setActiveTab] = useState(safeInitIdx)
+const [openTab, setOpenTab] = useState(safeInitIdx)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
