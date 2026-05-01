@@ -210,7 +210,6 @@ function Nav({ restaurant, locations, onMenuOpen, onPick, onEventsOpen, onContac
   navItems.push({ label: 'Menu', action: () => { setMenuOpen(false); onMenuOpen() } })
   if (hasEvents) navItems.push({ label: 'Private Events', action: () => { setMenuOpen(false); onEventsOpen() } })
   navItems.push({ label: (locations?.length || 0) > 1 ? 'Locations' : 'Location', id: 'site-locations' })
-  navItems.push({ label: 'Contact', action: () => { setMenuOpen(false); onContactOpen() } })
 
   return (
     <>
@@ -1067,12 +1066,6 @@ function Footer({ restaurant, locations, onContactOpen, onEventsOpen }) {
         })}
 
         <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginTop: 16 }}>
-          <button onClick={onContactOpen}
-            style={{ background: 'none', border: 'none', fontFamily: 'DM Sans', fontSize: 11, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'color 0.2s' }}
-            onMouseOver={e => (e.target.style.color = '#fff')}
-            onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}>
-            Contact Us
-          </button>
           {hasEvents && (
             <button onClick={onEventsOpen}
               style={{ background: 'none', border: 'none', fontFamily: 'DM Sans', fontSize: 11, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'color 0.2s' }}
