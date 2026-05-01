@@ -91,6 +91,7 @@ export async function submitInquiry(payload) {
     if (!res.ok) throw new Error('Inquiry submission failed')
     return await res.json()
   } catch (err) {
-    return { error: err.message || 'Network error' }
+    // No API endpoint configured — fall back to mailto
+    return { fallback: 'mailto' }
   }
 }
