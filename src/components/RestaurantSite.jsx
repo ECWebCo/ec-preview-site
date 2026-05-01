@@ -768,19 +768,43 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
             </div>
           </div>
         ) : (
-          <div style={{ flex: 1, overflowY: 'auto' }}>
-            {filteredSections.map((s, i) => (
-              <div key={s.id || i}>
-                <button onClick={() => setOpenTab(openTab === i ? null : i)}
-                  style={{ width: '100%', padding: '18px 24px', background: 'none', border: 'none', borderBottom: `1px solid ${BORDER}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-                  <span style={{ fontFamily: 'DM Sans', fontSize: 12, fontWeight: 700, letterSpacing: '3px', textTransform: 'uppercase', color: NAVY }}>{s.name}</span>
-                  <span style={{ color: MUTED, fontSize: 20, transition: 'transform 0.2s', display: 'inline-block', transform: openTab === i ? 'rotate(45deg)' : 'none' }}>+</span>
-                </button>
-                {openTab === i && <div style={{ padding: '8px 24px 24px' }}><ItemList section={s} /></div>}
-              </div>
-            ))}
-          </div>
-        )}
+  <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div style={{ padding: '16px 24px', borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
+      <select
+        value={activeTab}
+        onChange={e => setActiveTab(Number(e.target.value))}
+        style={{
+          width: '100%',
+          padding: '14px 16px',
+          background: WARM,
+          border: 'none',
+          borderRadius: 6,
+          fontFamily: 'DM Sans',
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: '2px',
+          textTransform: 'uppercase',
+          color: NAVY,
+          cursor: 'pointer',
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          MozAppearance: 'none',
+          backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231B2B4B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 16px center',
+          paddingRight: 40,
+        }}
+      >
+        {filteredSections.map((s, i) => (
+          <option key={s.id || i} value={i}>{s.name}</option>
+        ))}
+      </select>
+    </div>
+    <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px 32px' }}>
+      <ItemList section={active} />
+    </div>
+  </div>
+)
       </div>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
