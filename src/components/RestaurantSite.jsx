@@ -374,7 +374,7 @@ function Hero({ restaurant, heroPhotos }) {
     <div
       className="site-hero"
       style={{
-        height: '85vh', minHeight: 500, position: 'relative', overflow: 'hidden',
+        height: '100vh', minHeight: 600, position: 'relative', overflow: 'hidden',
         background: CREAM, paddingTop: NAV_HEIGHT,
       }}
     >
