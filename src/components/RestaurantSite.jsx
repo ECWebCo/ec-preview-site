@@ -819,8 +819,9 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
     <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px 32px' }}>
       <ItemList section={active} />
     </div>
-</div>
-)}
+  </div>
+        )}
+      </div>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
   )
