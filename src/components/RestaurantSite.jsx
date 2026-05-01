@@ -805,7 +805,6 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
     </div>
   </div>
 )
-      </div>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
   )
