@@ -660,7 +660,7 @@ function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
 }
 
 /* ─── Menu Modal ────────────────────────────────────────────── */
-function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onClose }) {
+function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onClose, onLocationChange }) {
   const filteredSections = useMemo(() => {
     if (restaurant.menu_mode === 'per_location' && activeLoc?.id) {
       return (sections || []).filter(s => s.location_id === activeLoc.id)
@@ -668,12 +668,9 @@ function MenuModal({ restaurant, sections, locations, activeLoc, initialTab, onC
     return (sections || []).filter(s => !s.location_id || restaurant.menu_mode !== 'per_location')
   }, [sections, activeLoc, restaurant.menu_mode])
 
-  const initIdx = initialTab
-  ? filteredSections.findIndex(s => s.name?.toLowerCase().trim() === initialTab.toLowerCase().trim())
-  : 0
-const safeInitIdx = initIdx >= 0 ? initIdx : 0
-  const [activeTab, setActiveTab] = useState(safeInitIdx)
-const [openTab, setOpenTab] = useState(safeInitIdx)
+  const initIdx = Math.max(0, filteredSections.findIndex(s => s.name === initialTab))
+  const [activeTab, setActiveTab] = useState(initIdx >= 0 ? initIdx : 0)
+  const [openTab, setOpenTab] = useState(initIdx >= 0 ? initIdx : 0)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
@@ -738,11 +735,27 @@ const [openTab, setOpenTab] = useState(safeInitIdx)
         <div style={{ padding: '24px 28px', borderBottom: `1px solid ${BORDER}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
           <div>
             <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: MUTED, opacity: 0.6, marginBottom: 2 }}>
-              {restaurant.menu_mode === 'per_location' ? 'Our Menu' : 'Menu'}
+              Menu
             </div>
-            {restaurant.menu_mode === 'per_location' && activeLoc?.name && (
+            {restaurant.menu_mode === 'per_location' && locations?.length > 1 ? (
+              <select
+                value={activeLoc?.id || ''}
+                onChange={e => {
+                  const newLoc = locations.find(l => l.id === e.target.value)
+                  if (newLoc && onLocationChange) onLocationChange(newLoc)
+                }}
+                style={{
+                  fontFamily: 'DM Sans', fontSize: 13, fontWeight: 600,
+                  color: NAVY, background: 'none', border: 'none',
+                  cursor: 'pointer', padding: '2px 4px', marginLeft: -4,
+                  textTransform: 'uppercase', letterSpacing: '1.5px',
+                }}
+              >
+                {locations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+              </select>
+            ) : restaurant.menu_mode === 'per_location' && activeLoc?.name ? (
               <div style={{ fontFamily: 'DM Sans', fontSize: 11, color: MUTED, opacity: 0.6 }}>{activeLoc.name}</div>
-            )}
+            ) : null}
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: MUTED, lineHeight: 1 }}>✕</button>
         </div>
@@ -800,15 +813,14 @@ const [openTab, setOpenTab] = useState(safeInitIdx)
       >
         {filteredSections.map((s, i) => (
           <option key={s.id || i} value={i}>{s.name}</option>
-))}
+        ))}
       </select>
     </div>
     <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px 32px' }}>
       <ItemList section={active} />
     </div>
-  </div>
-        )}
-      </div>
+</div>
+)}
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`}</style>
     </div>
   )
@@ -1250,7 +1262,8 @@ export default function RestaurantSite({ data }) {
   }
 
   function openMenu(loc, tab) {
-    setMenuLoc(loc || activeLoc)
+    const targetLoc = loc || locations[0] || activeLoc
+    setMenuLoc(targetLoc)
     setMenuTab(tab || null)
     setMenuOpen(true)
   }
@@ -1314,7 +1327,7 @@ export default function RestaurantSite({ data }) {
       <StickyBar locations={locations} onPick={handlePick} />
 
       {menuOpen && (
-        <MenuModal restaurant={restaurant} sections={sections} locations={locations} activeLoc={menuLoc} initialTab={menuTab} onClose={() => setMenuOpen(false)} />
+        <MenuModal restaurant={restaurant} sections={sections} locations={locations} activeLoc={menuLoc} initialTab={menuTab} onClose={() => setMenuOpen(false)} onLocationChange={setMenuLoc} />
       )}
       {inquiry && <InquiryModal restaurant={restaurant} mode={inquiry} onClose={() => setInquiry(null)} />}
       {picker && (
