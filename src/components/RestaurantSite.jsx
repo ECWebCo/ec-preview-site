@@ -574,43 +574,7 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
   )
 }
 
-  return (
-    <section id="site-menu" style={{ background: WARM }}>
-      <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
-        {safeCollage.length > 0 && (
-          <div className="site-collage-col" style={{ padding: '64px 48px', display: 'flex', alignItems: 'center' }}>
-            <PhotoCollage photos={safeCollage} slot={3} />
-          </div>
-        )}
-        <div className="site-text-col" style={{ padding: '96px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          <div style={{ fontFamily: 'DM Sans', fontSize: 10, fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: MUTED, marginBottom: 36, opacity: 0.6 }}>
-            Menus
-          </div>
-          <div style={{ width: '100%', maxWidth: 320 }}>
-            {highlights.map((h, i) => (
-              <button
-                key={i}
-                onClick={() => onMenuOpen(null, h.section_name || h.label)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '14px 0', width: '100%', textAlign: 'center', display: 'block', transition: 'opacity 0.2s' }}
-                onMouseOver={e => (e.currentTarget.style.opacity = '0.6')}
-                onMouseOut={e => (e.currentTarget.style.opacity = '1')}
-              >
-                <div style={{ fontFamily: 'DM Sans', fontSize: 13, fontWeight: 700, letterSpacing: '4px', textTransform: 'uppercase', color: NAVY, marginBottom: 3 }}>
-                  {h.label}
-                </div>
-                {h.time && (
-                  <div style={{ fontFamily: 'Georgia,serif', fontSize: 12, color: MUTED, fontStyle: 'italic' }}>
-                    {h.time}
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
+
 
 /* ─── Private Events row — collage LEFT, text RIGHT ─────────── */
 function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
