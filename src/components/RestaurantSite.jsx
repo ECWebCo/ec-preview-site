@@ -574,12 +574,6 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
   )
 }
 
-/* ─── Menu Links row — collage LEFT, text RIGHT ─────────────── */
-function MenuLinksRow({ restaurant, sections, locations, onMenuOpen, collage }) {
-  const highlights = restaurant.menu_highlights || []
-  if (!Array.isArray(highlights) || highlights.length === 0) return null
-  const safeCollage = collage || []
-
   return (
     <section id="site-menu" style={{ background: WARM }}>
       <div className="site-split site-row-text-right" style={{ display: 'grid', gridTemplateColumns: safeCollage.length ? '1fr 1fr' : '1fr' }}>
@@ -1308,14 +1302,6 @@ export default function RestaurantSite({ data }) {
         onPick={handlePick}
         onMenuOpen={openMenu}
         collage={collages.collage_2}
-      />
-
-      <MenuLinksRow
-        restaurant={restaurant}
-        sections={sections}
-        locations={locations}
-        onMenuOpen={openMenu}
-        collage={collages.collage_3}
       />
 
       <Footer
