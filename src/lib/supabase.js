@@ -24,35 +24,34 @@ export async function getRestaurantData() {
   const { field, value } = resolveRestaurantQuery()
   if (!value) return null
 
+  // Single nested query — restaurant + all related data in one round-trip
   const { data: restaurant, error } = await supabase
     .from('restaurants')
-    .select('*')
+    .select(`
+      *,
+      menu_sections(*, menu_items(*)),
+      photos(*),
+      locations(*, location_hours(*), location_links(*))
+    `)
     .eq(field, value)
     .single()
 
   if (error || !restaurant) return null
-  const id = restaurant.id
 
-  const [sectionsRes, itemsRes, photosRes, locationsRes] = await Promise.all([
-    supabase.from('menu_sections').select('*').eq('restaurant_id', id).order('sort_order'),
-    supabase.from('menu_items').select('*').eq('restaurant_id', id).order('sort_order'),
-    supabase.from('photos').select('*').eq('restaurant_id', id).order('sort_order'),
-    supabase
-      .from('locations')
-      .select('*, location_hours(*), location_links(*)')
-      .eq('restaurant_id', id)
-      .order('sort_order'),
-  ])
-
-  const allSections = sectionsRes.data || []
-  const allItems = itemsRes.data || []
+  // Sort and structure
+  const allSections = (restaurant.menu_sections || [])
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
 
   const sections = allSections.map(s => ({
     ...s,
-    items: allItems.filter(i => i.section_id === s.id),
+    items: (s.menu_items || []).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
   }))
 
-  const photos = photosRes.data || []
+  const photos = (restaurant.photos || [])
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+
+  const locations = (restaurant.locations || [])
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
 
   // Group photos by section
   const heroPhotos = photos.filter(p => p.section === 'hero' || (p.is_hero && !p.section))
@@ -61,16 +60,19 @@ export async function getRestaurantData() {
   const collage3 = photos.filter(p => p.section === 'collage_3')
   const collage4 = photos.filter(p => p.section === 'collage_4')
 
-  const locations = locationsRes.data || []
-
   return {
-  restaurant,
-  sections,
-  photos,
-  heroPhotos,
-  collages: { collage_1: collage1, collage_2: collage2, collage_3: collage3, collage_4: collage4 },
-  locations,
-}
+    restaurant,
+    sections,
+    photos,
+    heroPhotos,
+    collages: {
+      collage_1: collage1,
+      collage_2: collage2,
+      collage_3: collage3,
+      collage_4: collage4,
+    },
+    locations,
+  }
 }
 
 export async function trackEvent(restaurantId, eventType) {

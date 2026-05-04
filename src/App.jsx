@@ -31,28 +31,7 @@ export default function App() {
   }, [])
 
   if (loading)
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#FAFAF8',
-        }}
-      >
-        <span
-          style={{
-            fontFamily: 'Playfair Display,serif',
-            fontSize: 24,
-            fontStyle: 'italic',
-            color: '#1B2B4B',
-          }}
-        >
-          Loading…
-        </span>
-      </div>
-    )
+    return <div style={{ minHeight: '100vh', background: '#FAFAF8' }} />
 
   if (error)
     return (
