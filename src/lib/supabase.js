@@ -17,7 +17,7 @@ function resolveRestaurantQuery() {
     const slug = window.location.pathname.replace(/^\//, '').split('/')[0] || ''
     return { field: 'slug', value: slug }
   }
-  return { field: 'custom_domain', value: host }
+  return { field: 'custom_domain', value: host.replace(/^www\./, '') }
 }
 
 export async function getRestaurantData() {
