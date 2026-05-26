@@ -1,14 +1,19 @@
 import { useState, useEffect, useMemo } from 'react'
 import { trackEvent, submitInquiry } from '../lib/supabase'
 
-/* ─── Design tokens ─────────────────────────────────────────── */
-const NAVY = '#1B2B4B'
-const CREAM = '#FAFAF8'
-const WARM = '#F4F1EB'
-const STONE = '#E8E4DC'
-const GOLD = '#C9A84C'
-const MUTED = '#8A8278'
-const BORDER = '#E4E0D8'
+/* ─── Design tokens — CSS variables so they can be overridden per restaurant ─── */
+const NAVY = 'var(--c-ink)'
+const CREAM = 'var(--c-bg)'
+const WARM = 'var(--c-warm)'
+const STONE = 'var(--c-stone)'
+const GOLD = 'var(--c-accent)'
+const MUTED = 'var(--c-muted)'
+const BORDER = 'var(--c-border)'
+
+/* Default values (used as fallbacks when restaurant has no custom colors) */
+const DEFAULT_INK = '#1B2B4B'
+const DEFAULT_ACCENT = '#C9A84C'
+const DEFAULT_BG = '#FAFAF8'
 
 const NAV_HEIGHT = 120
 
@@ -89,6 +94,25 @@ function setMetaTag(name, content, attr = 'name') {
     document.head.appendChild(tag)
   }
   tag.setAttribute('content', content)
+}
+
+/* Derives complementary color tokens from the 3 brand colors a restaurant picks.
+   ink = primary/text/nav, accent = gold/highlight, bg = background.
+   We compute warm/stone/muted/border as tinted variants of bg/ink. */
+function deriveColorTokens({ color_ink, color_gold, color_off }) {
+  const ink = color_ink || DEFAULT_INK
+  const accent = color_gold || DEFAULT_ACCENT
+  const bg = color_off || DEFAULT_BG
+  return {
+    '--c-ink': ink,
+    '--c-accent': accent,
+    '--c-bg': bg,
+    // Subtle variants computed from defaults — visually neutral enough to work with any base palette
+    '--c-warm': '#F4F1EB',
+    '--c-stone': '#E8E4DC',
+    '--c-muted': '#8A8278',
+    '--c-border': '#E4E0D8',
+  }
 }
 
 /* ─── Photo Collage ─────────────────────────────────────────── */
@@ -218,7 +242,7 @@ function Nav({ restaurant, locations, onMenuOpen, onPick, onEventsOpen, onContac
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
           height: NAV_HEIGHT, display: 'flex', alignItems: 'center',
           padding: '0 48px', justifyContent: 'space-between',
-          background: scrolled || menuOpen ? 'rgba(250,250,248,0.97)' : 'transparent',
+          background: scrolled || menuOpen ? 'var(--c-bg-rgba)' : 'transparent',
           borderBottom: scrolled ? `1px solid ${BORDER}` : 'none',
           transition: 'background 0.4s ease, border-color 0.4s ease',
         }}
@@ -271,8 +295,8 @@ function Nav({ restaurant, locations, onMenuOpen, onPick, onEventsOpen, onContac
                 fontSize: 12, fontFamily: 'DM Sans', fontWeight: 500,
                 cursor: 'pointer', transition: 'all 0.2s',
               }}
-              onMouseOver={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.color = '#fff' }}
-              onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = NAVY }}
+              onMouseOver={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.color = '#fff' }}
+              onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}
             >
               Order
             </button>
@@ -390,7 +414,7 @@ function Hero({ restaurant, heroPhotos }) {
         />
       ))}
       {photos.length === 0 && (
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#1B2B4B,#0d1a2e)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${NAVY}, #0d1a2e)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <p style={{ fontFamily: 'DM Sans', fontSize: 13, color: 'rgba(255,255,255,0.3)', letterSpacing: 3, textTransform: 'uppercase' }}>
             Add hero photos in your dashboard
           </p>
@@ -400,7 +424,7 @@ function Hero({ restaurant, heroPhotos }) {
       <div
         style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: 200,
-          background: 'linear-gradient(to bottom, rgba(250,250,248,1) 0%, rgba(250,250,248,0.6) 50%, transparent 100%)',
+          background: 'linear-gradient(to bottom, var(--c-bg) 0%, var(--c-bg-fade) 50%, transparent 100%)',
           pointerEvents: 'none',
         }}
       />
@@ -447,20 +471,20 @@ function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSp
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
             {anyLocationHas(locations, 'reservation_url') && (
               <button onClick={() => onPick('reserve')} style={PILL_BTN}
-                onMouseOver={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.color = '#fff' }}
-                onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = NAVY }}>
+                onMouseOver={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.color = '#fff' }}
+                onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}>
                 Reserve
               </button>
             )}
             <button onClick={onMenuOpen} style={PILL_BTN}
-              onMouseOver={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.color = '#fff' }}
-              onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = NAVY }}>
+              onMouseOver={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.color = '#fff' }}
+              onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}>
               Menus
             </button>
             {hasSpecials && (
               <button onClick={onSpecials} style={{ ...PILL_BTN, borderColor: GOLD, color: GOLD }}
-                onMouseOver={e => { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = '#fff' }}
-                onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = GOLD }}>
+                onMouseOver={e => { e.currentTarget.style.background = 'var(--c-accent)'; e.currentTarget.style.color = '#fff' }}
+                onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-accent)' }}>
                 Specials
               </button>
             )}
@@ -538,7 +562,7 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
                   {phone && (
                     <a href={`tel:${phone}`} onClick={() => trackEvent(restaurant.id, 'phone_click')}
                       style={{ fontFamily: 'Georgia,serif', fontSize: 14, color: MUTED, fontStyle: 'italic', textDecoration: 'none', display: 'block', marginBottom: 12, transition: 'color 0.2s' }}
-                      onMouseOver={e => (e.target.style.color = NAVY)} onMouseOut={e => (e.target.style.color = MUTED)}>
+                      onMouseOver={e => (e.target.style.color = 'var(--c-ink)')} onMouseOut={e => (e.target.style.color = 'var(--c-muted)')}>
                       {phone}
                     </a>
                   )}
@@ -546,17 +570,17 @@ function LocationsRow({ restaurant, locations, onPick, onMenuOpen, collage }) {
                   <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
                     {links.reservation_url && (
                       <button onClick={() => onPick('reserve')} style={PILL_BTN}
-                        onMouseOver={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.color = '#fff' }}
-                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = NAVY }}>Reserve</button>
+                        onMouseOver={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.color = '#fff' }}
+                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}>Reserve</button>
                     )}
                     {links.order_url && (
                       <button onClick={() => onPick('order')} style={{ ...PILL_BTN, color: MUTED, borderColor: MUTED }}
-                        onMouseOver={e => { e.currentTarget.style.background = MUTED; e.currentTarget.style.color = '#fff' }}
-                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = MUTED }}>Order</button>
+                        onMouseOver={e => { e.currentTarget.style.background = 'var(--c-muted)'; e.currentTarget.style.color = '#fff' }}
+                        onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-muted)' }}>Order</button>
                     )}
                     <button onClick={() => onMenuOpen(loc)} style={{ ...PILL_BTN, color: MUTED, borderColor: MUTED }}
-                      onMouseOver={e => { e.currentTarget.style.background = MUTED; e.currentTarget.style.color = '#fff' }}
-                      onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = MUTED }}>Menu</button>
+                      onMouseOver={e => { e.currentTarget.style.background = 'var(--c-muted)'; e.currentTarget.style.color = '#fff' }}
+                      onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-muted)' }}>Menu</button>
                   </div>
                 </div>
               )
@@ -606,8 +630,8 @@ function PrivateEventsRow({ restaurant, onEventsOpen, collage }) {
           <button
             onClick={onEventsOpen}
             style={{ ...PILL_BTN, background: NAVY, color: '#fff' }}
-            onMouseOver={e => { e.currentTarget.style.background = GOLD; e.currentTarget.style.borderColor = GOLD }}
-            onMouseOut={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.borderColor = NAVY }}
+            onMouseOver={e => { e.currentTarget.style.background = 'var(--c-accent)'; e.currentTarget.style.borderColor = 'var(--c-accent)' }}
+            onMouseOut={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.borderColor = 'var(--c-ink)' }}
           >
             Inquire About Events
           </button>
@@ -970,8 +994,8 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
           {onReserve && (
             <button onClick={onReserve}
               style={{ ...PILL_BTN, marginTop: 28, width: '100%', justifyContent: 'center', display: 'flex' }}
-              onMouseOver={e => { e.currentTarget.style.background = NAVY; e.currentTarget.style.color = '#fff' }}
-              onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = NAVY }}>
+              onMouseOver={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.color = '#fff' }}
+              onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}>
               Reserve a Table
             </button>
           )}
@@ -1141,6 +1165,22 @@ export default function RestaurantSite({ data }) {
   const announcementItems = (restaurant.announcement_items || []).filter(it => (it?.label?.trim() || it?.text?.trim()))
   const hasAnnouncement = restaurant.announcement_enabled && announcementItems.length > 0
 
+  // Derive color CSS variables from restaurant brand colors
+  const colorVars = useMemo(() => deriveColorTokens(restaurant), [
+    restaurant.color_ink,
+    restaurant.color_gold,
+    restaurant.color_off,
+  ])
+
+  // Compute rgba/fade variants of background for the nav bar bg and hero gradient
+  // We use the bg color with rgba(250,250,248,0.97) by default. We approximate by
+  // applying it directly via color-mix() in supported browsers, fallback to default.
+  const bgRgba = colorVars['--c-bg']
+  const cssExtras = {
+    '--c-bg-rgba': `color-mix(in srgb, ${bgRgba} 97%, transparent)`,
+    '--c-bg-fade': `color-mix(in srgb, ${bgRgba} 60%, transparent)`,
+  }
+
   useEffect(() => {
     if (!hasAnnouncement) return
     const seen = sessionStorage.getItem(`ann_${restaurant.id}`)
@@ -1230,7 +1270,14 @@ export default function RestaurantSite({ data }) {
   const showPrivateEvents = !!restaurant.events_email
 
   return (
-    <div style={{ fontFamily: 'DM Sans,sans-serif', background: '#fff', color: NAVY, overflowX: 'hidden' }}>
+    <div style={{
+      ...colorVars,
+      ...cssExtras,
+      fontFamily: 'DM Sans,sans-serif',
+      background: '#fff',
+      color: NAVY,
+      overflowX: 'hidden',
+    }}>
       <Nav
         restaurant={restaurant}
         locations={locations}
