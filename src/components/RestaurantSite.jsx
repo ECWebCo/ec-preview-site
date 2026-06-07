@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { trackEvent, submitInquiry } from '../lib/supabase'
+import NewsletterPopup from './NewsletterPopup'
 
 /* ─── Design tokens — CSS variables so they can be overridden per restaurant ─── */
 const NAVY = 'var(--c-ink)'
@@ -1088,15 +1089,23 @@ function Footer({ restaurant, locations, onContactOpen, onEventsOpen }) {
         })}
 
         <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginTop: 16 }}>
-          {hasEvents && (
-            <button onClick={onEventsOpen}
-              style={{ background: 'none', border: 'none', fontFamily: 'DM Sans', fontSize: 11, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'color 0.2s' }}
-              onMouseOver={e => (e.target.style.color = '#fff')}
-              onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}>
-              Private Events
-            </button>
-          )}
-        </div>
+  {hasEvents && (
+    <button onClick={onEventsOpen}
+      style={{ background: 'none', border: 'none', fontFamily: 'DM Sans', fontSize: 11, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'color 0.2s' }}
+      onMouseOver={e => (e.target.style.color = '#fff')}
+      onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}>
+      Private Events
+    </button>
+  )}
+  {restaurant.newsletter_signup_url && (
+    <a href={restaurant.newsletter_signup_url} target="_blank" rel="noopener noreferrer"
+      style={{ background: 'none', border: 'none', fontFamily: 'DM Sans', fontSize: 11, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', transition: 'color 0.2s', textDecoration: 'none' }}
+      onMouseOver={e => (e.target.style.color = '#fff')}
+      onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.5)')}>
+      Join Newsletter
+    </a>
+  )}
+</div>
 
         <SocialIcons restaurant={restaurant} />
 
@@ -1323,6 +1332,7 @@ export default function RestaurantSite({ data }) {
       />
 
       <StickyBar locations={locations} onPick={handlePick} />
+      <NewsletterPopup restaurant={restaurant} />
 
       {menuOpen && (
         <MenuModal restaurant={restaurant} sections={sections} locations={locations} activeLoc={menuLoc} initialTab={menuTab} onClose={() => setMenuOpen(false)} onLocationChange={setMenuLoc} />
