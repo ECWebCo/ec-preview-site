@@ -482,6 +482,14 @@ function AboutRow({ restaurant, locations, onMenuOpen, onPick, onSpecials, hasSp
               onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}>
               Menus
             </button>
+            {restaurant.wine_list_url && (
+  <a href={restaurant.wine_list_url} target="_blank" rel="noopener noreferrer"
+    style={{ ...PILL_BTN, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+    onMouseOver={e => { e.currentTarget.style.background = 'var(--c-ink)'; e.currentTarget.style.color = '#fff' }}
+    onMouseOut={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--c-ink)' }}>
+    Wine List
+  </a>
+)}
             {hasSpecials && (
               <button onClick={onSpecials} style={{ ...PILL_BTN, borderColor: GOLD, color: GOLD }}
                 onMouseOver={e => { e.currentTarget.style.background = 'var(--c-accent)'; e.currentTarget.style.color = '#fff' }}
@@ -950,6 +958,7 @@ function InquiryModal({ restaurant, mode, onClose }) {
 /* ─── Announcement Popup ────────────────────────────────────── */
 function AnnouncementPopup({ restaurant, onClose, onReserve }) {
   const items = (restaurant.announcement_items || []).filter(it => (it?.label?.trim() || it?.text?.trim()))
+  const imageUrl = restaurant.announcement_image_url
   const today = new Date().getDay()
   const dayName = DAYS_FULL[today]
 
@@ -958,7 +967,7 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
     return () => { document.body.style.overflow = '' }
   }, [])
 
-  if (items.length === 0) return null
+  if (items.length === 0 && !imageUrl) return null
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -978,6 +987,15 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
           <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: MUTED, lineHeight: 1, flexShrink: 0, marginLeft: 16 }}>✕</button>
         </div>
         <div style={{ padding: '24px 32px 32px' }}>
+          {imageUrl && (
+            <div style={{ marginBottom: items.length > 0 ? 24 : 0, textAlign: 'center' }}>
+              <img
+                src={imageUrl}
+                alt={restaurant.announcement_title || 'Announcement'}
+                style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: 4 }}
+              />
+            </div>
+          )}
           {items.map((s, i) => {
             const isToday = s.label === dayName
             return (
@@ -1172,7 +1190,7 @@ export default function RestaurantSite({ data }) {
 
   const isMulti = locations.length > 1
   const announcementItems = (restaurant.announcement_items || []).filter(it => (it?.label?.trim() || it?.text?.trim()))
-  const hasAnnouncement = restaurant.announcement_enabled && announcementItems.length > 0
+  const hasAnnouncement = restaurant.announcement_enabled && (announcementItems.length > 0 || !!restaurant.announcement_image_url)
 
   // Derive color CSS variables from restaurant brand colors
   const colorVars = useMemo(() => deriveColorTokens(restaurant), [
