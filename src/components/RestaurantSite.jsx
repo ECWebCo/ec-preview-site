@@ -980,9 +980,11 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
                 {restaurant.announcement_eyebrow}
               </div>
             )}
-            <h2 style={{ fontFamily: 'DM Sans', fontSize: 'clamp(18px,3vw,26px)', fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: NAVY, lineHeight: 1.2 }}>
-              {restaurant.announcement_title || 'Announcements'}
-            </h2>
+            {restaurant.announcement_title && (
+  <h2 style={{ fontFamily: 'DM Sans', fontSize: 'clamp(18px,3vw,26px)', fontWeight: 700, letterSpacing: '5px', textTransform: 'uppercase', color: NAVY, lineHeight: 1.2 }}>
+    {restaurant.announcement_title}
+  </h2>
+)}
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: MUTED, lineHeight: 1, flexShrink: 0, marginLeft: 16 }}>✕</button>
         </div>
