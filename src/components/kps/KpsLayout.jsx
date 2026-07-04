@@ -461,6 +461,64 @@ function SpecialsPopup({ onClose, onReserve }) {
   )
 }
 
+// ─── Christmas in July Promo Popup ────────────────────────────
+const PROMO = {
+  offers: [
+    { icon:'🎁', title:'A Gift at Every Table', text:'Dine in with us this July and every table receives a complimentary gift — our way of saying thank you.' },
+    { icon:'💳', title:'Buy $100, Get $25 Free', text:'Purchase a $100 gift card and we\'ll add a bonus $25 — perfect for the holidays or a treat for yourself.' },
+  ],
+  ends: 'Now through the end of July',
+}
+
+function HolidayPromoPopup({ onClose, onReserve }) {
+  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
+      <div style={{ position:'relative', background:CREAM, width:'min(500px,92vw)', maxHeight:'90vh', overflowY:'auto', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
+
+        {/* Navy banner header */}
+        <div style={{ position:'relative', background:NAVY, padding:'40px 32px 34px', textAlign:'center', overflow:'hidden' }}>
+          <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.08 }}/>
+          <button onClick={onClose} style={{ position:'absolute', top:16, right:18, background:'none', border:'none', fontSize:22, cursor:'pointer', color:'rgba(255,255,255,0.7)', lineHeight:1, zIndex:2 }}>✕</button>
+          <div style={{ position:'relative' }}>
+            <div style={{ fontSize:34, marginBottom:10 }}>❄️ 🎄 ❄️</div>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:GOLD, marginBottom:12 }}>Limited-Time Celebration</div>
+            <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(28px,5vw,40px)', fontWeight:400, fontStyle:'italic', color:'#fff', lineHeight:1.15 }}>Christmas in July</h2>
+          </div>
+        </div>
+
+        {/* Offers */}
+        <div style={{ padding:'30px 32px 8px' }}>
+          {PROMO.offers.map((o,i)=>(
+            <div key={i} style={{ display:'flex', gap:18, padding:'18px 0', borderBottom:i<PROMO.offers.length-1?`1px solid ${BORDER}`:'none', alignItems:'flex-start' }}>
+              <div style={{ fontSize:28, flexShrink:0, lineHeight:1.1 }}>{o.icon}</div>
+              <div>
+                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:6 }}>{o.title}</div>
+                <p style={{ fontFamily:'Georgia,serif', fontSize:13.5, color:MUTED, fontStyle:'italic', lineHeight:1.65 }}>{o.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Ends banner + CTA */}
+        <div style={{ padding:'20px 32px 34px' }}>
+          <div style={{ textAlign:'center', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:RUST, marginBottom:22 }}>{PROMO.ends}</div>
+          <button onClick={onReserve}
+            style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            Reserve a Table
+          </button>
+          <button onClick={onClose}
+            style={{ display:'block', margin:'16px auto 0', background:'none', border:'none', fontFamily:'DM Sans', fontSize:10, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:MUTED, cursor:'pointer' }}>
+            Maybe Later
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Location Picker Modal ────────────────────────────────────
 function LocPicker({ type, onClose }) {
   const locs = [BELLAIRE, MEMORIAL]
@@ -796,12 +854,17 @@ export default function KpsLayout({ data }) {
   const [eventsOpen, setEventsOpen] = useState(false)
   const [picker, setPicker] = useState(null)
   const [specialsOpen, setSpecialsOpen] = useState(false)
+  const [promoOpen, setPromoOpen] = useState(false)
   const { sections } = data
 
-  // Auto-show specials popup after 2 seconds on first visit
+  // Auto-show Christmas in July promo after 2s — once per browser session
   useEffect(() => {
-    const t = setTimeout(() => setSpecialsOpen(true), 2000)
-      return () => clearTimeout(t)
+    if (sessionStorage.getItem('kps-promo-seen')) return
+    const t = setTimeout(() => {
+      setPromoOpen(true)
+      sessionStorage.setItem('kps-promo-seen', '1')
+    }, 2000)
+    return () => clearTimeout(t)
   }, [])
 
   const openMenu = (loc, tab) => { setMenuLoc(loc || activeLoc); setMenuTab(tab || null); setMenuOpen(true) }
@@ -819,6 +882,7 @@ export default function KpsLayout({ data }) {
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
       {picker && <LocPicker type={picker} onClose={()=>setPicker(null)}/>}
       {specialsOpen && <SpecialsPopup onClose={()=>setSpecialsOpen(false)} onReserve={()=>{ setSpecialsOpen(false); setPicker('reserve') }}/>}
+      {promoOpen && <HolidayPromoPopup onClose={()=>setPromoOpen(false)} onReserve={()=>{ setPromoOpen(false); setPicker('reserve') }}/>}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
