@@ -202,7 +202,7 @@ function PhotoCollage({ photos, slot }) {
               e.currentTarget.style.zIndex = cfg.z
             }}
           >
-            <img src={photo.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={photo.url} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
         )
       })}
@@ -994,6 +994,8 @@ function AnnouncementPopup({ restaurant, onClose, onReserve }) {
               <img
                 src={imageUrl}
                 alt={restaurant.announcement_title || 'Announcement'}
+                loading="lazy"
+                decoding="async"
                 style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto', borderRadius: 4 }}
               />
             </div>

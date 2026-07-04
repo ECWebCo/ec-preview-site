@@ -19,6 +19,42 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;')
 }
 
+// Restaurant SEO metadata (name/tagline/logo/favicon) changes rarely, but this
+// middleware runs on every pageview of every custom domain. Cache the Supabase
+// lookup per host in the edge instance's memory so repeat visits and crawlers
+// don't trigger a DB request each time. Warm instances share this Map.
+const LOOKUP_TTL_MS = 10 * 60 * 1000
+const lookupCache = new Map() // host -> { expires, restaurant }
+
+async function lookupRestaurant(host) {
+  const cached = lookupCache.get(host)
+  if (cached && cached.expires > Date.now()) return cached.restaurant
+
+  let restaurant = null
+  try {
+    if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+      const apiUrl = `${SUPABASE_URL}/rest/v1/restaurants?select=name,tagline,about,seo_description,logo_url,favicon_url&custom_domain=eq.${encodeURIComponent(host)}`
+      const res = await fetch(apiUrl, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        restaurant = Array.isArray(data) && data.length > 0 ? data[0] : null
+      }
+    }
+  } catch (err) {
+    return null // don't cache transient errors
+  }
+
+  // Cache hits AND misses (null) — a miss means "no such custom domain", which
+  // is exactly the crawler noise we want to stop re-querying.
+  lookupCache.set(host, { expires: Date.now() + LOOKUP_TTL_MS, restaurant })
+  return restaurant
+}
+
 export default async function middleware(request) {
   const url = new URL(request.url)
 
@@ -44,40 +80,22 @@ export default async function middleware(request) {
   let image = ''
   let faviconUrl = ''
 
-  try {
-    if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-      const apiUrl = `${SUPABASE_URL}/rest/v1/restaurants?select=name,tagline,about,seo_description,logo_url,favicon_url&custom_domain=eq.${encodeURIComponent(host)}`
-      const res = await fetch(apiUrl, {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-      })
+  const restaurant = await lookupRestaurant(host)
+  if (restaurant) {
+    title = restaurant.tagline
+      ? `${restaurant.name} | ${restaurant.tagline}`
+      : restaurant.name
 
-      if (res.ok) {
-        const data = await res.json()
-        const restaurant = Array.isArray(data) && data.length > 0 ? data[0] : null
-
-        if (restaurant) {
-          title = restaurant.tagline
-            ? `${restaurant.name} | ${restaurant.tagline}`
-            : restaurant.name
-
-          description = restaurant.seo_description
-          if (!description && restaurant.about) {
-            description = restaurant.about.length > 155
-              ? restaurant.about.slice(0, 155).trim() + '…'
-              : restaurant.about
-          }
-          if (!description) description = `Visit ${restaurant.name}`
-
-          if (restaurant.logo_url) image = restaurant.logo_url
-          if (restaurant.favicon_url) faviconUrl = restaurant.favicon_url
-        }
-      }
+    description = restaurant.seo_description
+    if (!description && restaurant.about) {
+      description = restaurant.about.length > 155
+        ? restaurant.about.slice(0, 155).trim() + '…'
+        : restaurant.about
     }
-  } catch (err) {
-    // fall through with defaults
+    if (!description) description = `Visit ${restaurant.name}`
+
+    if (restaurant.logo_url) image = restaurant.logo_url
+    if (restaurant.favicon_url) faviconUrl = restaurant.favicon_url
   }
 
   // Fetch the original index.html so we have the right bundled asset URLs
@@ -119,7 +137,7 @@ export default async function middleware(request) {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=300, s-maxage=300',
+      'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=600',
     },
   })
 }
