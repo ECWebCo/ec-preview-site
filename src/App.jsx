@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getRestaurantData, trackEvent } from './lib/supabase'
 import RestaurantSite from './components/RestaurantSite'
+import KpsLayout from './components/kps/KpsLayout'
 
 function applyColors(r) {
   const root = document.documentElement
@@ -11,12 +12,27 @@ function applyColors(r) {
   }
 }
 
+// KP's Kitchen is a bespoke, self-contained layout (hardcoded menus/content,
+// local images) — served without hitting Supabase for menu/photo data.
+// Matched by its custom domain, or `?site=kps` for local preview.
+function isKps() {
+  if (typeof window === 'undefined') return false
+  const host = window.location.hostname.replace(/^www\./, '')
+  const site = new URLSearchParams(window.location.search).get('site')
+  return host === 'kps-kitchen.com' || site === 'kps'
+}
+
 export default function App() {
+  const kps = isKps()
   const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!kps)
   const [error, setError] = useState(false)
 
   useEffect(() => {
+    if (kps) {
+      document.title = "KP's Kitchen | Your Go-To for Comfort Classics"
+      return
+    }
     getRestaurantData().then(d => {
       if (d) {
         setData(d)
@@ -28,7 +44,9 @@ export default function App() {
       }
       setLoading(false)
     })
-  }, [])
+  }, [kps])
+
+  if (kps) return <KpsLayout data={{ sections: [] }} />
 
   if (loading)
     return <div style={{ minHeight: '100vh', background: '#FAFAF8' }} />

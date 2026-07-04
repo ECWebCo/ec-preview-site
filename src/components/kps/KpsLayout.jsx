@@ -10,8 +10,8 @@ const MUTED  = '#8A8278'
 const BORDER = '#E4E0D8'
 const RUST   = '#C4622D'
 
-const LOGO_WHITE = 'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2007_06_02%20PM.png'
-const LOGO_BLUE  = 'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2007_05_51%20PM.png'
+const LOGO_WHITE = '/kps/logo-white.png'
+const LOGO_BLUE  = '/kps/logo-blue.png'
 
 const BELLAIRE = {
   name: 'Bellaire',
@@ -142,7 +142,7 @@ function KpsNav({ activeLoc, setActiveLoc, onMenuOpen, onPick }) {
 
 // ─── Hero Slideshow ───────────────────────────────────────────
 const HERO_PHOTOS = [
-  'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2021,%202026,%2003_20_31%20PM.png',
+  '/kps/hero.jpg',
 ]
 
 function KpsHero() {
@@ -171,7 +171,7 @@ function KpsHero() {
 // ─── Design system ────────────────────────────────────────────
 const SECTION_MAX = 960
 const SECTION_PAD = '72px 64px'
-const PATTERN_URL = 'https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2008_18_08%20PM.png'
+const PATTERN_URL = '/kps/pattern.jpg'
 const EYEBROW_STYLE = { fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:14 }
 const H2_STYLE = { fontFamily:'Playfair Display,serif', fontSize:'clamp(26px,3.5vw,42px)', fontWeight:400, fontStyle:'italic', color:NAVY, lineHeight:1.15 }
 const BODY_STYLE = { fontFamily:'DM Sans', fontSize:14, color:MUTED, lineHeight:1.85, fontWeight:300 }
@@ -542,7 +542,7 @@ function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
             </button>
           </div>
         </div>
-        <PaddedImage src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>onPick('order')}/>
+        <PaddedImage src="/kps/order-burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>onPick('order')}/>
       </div>
     </section>
   )
@@ -616,7 +616,7 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
         {/* Left — padded private dining image */}
         <div id="kps-private" className="kps-padded-img-col kps-loc-photo">
           <PaddedImage
-            src="https://snthchxrqjtriorgvakk.supabase.co/storage/v1/object/public/restaurant-photos/ChatGPT%20Image%20Apr%2020,%202026,%2009_56_12%20PM.png"
+            src="/kps/private-dining.jpg"
             label="Private Dining"
             sub="Office Lunches · Client Meetings · Celebrations"
             cta="Inquire About Events"
