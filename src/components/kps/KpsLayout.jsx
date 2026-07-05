@@ -13,22 +13,6 @@ const RUST   = '#C4622D'
 const LOGO_WHITE = '/kps/logo-white.png'
 const LOGO_BLUE  = '/kps/logo-blue.png'
 
-const BELLAIRE = {
-  name: 'Bellaire',
-  address: '5427 Bissonnet St #400, Bellaire, TX 77401',
-  phone: '(346) 240-2678',
-  order: 'https://order.toasttab.com/online/kp-kitchen-bellaire?diningOption=takeout',
-  hours: [
-    { day: 'Monday', closed: true },
-    { day: 'Tuesday', time: '4:00 PM – 9:00 PM' },
-    { day: 'Wednesday', time: '4:00 PM – 9:00 PM' },
-    { day: 'Thursday', time: '4:00 PM – 9:00 PM' },
-    { day: 'Friday', time: '4:00 PM – 9:00 PM' },
-    { day: 'Saturday', time: '11:00 AM – 9:00 PM' },
-    { day: 'Sunday', time: '10:00 AM – 8:00 PM' },
-  ]
-}
-
 const MEMORIAL = {
   name: 'Memorial',
   address: '8412 Interstate 10 Frontage Rd #350, Houston, TX 77024',
@@ -256,38 +240,6 @@ const SPECIALS = { name:'Specials', items:[
   { name:'Sunday', description:'Brunch + Fried Chicken Family Meal' },
 ]}
 
-const BELLAIRE_MENU = [
-  { name:'Dinner', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
-    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
-    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
-    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
-    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
-    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
-    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
-    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
-  ]},
-  { name:'Brunch', link:'https://www.kps-kitchen.com/bellaire#our-menu', items:[
-    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
-    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
-    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
-    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
-  ]},
-  { name:'Happy Hour', link:'https://www.kps-kitchen.com/bellaire#our-menu', note:'Tue – Fri 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
-    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, sake-based vodka with a twist', price:'7' },
-    { name:'Sour Cherry Lemon Drop', description:'House made cherry-vanilla', price:'7' },
-    { name:'Moscow Mule', description:'Ginger laced, sake-based vodka', price:'7' },
-    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
-    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
-    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
-    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
-    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
-    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
-    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
-    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
-  ]},
-  SPECIALS,
-]
-
 const MEMORIAL_MENU = [
   { name:'Dinner', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
     { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
@@ -323,8 +275,7 @@ const MEMORIAL_MENU = [
 
 // ─── Menu Modal — centered popup, vertical tabs ───────────────
 function MenuModal({ sections, activeLoc, initialTab, onClose }) {
-  const display = sections?.length ? sections
-    : activeLoc?.name === 'Bellaire' ? BELLAIRE_MENU : MEMORIAL_MENU
+  const display = sections?.length ? sections : MEMORIAL_MENU
   const initIdx = Math.max(0, display.findIndex(s => s.name === initialTab))
   const [activeTab, setActiveTab] = useState(initIdx)
   const [openTab, setOpenTab] = useState(initIdx) // mobile accordion
@@ -519,35 +470,11 @@ function HolidayPromoPopup({ onClose, onReserve }) {
   )
 }
 
-// ─── Location Picker Modal ────────────────────────────────────
-function LocPicker({ type, onClose }) {
-  const locs = [BELLAIRE, MEMORIAL]
-  const href = loc => type === 'reserve' || type === 'happyhour' ? loc.resy : loc.order
-  return (
-    <div style={{ position:'fixed', inset:0, zIndex:600, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={onClose}>
-      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)' }}/>
-      <div style={{ position:'relative', background:'#fff', width:'min(400px,90vw)', padding:'36px 32px' }} onClick={e=>e.stopPropagation()}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:28 }}>
-          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED }}>
-            {type==='reserve'||type==='happyhour' ? 'Reserve a Table' : 'Order Online'}
-          </div>
-          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:18, cursor:'pointer', color:MUTED }}>✕</button>
-        </div>
-        {locs.map(loc => (
-          <a key={loc.name} href={href(loc)} target="_blank" rel="noreferrer"
-            style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'16px 0', borderTop:`1px solid ${BORDER}`, textDecoration:'none', transition:'opacity 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.6'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            <div>
-              <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:2 }}>{loc.name}</div>
-              <div style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic' }}>{loc.address.split(',')[0]}</div>
-              {type==='happyhour' && <div style={{ fontFamily:'DM Sans', fontSize:10, color:MUTED, marginTop:4, letterSpacing:'1px' }}>Mon – Fri · 4:00 – 6:00 PM</div>}
-            </div>
-            <span style={{ fontFamily:'DM Sans', fontSize:11, color:NAVY, fontWeight:600, letterSpacing:'2px' }}>→</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  )
+// ─── Single-location action links (Order / Reserve) ──────────
+// One location, so Order/Reserve/Happy Hour open the right link directly.
+function openAction(type) {
+  const url = type === 'order' ? MEMORIAL.order : MEMORIAL.resy
+  window.open(url, '_blank', 'noopener,noreferrer')
 }
 
 // ─── Shared padded image button ──────────────────────────────
@@ -632,7 +559,7 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
           </div>
         </div>
         <div id="kps-happyhour">
-          <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tue – Fri 3–6PM · Both Locations" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
+          <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tuesday – Sunday · 3–6PM" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
         </div>
       </div>
     </section>
@@ -686,7 +613,7 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text kps-loc-text">
           <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
           <div style={{ display:'flex', flexDirection:'column', gap:48, width:'100%', maxWidth:340 }}>
-            {[BELLAIRE, MEMORIAL].map((loc,i)=>(
+            {[MEMORIAL].map((loc,i)=>(
               <div key={i}>
                 <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8, opacity:0.6 }}>{loc.name}</div>
                 <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.8, marginBottom:2, fontStyle:'italic' }}>{loc.address}</p>
@@ -776,21 +703,14 @@ function KpsFooter() {
     <footer style={{ background:NAVY, padding:'56px 48px 40px', textAlign:'center' }}>
       <div style={{ maxWidth:640, margin:'0 auto' }}>
         <div style={{ display:'flex', gap:24, justifyContent:'center', flexWrap:'wrap', marginBottom:16 }}>
-          {[
-            ['5427 Bissonnet St, Bellaire TX', `https://maps.google.com?q=${encodeURIComponent(BELLAIRE.address)}`],
-            ['8412 I-10 Frontage Rd, Houston TX', `https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`],
-          ].map(([label, href], i) => (
-            <a key={i} href={href} target="_blank" rel="noreferrer"
-              style={{ fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', transition:'color 0.2s' }}
-              onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>
-              {label}
-            </a>
-          ))}
+          <a href={`https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`} target="_blank" rel="noreferrer"
+            style={{ fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', transition:'color 0.2s' }}
+            onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>
+            8412 I-10 Frontage Rd, Houston TX
+          </a>
         </div>
-        <a href={`tel:${BELLAIRE.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:4, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>Bellaire · {BELLAIRE.phone}</a>
         <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:6, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>Memorial · {MEMORIAL.phone}</a>
+          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>{MEMORIAL.phone}</a>
         <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:36, transition:'color 0.2s' }}
           onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>events@kps-kitchen.com</a>
         <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
@@ -802,29 +722,9 @@ function KpsFooter() {
 }
 
 // ─── Sticky Bar ───────────────────────────────────────────────
-function KpsStickyBar({ activeLoc, setActiveLoc, onPick }) {
-  const [callPicker, setCallPicker] = useState(false)
-
+function KpsStickyBar({ onPick }) {
   return (
     <>
-      {callPicker && (
-        <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'flex-end' }} onClick={()=>setCallPicker(false)}>
-          <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.4)' }}/>
-          <div style={{ position:'relative', width:'100%', background:'#fff', paddingBottom:'env(safe-area-inset-bottom)' }} onClick={e=>e.stopPropagation()}>
-            <div style={{ padding:'20px 24px 8px', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:MUTED }}>Choose a Location</div>
-            {[BELLAIRE, MEMORIAL].map(loc=>(
-              <a key={loc.name} href={`tel:${loc.phone}`}
-                style={{ display:'flex', justifyContent:'space-between', padding:'16px 24px', borderTop:`1px solid ${BORDER}`, textDecoration:'none', background:'#fff' }}>
-                <div>
-                  <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, color:NAVY, marginBottom:2 }}>{loc.name}</div>
-                  <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED }}>{loc.phone}</div>
-                </div>
-                <span style={{ fontFamily:'DM Sans', fontSize:12, color:NAVY, alignSelf:'center' }}>Call →</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
       <div className="kps-sticky" style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:200, display:'none', background:'#fff', borderTop:`1px solid ${BORDER}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
         <button onClick={()=>onPick('reserve')}
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:NAVY, color:'#fff', border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:'1px solid rgba(255,255,255,0.1)' }}>
@@ -834,10 +734,10 @@ function KpsStickyBar({ activeLoc, setActiveLoc, onPick }) {
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:`1px solid ${BORDER}` }}>
           Order
         </button>
-        <button onClick={()=>setCallPicker(true)}
-          style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase' }}>
+        <a href={`tel:${MEMORIAL.phone}`}
+          style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, textDecoration:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase' }}>
           Call
-        </button>
+        </a>
       </div>
       <div className="kps-sticky-spacer" style={{ display:'none', height:56 }}/>
       <style>{`@media(max-width:768px){.kps-sticky{display:flex!important}.kps-sticky-spacer{display:block!important}}`}</style>
@@ -852,7 +752,6 @@ export default function KpsLayout({ data }) {
   const [menuLoc, setMenuLoc] = useState(MEMORIAL)
   const [menuTab, setMenuTab] = useState(null)
   const [eventsOpen, setEventsOpen] = useState(false)
-  const [picker, setPicker] = useState(null)
   const [specialsOpen, setSpecialsOpen] = useState(false)
   const [promoOpen, setPromoOpen] = useState(false)
   const { sections } = data
@@ -871,18 +770,17 @@ export default function KpsLayout({ data }) {
 
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
-      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>openMenu()} onPick={setPicker}/>
+      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>openMenu()} onPick={openAction}/>
       <KpsHero />
-      <KpsAbout onMenuOpen={()=>openMenu()} onPick={setPicker} onSpecials={()=>setSpecialsOpen(true)} />
-      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={openMenu} onPick={setPicker} />
-      <KpsHoursSection onMenuOpen={(loc,tab)=>openMenu(loc,tab)} onPick={setPicker} />
+      <KpsAbout onMenuOpen={()=>openMenu()} onPick={openAction} onSpecials={()=>setSpecialsOpen(true)} />
+      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={openMenu} onPick={openAction} />
+      <KpsHoursSection onMenuOpen={(loc,tab)=>openMenu(loc,tab)} onPick={openAction} />
       <KpsFooter />
-      <KpsStickyBar activeLoc={activeLoc} setActiveLoc={setActiveLoc} onPick={setPicker} />
+      <KpsStickyBar onPick={openAction} />
       {menuOpen && <MenuModal sections={sections} activeLoc={menuLoc} initialTab={menuTab} onClose={()=>setMenuOpen(false)}/>}
       {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
-      {picker && <LocPicker type={picker} onClose={()=>setPicker(null)}/>}
-      {specialsOpen && <SpecialsPopup onClose={()=>setSpecialsOpen(false)} onReserve={()=>{ setSpecialsOpen(false); setPicker('reserve') }}/>}
-      {promoOpen && <HolidayPromoPopup onClose={()=>setPromoOpen(false)} onReserve={()=>{ setPromoOpen(false); setPicker('reserve') }}/>}
+      {specialsOpen && <SpecialsPopup onClose={()=>setSpecialsOpen(false)} onReserve={()=>{ setSpecialsOpen(false); openAction('reserve') }}/>}
+      {promoOpen && <HolidayPromoPopup onClose={()=>setPromoOpen(false)} onReserve={()=>{ setPromoOpen(false); openAction('reserve') }}/>}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
