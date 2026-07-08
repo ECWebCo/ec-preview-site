@@ -1,4 +1,8 @@
 {
+  "redirects": [
+    { "source": "/bellaire", "destination": "/", "permanent": true },
+    { "source": "/bellaire/:path*", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
