@@ -126,7 +126,9 @@ function KpsNav({ activeLoc, setActiveLoc, onMenuOpen, onPick }) {
 
 // ─── Hero Slideshow ───────────────────────────────────────────
 const HERO_PHOTOS = [
-  '/kps/hero.jpg',
+  '/kps/hero-patio.jpg',
+  '/kps/hero-table.jpg',
+  '/kps/hero-room.jpg',
 ]
 
 function KpsHero() {
@@ -201,31 +203,72 @@ function KpsPattern() {
 }
 
 
-// ─── Shared slide photo ───────────────────────────────────────
-const SLIDE_PHOTOS = [
-  'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&q=85',
-  'https://images.unsplash.com/photo-1544025162-d76694265947?w=900&q=85',
-  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&q=85',
-  'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&q=85',
-  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85',
+// ─── Photo Collage (polaroid-style, up to 3 photos) ───────────
+const COLLAGE_FOOD    = ['/kps/food-biscuits.jpg', '/kps/food-cobb.jpg', '/kps/food-burger.jpg']
+const COLLAGE_DRINKS  = ['/kps/food-caymus.jpg', '/kps/food-dessert.jpg', '/kps/food-chickensandwich.jpg']
+const COLLAGE_EVENTS  = ['/kps/catering-party.jpg', '/kps/catering-breakfast.jpg', '/kps/int-overhead.jpg']
+
+const COLLAGE_LAYOUTS = [
+  [ // slot 1
+    { x:'8%',  y:'14%', w:'52%', h:'58%', rot:-3,   z:2 },
+    { x:'52%', y:'6%',  w:'44%', h:'46%', rot:3.5,  z:1 },
+    { x:'40%', y:'52%', w:'48%', h:'42%', rot:-1.5, z:3 },
+  ],
+  [ // slot 2
+    { x:'40%', y:'8%',  w:'54%', h:'54%', rot:3,    z:2 },
+    { x:'8%',  y:'24%', w:'44%', h:'48%', rot:-2.5, z:3 },
+    { x:'36%', y:'50%', w:'50%', h:'44%', rot:1.5,  z:1 },
+  ],
+  [ // slot 3
+    { x:'6%',  y:'10%', w:'48%', h:'52%', rot:2.5,  z:1 },
+    { x:'50%', y:'20%', w:'46%', h:'50%', rot:-3,   z:3 },
+    { x:'20%', y:'52%', w:'52%', h:'44%', rot:2,    z:2 },
+  ],
 ]
 
-function PhotoSlide() {
-  const [idx, setIdx] = useState(0)
-  useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i+1) % SLIDE_PHOTOS.length), 4000)
-    return () => clearInterval(t)
-  }, [])
+function PhotoCollage({ photos, slot = 1 }) {
+  if (!photos?.length) return null
+  const layout = COLLAGE_LAYOUTS[(slot - 1) % COLLAGE_LAYOUTS.length]
   return (
-    <div style={{ padding:'0 48px', marginBottom:64 }}>
-      <div style={{ position:'relative', maxWidth:640, margin:'0 auto' }}>
-        {SLIDE_PHOTOS.map((src,i) => (
-          <img key={i} src={src} alt="" style={{
-            display: i===idx ? 'block' : 'none',
-            width:'100%', height:420, objectFit:'cover', objectPosition:'center',
-          }}/>
-        ))}
-      </div>
+    <div style={{ position:'relative', width:'100%', paddingBottom:'95%', height:0 }}>
+      {photos.slice(0,3).map((src,i) => {
+        const cfg = layout[i]
+        if (!cfg) return null
+        return (
+          <div key={i}
+            style={{ position:'absolute', left:cfg.x, top:cfg.y, width:cfg.w, height:cfg.h,
+              transform:`rotate(${cfg.rot}deg)`, zIndex:cfg.z,
+              transition:'transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)',
+              boxShadow:'0 12px 40px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.10)',
+              overflow:'hidden', background:'#fff', padding:6 }}
+            onMouseOver={e=>{ e.currentTarget.style.transform=`rotate(${cfg.rot}deg) scale(1.03)`; e.currentTarget.style.zIndex=10 }}
+            onMouseOut={e=>{ e.currentTarget.style.transform=`rotate(${cfg.rot}deg) scale(1)`; e.currentTarget.style.zIndex=cfg.z }}>
+            <img src={src} alt="" loading="lazy" decoding="async" style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }}/>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// Collage in a padded column, with optional caption + CTA beneath
+function CollageBlock({ id, photos, slot, eyebrow, title, cta, onCta }) {
+  return (
+    <div id={id} className="kps-collage-col" style={{ padding:'48px 40px', display:'flex', flexDirection:'column', justifyContent:'center' }}>
+      <PhotoCollage photos={photos} slot={slot} />
+      {(eyebrow || title || cta) && (
+        <div style={{ textAlign:'center', marginTop:28 }}>
+          {eyebrow && <div style={{ ...EYEBROW_STYLE, marginBottom:8 }}>{eyebrow}</div>}
+          {title && <div style={{ fontFamily:'Playfair Display,serif', fontStyle:'italic', fontSize:'clamp(18px,2.4vw,24px)', color:NAVY, marginBottom:cta?16:0 }}>{title}</div>}
+          {cta && (
+            <button onClick={onCta} style={PILL_BTN}
+              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+              {cta}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -477,28 +520,7 @@ function openAction(type) {
   window.open(url, '_blank', 'noopener,noreferrer')
 }
 
-// ─── Shared padded image button ──────────────────────────────
-function PaddedImage({ src, onClick, label, sub, cta }) {
-  return (
-    <div className="kps-padded-img" style={{ padding:32, display:'flex', alignItems:'stretch' }}>
-      <div onClick={onClick} style={{ position:'relative', overflow:'hidden', width:'100%', cursor:onClick?'pointer':'default', minHeight:480, transition:'transform 0.3s ease, box-shadow 0.3s ease' }}
-        onMouseOver={e=>{ if(onClick){ e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 40px rgba(0,0,0,0.18)' }}}
-        onMouseOut={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='none' }}>
-        <img src={src} alt={label||''} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }}/>
-        {label && <>
-          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 60%, transparent 100%)' }}/>
-          <div style={{ position:'absolute', bottom:28, left:28, right:28 }}>
-            {sub && <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'rgba(255,255,255,0.65)', marginBottom:6 }}>{sub}</div>}
-            <div style={{ fontFamily:'DM Sans', fontSize:'clamp(14px,2vw,20px)', fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:'#fff', marginBottom:10 }}>{label}</div>
-            {cta && <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:'#fff', borderBottom:'1px solid rgba(255,255,255,0.5)', display:'inline-block', paddingBottom:2 }}>{cta} →</div>}
-          </div>
-        </>}
-      </div>
-    </div>
-  )
-}
-
-// ─── Row 1: About (left) | Order Online photo (right) ────────
+// ─── Row 1: About (left) | food collage (right) ──────────────
 function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
   return (
     <section style={{ background:'#fff' }}>
@@ -527,7 +549,7 @@ function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
             </button>
           </div>
         </div>
-        <PaddedImage src="/kps/order-burger.avif" label="Order Online" sub="Curbside & Delivery" cta="Order Now" onClick={()=>onPick('order')}/>
+        <CollageBlock photos={COLLAGE_FOOD} slot={1} eyebrow="From Our Kitchen" title="Scratch-made comfort classics" cta="Order Online" onCta={()=>onPick('order')} />
       </div>
     </section>
   )
@@ -558,9 +580,7 @@ function KpsHoursSection({ onMenuOpen, onPick }) {
             ))}
           </div>
         </div>
-        <div id="kps-happyhour">
-          <PaddedImage src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=1200&q=85" label="Happy Hour" sub="Tuesday – Sunday · 3–6PM" cta="Reserve a Table" onClick={()=>onPick('happyhour')}/>
-        </div>
+        <CollageBlock id="kps-happyhour" photos={COLLAGE_DRINKS} slot={2} eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour · $7 for 7" cta="Reserve a Table" onCta={()=>onPick('reserve')} />
       </div>
     </section>
   )
@@ -598,14 +618,16 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
     <section id="kps-locations" style={{ background:'#fff' }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
 
-        {/* Left — padded private dining image */}
-        <div id="kps-private" className="kps-padded-img-col kps-loc-photo">
-          <PaddedImage
-            src="/kps/private-dining.jpg"
-            label="Private Dining"
-            sub="Office Lunches · Client Meetings · Celebrations"
+        {/* Left — private dining / catering collage */}
+        <div className="kps-padded-img-col kps-loc-photo">
+          <CollageBlock
+            id="kps-private"
+            photos={COLLAGE_EVENTS}
+            slot={3}
+            eyebrow="Private Dining & Catering"
+            title="Office lunches, celebrations & events"
             cta="Inquire About Events"
-            onClick={onEventsOpen}
+            onCta={onEventsOpen}
           />
         </div>
 
