@@ -1,6 +1,8 @@
 // Routing Middleware — runs before every request.
-// For the root URL on custom domains, fetches restaurant data from Supabase
-// and injects per-restaurant SEO meta tags into the HTML response.
+// - For KP's Kitchen (bespoke multi-page site), injects per-page SEO meta
+//   from a hardcoded table and serves sitemap.xml / robots.txt (no Supabase).
+// - For every other custom domain, injects per-restaurant SEO on the root
+//   path from Supabase (data-driven RestaurantSite).
 
 export const config = {
   runtime: 'edge',
@@ -19,10 +21,103 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;')
 }
 
-// Restaurant SEO metadata (name/tagline/logo/favicon) changes rarely, but this
-// middleware runs on every pageview of every custom domain. Cache the Supabase
-// lookup per host in the edge instance's memory so repeat visits and crawlers
-// don't trigger a DB request each time. Warm instances share this Map.
+// ─── KP's Kitchen: bespoke per-page SEO ───────────────────────
+const KPS_HOST = 'kps-kitchen.com'
+const KPS_PAGES = {
+  '/': {
+    title: "KP's Kitchen | Your Go-To for Comfort Classics",
+    description: "Upscale American comfort food & craft cocktails in Houston's Memorial. Scratch-made classics, a $7-for-7 happy hour, brunch, private events & catering.",
+  },
+  '/menu': {
+    title: "Menu | KP's Kitchen & Bar",
+    description: "Explore KP's Kitchen's menu — smashed cheeseburgers, Mama Pauly's meatballs, shrimp & grits, brunch, and a $7-for-7 happy hour in Houston's Memorial.",
+  },
+  '/happy-hour': {
+    title: "Happy Hour · $7 for 7 | KP's Kitchen & Bar",
+    description: "KP's Kitchen happy hour: 7 drinks, 7 bites, $7 each — Tuesday through Sunday, 3–6PM in Houston's Memorial.",
+  },
+  '/specials': {
+    title: "Weekly Specials | KP's Kitchen & Bar",
+    description: "KP's Kitchen weekly specials — $12 Burger Tuesdays, Prime Rib Wednesdays, Steak Nights, Sunday family meals and more in Houston's Memorial.",
+  },
+  '/private-events': {
+    title: "Private Events | KP's Kitchen & Bar",
+    description: "Host private events at KP's Kitchen — rehearsal dinners, birthdays, corporate gatherings & holiday parties with custom menus in Houston's Memorial.",
+  },
+  '/catering': {
+    title: "Catering | KP's Kitchen & Bar",
+    description: "Catering from KP's Kitchen — drop-off and full-service comfort food for offices, meetings & celebrations across Houston.",
+  },
+  '/about': {
+    title: "Our Story | KP's Kitchen & Bar",
+    description: "KP's Kitchen & Bar — Kerry Pauly's Houston institution for scratch-made comfort food and genuine neighborhood hospitality.",
+  },
+  '/contact': {
+    title: "Contact & Hours | KP's Kitchen & Bar",
+    description: "Visit KP's Kitchen & Bar in Houston's Memorial — 8412 I-10 Frontage Rd. Hours, directions, reservations & contact.",
+  },
+}
+const KPS_PATHS = Object.keys(KPS_PAGES)
+
+function buildMetaBlock({ title, description, url, image, favicon }) {
+  return `
+    <title>${escapeHtml(title)}</title>
+    <meta name="description" content="${escapeHtml(description)}" />
+    <link rel="canonical" href="${escapeHtml(url)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${escapeHtml(url)}" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(description)}" />
+    ${image ? `<meta property="og:image" content="${escapeHtml(image)}" />` : ''}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(description)}" />
+    ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}" />` : ''}
+    ${favicon ? `<link rel="icon" href="${escapeHtml(favicon)}" />` : ''}`
+}
+
+function injectMeta(html, meta) {
+  return html
+    .replace(/<title>[\s\S]*?<\/title>/i, '')
+    .replace(/<meta\s+name=["']description["'][^>]*\/?>/gi, '')
+    .replace(/<link\s+rel=["']canonical["'][^>]*\/?>/gi, '')
+    .replace(/<meta\s+property=["']og:[^"']+["'][^>]*\/?>/gi, '')
+    .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*\/?>/gi, '')
+    .replace(/<link\s+rel=["']icon["'][^>]*\/?>/gi, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace('</head>', `${buildMetaBlock(meta)}\n</head>`)
+}
+
+function htmlResponse(html) {
+  return new Response(html, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=600',
+    },
+  })
+}
+
+function kpsSitemap(origin) {
+  const urls = KPS_PATHS
+    .map(p => `<url><loc>${origin}${p === '/' ? '' : p}</loc><changefreq>weekly</changefreq></url>`)
+    .join('')
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`
+  return new Response(xml, {
+    status: 200,
+    headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
+  })
+}
+
+function kpsRobots(origin) {
+  const body = `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`
+  return new Response(body, {
+    status: 200,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' },
+  })
+}
+
+// ─── Data-driven restaurants: cached Supabase SEO lookup ──────
 const LOOKUP_TTL_MS = 10 * 60 * 1000
 const lookupCache = new Map() // host -> { expires, restaurant }
 
@@ -49,21 +144,41 @@ async function lookupRestaurant(host) {
     return null // don't cache transient errors
   }
 
-  // Cache hits AND misses (null) — a miss means "no such custom domain", which
-  // is exactly the crawler noise we want to stop re-querying.
   lookupCache.set(host, { expires: Date.now() + LOOKUP_TTL_MS, restaurant })
   return restaurant
 }
 
 export default async function middleware(request) {
   const url = new URL(request.url)
+  const host = url.hostname.replace(/^www\./, '')
+  const path = url.pathname.replace(/\/+$/, '') || '/'
 
-  // Only process root path requests. Asset/api requests fall through.
-  if (url.pathname !== '/' && url.pathname !== '/index.html') {
+  // ── KP's Kitchen (bespoke, multi-page, no Supabase) ──
+  if (host === KPS_HOST) {
+    if (url.pathname === '/sitemap.xml') return kpsSitemap(url.origin)
+    if (url.pathname === '/robots.txt') return kpsRobots(url.origin)
+
+    if (KPS_PAGES[path]) {
+      const original = await fetch(request)
+      const contentType = original.headers.get('content-type') || ''
+      if (!contentType.includes('text/html')) return original
+      const html = await original.text()
+      const p = KPS_PAGES[path]
+      return htmlResponse(injectMeta(html, {
+        title: p.title,
+        description: p.description,
+        url: `${url.origin}${path === '/' ? '' : path}`,
+        image: `${url.origin}/kps/hero-patio.jpg`,
+      }))
+    }
+    // Unknown KPS path (e.g. /bellaire handled by redirect) — pass through
     return fetch(request)
   }
 
-  const host = url.hostname.replace(/^www\./, '')
+  // ── All other hosts: only process the root path ──
+  if (url.pathname !== '/' && url.pathname !== '/index.html') {
+    return fetch(request)
+  }
 
   // Preview / staging / localhost hosts: serve unmodified
   if (
@@ -98,46 +213,10 @@ export default async function middleware(request) {
     if (restaurant.favicon_url) faviconUrl = restaurant.favicon_url
   }
 
-  // Fetch the original index.html so we have the right bundled asset URLs
-  const originalResponse = await fetch(request)
-  const contentType = originalResponse.headers.get('content-type') || ''
-  if (!contentType.includes('text/html')) {
-    return originalResponse
-  }
+  const original = await fetch(request)
+  const contentType = original.headers.get('content-type') || ''
+  if (!contentType.includes('text/html')) return original
 
-  let html = await originalResponse.text()
-
-  const metaBlock = `
-    <title>${escapeHtml(title)}</title>
-    <meta name="description" content="${escapeHtml(description)}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="${escapeHtml(url.origin)}" />
-    <meta property="og:title" content="${escapeHtml(title)}" />
-    <meta property="og:description" content="${escapeHtml(description)}" />
-    ${image ? `<meta property="og:image" content="${escapeHtml(image)}" />` : ''}
-    ${image ? `<meta property="og:image:width" content="1200" />` : ''}
-    ${image ? `<meta property="og:image:height" content="630" />` : ''}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${escapeHtml(title)}" />
-    <meta name="twitter:description" content="${escapeHtml(description)}" />
-    ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}" />` : ''}
-    ${faviconUrl ? `<link rel="icon" href="${escapeHtml(faviconUrl)}" />` : ''}`
-
-  // Strip existing meta/title/icon, inject ours
-  html = html
-    .replace(/<title>[\s\S]*?<\/title>/i, '')
-    .replace(/<meta\s+name=["']description["'][^>]*\/?>/gi, '')
-    .replace(/<meta\s+property=["']og:[^"']+["'][^>]*\/?>/gi, '')
-    .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*\/?>/gi, '')
-    .replace(/<link\s+rel=["']icon["'][^>]*\/?>/gi, '')
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace('</head>', `${metaBlock}\n</head>`)
-
-  return new Response(html, {
-    status: 200,
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=600',
-    },
-  })
+  const html = await original.text()
+  return htmlResponse(injectMeta(html, { title, description, url: url.origin, image, favicon: faviconUrl }))
 }

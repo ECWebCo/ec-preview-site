@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { trackEvent } from '../../lib/supabase'
 
 const NAVY   = '#1B2B4B'
 const CREAM  = '#FAFAF8'
@@ -12,11 +11,13 @@ const RUST   = '#C4622D'
 
 const LOGO_WHITE = '/kps/logo-white.png'
 const LOGO_BLUE  = '/kps/logo-blue.png'
+const PATTERN_URL = '/kps/pattern.jpg'
 
 const MEMORIAL = {
   name: 'Memorial',
   address: '8412 Interstate 10 Frontage Rd #350, Houston, TX 77024',
   phone: '(713) 677-0921',
+  email: 'events@kps-kitchen.com',
   resy: 'https://resy.com/cities/houston-tx/venues/kps-kitchen',
   order: 'https://order.toasttab.com/online/kpskitchen-spring-valley?diningOption=takeout',
   hours: [
@@ -30,144 +31,119 @@ const MEMORIAL = {
   ]
 }
 
-
-// ─── Nav ──────────────────────────────────────────────────────
-function KpsNav({ activeLoc, setActiveLoc, onMenuOpen, onPick }) {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > window.innerHeight - 100)
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
-  }, [])
-
-  const scrollTo = id => { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); setMenuOpen(false) }
-  const textColor = NAVY
-
-  return (
-    <>
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
-        height: 72, display: 'flex', alignItems: 'center',
-        padding: '0 48px', justifyContent: 'space-between',
-        background: scrolled || menuOpen ? 'rgba(250,250,248,0.97)' : 'transparent',
-        borderBottom: scrolled ? `1px solid ${BORDER}` : 'none',
-        transition: 'background 0.4s ease, border-color 0.4s ease',
-      }}>
-
-        {/* Logo — only visible when scrolled */}
-        <div style={{ flexShrink: 0, width: 64, height: 52, display:'flex', alignItems:'center', opacity: scrolled || menuOpen ? 1 : 0, transition: 'opacity 0.4s ease', pointerEvents: scrolled || menuOpen ? 'auto' : 'none' }}>
-          <img src={LOGO_BLUE} alt="KP's Kitchen"
-            style={{ height: 52, width: 'auto', objectFit: 'contain' }}
-            onError={e => { e.target.style.display='none' }}
-          />
-        </div>
-
-        {/* Desktop nav */}
-        <div className="kps-nav-links" style={{ display:'flex', gap:32, alignItems:'center' }}>
-          {[['kps-menu','Menu'],['kps-happyhour','Happy Hour'],['kps-private','Private Dining'],['kps-locations','Locations']].map(([id,label])=>(
-            <button key={id} onClick={()=>scrollTo(id)} style={{ background:'none', border:'none', fontSize:13, color:textColor, cursor:'pointer', fontFamily:'DM Sans', fontWeight:500, transition:'color 0.3s, opacity 0.2s', opacity:0.85 }}
-              onMouseOver={e=>e.target.style.opacity='1'} onMouseOut={e=>e.target.style.opacity='0.85'}>
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* CTAs — no location picker, just Order + Reserve which trigger modal */}
-        <div className="kps-nav-cta" style={{ display:'flex', gap:10, alignItems:'center' }}>
-          <button onClick={()=>onPick('order')} style={{ padding:'8px 18px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.2s' }}
-            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-            Order
-          </button>
-          <button onClick={()=>onPick('reserve')} style={{ padding:'8px 20px', background:NAVY, border:`1px solid ${NAVY}`, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            Reserve
-          </button>
-        </div>
-
-        {/* Hamburger */}
-        <button className="kps-ham" onClick={()=>setMenuOpen(!menuOpen)} style={{ display:'none', background:'none', border:'none', flexDirection:'column', gap:5, cursor:'pointer', padding:4 }}>
-          {[0,1,2].map(i=><span key={i} style={{ display:'block', width:24, height:2, background:textColor, transition:'0.3s', transform:i===0&&menuOpen?'rotate(45deg) translate(5px,5px)':i===2&&menuOpen?'rotate(-45deg) translate(5px,-5px)':'none', opacity:i===1&&menuOpen?0:1 }}/>)}
-        </button>
-      </nav>
-
-      {menuOpen && (
-        <div style={{ position:'fixed', inset:0, background:'#fff', zIndex:199, paddingTop:72, display:'flex', flexDirection:'column' }}>
-          {[
-            { label:'Menu', action: () => { setMenuOpen(false); onMenuOpen() } },
-            { label:'Happy Hour', id:'kps-happyhour' },
-            { label:'Private Dining', id:'kps-private' },
-            { label:'Locations', id:'kps-locations' },
-          ].map((item,i)=>(
-            <button key={i}
-              onClick={()=> item.action ? item.action() : scrollTo(item.id)}
-              style={{ background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'22px 32px', textAlign:'left', display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer', transition:'opacity 0.2s' }}
-              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-              <span style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY }}>{item.label}</span>
-              <span style={{ color:MUTED, fontSize:16, opacity:0.4 }}>→</span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      <style>{`
-        @media(max-width:900px){
-          .kps-nav-links{display:none!important}
-          .kps-nav-cta{display:none!important}
-          .kps-ham{display:flex!important}
-          nav{padding:0 24px!important}
-        }
-      `}</style>
-    </>
-  )
-}
-
-// ─── Hero Slideshow ───────────────────────────────────────────
-const HERO_PHOTOS = [
-  '/kps/hero-patio.jpg',
-  '/kps/hero-table.jpg',
-  '/kps/hero-room.jpg',
-]
-
-function KpsHero() {
-  const [current, setCurrent] = useState(0)
-  useEffect(() => {
-    const t = setInterval(() => setCurrent(c => (c+1) % HERO_PHOTOS.length), 5000)
-    return () => clearInterval(t)
-  }, [])
-  return (
-    <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM, paddingTop:72 }}>
-      {HERO_PHOTOS.map((src,i) => (
-        <img key={i} src={src} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', opacity:i===current?1:0, transition:'opacity 1.2s ease' }}/>
-      ))}
-      <div style={{ position:'absolute', top:0, left:0, right:0, height:160, background:'linear-gradient(to bottom, rgba(250,250,248,1) 0%, rgba(250,250,248,0.6) 50%, transparent 100%)', pointerEvents:'none' }}/>
-      <div style={{ position:'relative', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
-        <img src={LOGO_WHITE} alt="KP's Kitchen"
-          style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))' }}
-          onError={e=>e.target.style.display='none'}/>
-      </div>
-    </div>
-  )
-}
-
-// ─── About ────────────────────────────────────────────────────
-
 // ─── Design system ────────────────────────────────────────────
-const SECTION_MAX = 960
-const SECTION_PAD = '72px 64px'
-const PATTERN_URL = '/kps/pattern.jpg'
 const EYEBROW_STYLE = { fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:14 }
 const H2_STYLE = { fontFamily:'Playfair Display,serif', fontSize:'clamp(26px,3.5vw,42px)', fontWeight:400, fontStyle:'italic', color:NAVY, lineHeight:1.15 }
-const BODY_STYLE = { fontFamily:'DM Sans', fontSize:14, color:MUTED, lineHeight:1.85, fontWeight:300 }
 const PILL_BTN = { background:'none', border:`1px solid ${NAVY}`, borderRadius:999, fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', padding:'11px 24px', transition:'all 0.2s' }
+const SOLID_BTN = { background:NAVY, border:`1px solid ${NAVY}`, borderRadius:999, fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:'#fff', cursor:'pointer', padding:'12px 26px', transition:'opacity 0.2s' }
 
 const PRESS_ITEMS = [
   { label:'EATER', quote:"One of Houston's best hidden gem restaurants.", url:'https://houston.eater.com/maps/best-hidden-gem-underrated-restaurants-houston' },
-  { label:'BIZ JOURNAL', quote:"KP's Kitchen expands with a second Houston location.", url:'https://www.bizjournals.com/houston/news/2024/04/05/kps-kitchen-second-location-bellaire.html' },
+  { label:'BIZ JOURNAL', quote:"KP's Kitchen expands to a second Houston location.", url:'https://www.bizjournals.com/houston/news/2024/04/05/kps-kitchen-second-location-bellaire.html' },
   { label:'SHOUTOUT HTX', quote:'Heartfelt service meets culinary excellence.', url:'https://shoutouthtx.com/meet-kerry-pauly-owner-kps-kitchen/' },
 ]
+
+// ─── Menu data ────────────────────────────────────────────────
+const SPECIALS = { name:'Specials', items:[
+  { name:'Tuesday', description:'$12 Burger Day + Kids Eat Free (with adult purchase)' },
+  { name:'Wednesday', description:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
+  { name:'Thursday', description:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
+  { name:'Friday', description:'Fish & Chips Night + $1 Champagne' },
+  { name:'Saturday', description:'Brunch + All Day Happy Hour' },
+  { name:'Sunday', description:'Brunch + Fried Chicken Family Meal' },
+]}
+
+const MEMORIAL_MENU = [
+  { name:'Dinner', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
+    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
+    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
+    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
+    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
+    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
+    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
+  ]},
+  { name:'Brunch', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
+    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
+    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
+    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
+    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
+  ]},
+  { name:'Happy Hour', link:'https://www.kps-kitchen.com/spring-valley#our-menu', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
+    { name:'Grey Goose Martini', description:'You call it · +$2', price:'7' },
+    { name:'Woodford Reserve Old Fashion', description:'+$2', price:'7' },
+    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
+    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
+    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
+    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+    { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
+    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
+    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
+    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+  ]},
+  SPECIALS,
+]
+
+const SPECIALS_LIST = [
+  { day:'Tuesday', deal:'$12 Burger Day + Kids Eat Free' },
+  { day:'Wednesday', deal:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
+  { day:'Thursday', deal:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
+  { day:'Friday', deal:'Fish & Chips Night + $1 Champagne' },
+  { day:'Saturday', deal:'Brunch + All Day Happy Hour' },
+  { day:'Sunday', deal:'Brunch + Fried Chicken Family Meal' },
+]
+
+const PROMO = {
+  offers: [
+    { icon:'🎁', title:'A Gift at Every Table', text:'Dine in with us this July and every table receives a complimentary gift — our way of saying thank you.' },
+    { icon:'💳', title:'Buy $100, Get $25 Free', text:'Purchase a $100 gift card and we\'ll add a bonus $25 — perfect for the holidays or a treat for yourself.' },
+  ],
+  ends: 'Now through the end of July',
+}
+
+// ─── Router (tiny, dependency-free) ───────────────────────────
+// Every path serves index.html (vercel rewrite), so we just read the
+// pathname and render the matching page. ?site=kps is preserved in preview.
+function useRoute() {
+  const [path, setPath] = useState(() =>
+    typeof window === 'undefined' ? '/' : window.location.pathname)
+  useEffect(() => {
+    const onPop = () => setPath(window.location.pathname)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+  return (path.replace(/\/+$/, '') || '/')
+}
+
+function navigate(to) {
+  const search = window.location.search
+  if (to === window.location.pathname) { window.scrollTo(0, 0); return }
+  window.history.pushState({}, '', to + search)
+  window.dispatchEvent(new PopStateEvent('popstate'))
+  window.scrollTo(0, 0)
+}
+
+const go = to => e => { e.preventDefault(); navigate(to) }
+
+// Internal link styled as a pill button
+function PillLink({ to, gold, children, style }) {
+  const base = gold ? { ...PILL_BTN, borderColor:GOLD, color:GOLD } : PILL_BTN
+  return (
+    <a href={to} onClick={go(to)} style={{ ...base, display:'inline-block', textDecoration:'none', ...style }}
+      onMouseOver={e=>{ e.currentTarget.style.background=gold?GOLD:NAVY; e.currentTarget.style.color='#fff' }}
+      onMouseOut={e=>{ e.currentTarget.style.background='none'; e.currentTarget.style.color=gold?GOLD:NAVY }}>
+      {children}
+    </a>
+  )
+}
+
+// One location, so Order / Reserve open the right link directly.
+function openAction(type) {
+  const url = type === 'order' ? MEMORIAL.order : MEMORIAL.resy
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
 
 // ─── Hours status (Google-style) ──────────────────────────────
 function getHoursStatus(hours) {
@@ -194,14 +170,6 @@ function getHoursStatus(hours) {
   if (remaining <= 60) return { label:`Closes soon · ${parts[1]}`, color:'#E67E22' }
   return { label:`Open until ${parts[1]}`, color:'#27AE60' }
 }
-
-// ─── Pattern Banner ───────────────────────────────────────────
-function KpsPattern() {
-  return (
-    <div style={{ height:100, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', borderBottom:`1px solid ${BORDER}`, opacity:0.8 }}/>
-  )
-}
-
 
 // ─── Photo Collage (polaroid-style, up to 3 photos) ───────────
 const COLLAGE_FOOD    = ['/kps/food-biscuits.jpg', '/kps/food-cobb.jpg', '/kps/food-burger.jpg']
@@ -251,21 +219,25 @@ function PhotoCollage({ photos, slot = 1 }) {
   )
 }
 
-// Collage in a padded column, with optional caption + CTA beneath
-function CollageBlock({ id, photos, slot, eyebrow, title, cta, onCta }) {
+// Collage in a padded column, with optional caption + CTA beneath.
+// Pass either onCta (function) or ctaTo (internal route) for the button.
+function CollageBlock({ id, photos, slot, eyebrow, title, cta, onCta, ctaTo, sub, subTo }) {
   return (
     <div id={id} className="kps-collage-col" style={{ padding:'48px 40px', display:'flex', flexDirection:'column', justifyContent:'center' }}>
       <PhotoCollage photos={photos} slot={slot} />
-      {(eyebrow || title || cta) && (
+      {(eyebrow || title || cta || sub) && (
         <div style={{ textAlign:'center', marginTop:28 }}>
           {eyebrow && <div style={{ ...EYEBROW_STYLE, marginBottom:8 }}>{eyebrow}</div>}
-          {title && <div style={{ fontFamily:'Playfair Display,serif', fontStyle:'italic', fontSize:'clamp(18px,2.4vw,24px)', color:NAVY, marginBottom:cta?16:0 }}>{title}</div>}
-          {cta && (
-            <button onClick={onCta} style={PILL_BTN}
-              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-              {cta}
-            </button>
+          {title && <div style={{ fontFamily:'Playfair Display,serif', fontStyle:'italic', fontSize:'clamp(18px,2.4vw,24px)', color:NAVY, marginBottom:(cta||sub)?16:0 }}>{title}</div>}
+          {cta && (ctaTo
+            ? <PillLink to={ctaTo}>{cta}</PillLink>
+            : <button onClick={onCta} style={PILL_BTN}
+                onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+                onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>{cta}</button>)}
+          {sub && subTo && (
+            <div style={{ marginTop:14 }}>
+              <a href={subTo} onClick={go(subTo)} style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:MUTED, textDecoration:'none', borderBottom:`1px solid ${BORDER}`, paddingBottom:3 }}>{sub} →</a>
+            </div>
           )}
         </div>
       )}
@@ -273,68 +245,9 @@ function CollageBlock({ id, photos, slot, eyebrow, title, cta, onCta }) {
   )
 }
 
-// ─── Menu data ────────────────────────────────────────────────
-const SPECIALS = { name:'Specials', items:[
-  { name:'Tuesday', description:'$12 Burger Day + Kids Eat Free (with adult purchase)' },
-  { name:'Wednesday', description:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
-  { name:'Thursday', description:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
-  { name:'Friday', description:'Fish & Chips Night + $1 Champagne' },
-  { name:'Saturday', description:'Brunch + All Day Happy Hour' },
-  { name:'Sunday', description:'Brunch + Fried Chicken Family Meal' },
-]}
-
-const MEMORIAL_MENU = [
-  { name:'Dinner', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
-    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
-    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
-    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
-    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
-    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
-    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
-    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
-  ]},
-  { name:'Brunch', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
-    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
-    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
-    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
-    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
-  ]},
-  { name:'Happy Hour', link:'https://www.kps-kitchen.com/spring-valley#our-menu', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
-    { name:'Grey Goose Martini', description:'You call it · +$2', price:'7' },
-    { name:'Woodford Reserve Old Fashion', description:'+$2', price:'7' },
-    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
-    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
-    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
-    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
-    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
-    { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
-    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
-    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
-    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
-    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
-  ]},
-  SPECIALS,
-]
-
-// ─── Menu Modal — centered popup, vertical tabs ───────────────
-function MenuModal({ sections, activeLoc, initialTab, onClose }) {
-  const display = sections?.length ? sections : MEMORIAL_MENU
-  const initIdx = Math.max(0, display.findIndex(s => s.name === initialTab))
-  const [activeTab, setActiveTab] = useState(initIdx)
-  const [openTab, setOpenTab] = useState(initIdx) // mobile accordion
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-
-  useEffect(() => {
-    const fn = () => setIsMobile(window.innerWidth <= 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-
-  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
-
-  const active = display[activeTab] || display[0]
-
-  const ItemList = ({ items, note, link }) => (
+// ─── Shared: menu item list ───────────────────────────────────
+function ItemList({ items, note, link }) {
+  return (
     <div>
       {note && <div style={{ padding:'10px 0 14px', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD }}>{note}</div>}
       {items.map((item,i)=>(
@@ -349,246 +262,11 @@ function MenuModal({ sections, activeLoc, initialTab, onClose }) {
       {link && <a href={link} target="_blank" rel="noreferrer" style={{ display:'block', marginTop:20, fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, width:'fit-content' }}>View Full Menu →</a>}
     </div>
   )
-
-  return (
-    <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.5)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', background:'#fff', width:'min(780px,95vw)', maxHeight:'85vh', display:'flex', flexDirection:'column', animation:'fadeUp 0.25s ease' }}>
-
-        {/* Header */}
-        <div style={{ padding:'24px 28px', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center', flexShrink:0 }}>
-          <div>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, opacity:0.6, marginBottom:2 }}>Our Menus</div>
-            <div style={{ fontFamily:'DM Sans', fontSize:11, color:MUTED, opacity:0.6 }}>{activeLoc?.name} Location</div>
-          </div>
-          <button onClick={onClose} style={{ background:'none', border:'none', cursor:'pointer', fontSize:22, color:MUTED, lineHeight:1 }}>✕</button>
-        </div>
-
-        {/* Desktop: sidebar + content */}
-        {!isMobile && (
-          <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
-            {/* Vertical tab sidebar */}
-            <div style={{ width:160, flexShrink:0, borderRight:`1px solid ${BORDER}`, display:'flex', flexDirection:'column', padding:'16px 0' }}>
-              {display.map((s,i)=>(
-                <button key={i} onClick={()=>setActiveTab(i)}
-                  style={{ padding:'14px 24px', border:'none', background:activeTab===i?WARM:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', cursor:'pointer', color:activeTab===i?NAVY:MUTED, textAlign:'left', transition:'all 0.15s', borderLeft:activeTab===i?`3px solid ${NAVY}`:'3px solid transparent' }}>
-                  {s.name}
-                </button>
-              ))}
-            </div>
-            {/* Content */}
-            <div style={{ flex:1, overflowY:'auto', padding:'24px 32px 40px' }}>
-              <ItemList items={active.items} note={active.note} link={active.link}/>
-            </div>
-          </div>
-        )}
-
-        {/* Mobile: accordion */}
-        {isMobile && (
-          <div style={{ flex:1, overflowY:'auto' }}>
-            {display.map((s,i)=>(
-              <div key={i}>
-                <button onClick={()=>setOpenTab(openTab===i?null:i)}
-                  style={{ width:'100%', padding:'18px 24px', background:'none', border:'none', borderBottom:`1px solid ${BORDER}`, display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer' }}>
-                  <span style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY }}>{s.name}</span>
-                  <span style={{ color:MUTED, fontSize:20, transition:'transform 0.2s', display:'inline-block', transform:openTab===i?'rotate(45deg)':'none' }}>+</span>
-                </button>
-                {openTab===i && (
-                  <div style={{ padding:'8px 24px 24px' }}>
-                    <ItemList items={s.items} note={s.note} link={s.link}/>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}`}</style>
-    </div>
-  )
-}
-// ─── Specials Popup ───────────────────────────────────────────
-const SPECIALS_LIST = [
-  { day:'Tuesday', deal:'$12 Burger Day + Kids Eat Free' },
-  { day:'Wednesday', deal:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
-  { day:'Thursday', deal:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
-  { day:'Friday', deal:'Fish & Chips Night + $1 Champagne' },
-  { day:'Saturday', deal:'Brunch + All Day Happy Hour' },
-  { day:'Sunday', deal:'Brunch + Fried Chicken Family Meal' },
-]
-
-function SpecialsPopup({ onClose, onReserve }) {
-  const today = new Date().getDay() // 0=Sun
-  const dayMap = { 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 0:'Sunday' }
-  const todayName = dayMap[today]
-  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
-  return (
-    <div style={{ position:'fixed', inset:0, zIndex:700, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', background:'#fff', width:'min(520px,92vw)', maxHeight:'90vh', overflowY:'auto', animation:'fadeUp 0.3s ease' }}>
-        <div style={{ padding:'32px 32px 0', display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
-          <div>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:GOLD, marginBottom:8 }}>Weekly Specials</div>
-            <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(18px,3vw,26px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY, lineHeight:1.2 }}>Deals You Don't Want to Miss</h2>
-          </div>
-          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:22, cursor:'pointer', color:MUTED, lineHeight:1, flexShrink:0, marginLeft:16 }}>✕</button>
-        </div>
-        <div style={{ padding:'24px 32px 32px' }}>
-          {SPECIALS_LIST.map((s,i)=>(
-            <div key={i} style={{ display:'flex', gap:16, padding:'14px 0', borderBottom:`1px solid ${BORDER}`, alignItems:'flex-start' }}>
-              <div style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:s.day===todayName?GOLD:NAVY, minWidth:90, paddingTop:2, opacity:s.day===todayName?1:0.7 }}>
-                {s.day}
-                {s.day===todayName && <div style={{ fontSize:9, letterSpacing:'1px', color:GOLD, marginTop:2 }}>TODAY</div>}
-              </div>
-              <div style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.7, fontStyle:'italic' }}>{s.deal}</div>
-            </div>
-          ))}
-          <button onClick={onReserve}
-            style={{ ...PILL_BTN, marginTop:28, width:'100%', justifyContent:'center', display:'flex' }}
-            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-            Reserve a Table
-          </button>
-        </div>
-      </div>
-    </div>
-  )
 }
 
-// ─── Christmas in July Promo Popup ────────────────────────────
-const PROMO = {
-  offers: [
-    { icon:'🎁', title:'A Gift at Every Table', text:'Dine in with us this July and every table receives a complimentary gift — our way of saying thank you.' },
-    { icon:'💳', title:'Buy $100, Get $25 Free', text:'Purchase a $100 gift card and we\'ll add a bonus $25 — perfect for the holidays or a treat for yourself.' },
-  ],
-  ends: 'Now through the end of July',
-}
-
-function HolidayPromoPopup({ onClose, onReserve }) {
-  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
-  return (
-    <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', background:CREAM, width:'min(500px,92vw)', maxHeight:'90vh', overflowY:'auto', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
-
-        {/* Navy banner header */}
-        <div style={{ position:'relative', background:NAVY, padding:'40px 32px 34px', textAlign:'center', overflow:'hidden' }}>
-          <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.08 }}/>
-          <button onClick={onClose} style={{ position:'absolute', top:16, right:18, background:'none', border:'none', fontSize:22, cursor:'pointer', color:'rgba(255,255,255,0.7)', lineHeight:1, zIndex:2 }}>✕</button>
-          <div style={{ position:'relative' }}>
-            <div style={{ fontSize:34, marginBottom:10 }}>❄️ 🎄 ❄️</div>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:GOLD, marginBottom:12 }}>Limited-Time Celebration</div>
-            <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(28px,5vw,40px)', fontWeight:400, fontStyle:'italic', color:'#fff', lineHeight:1.15 }}>Christmas in July</h2>
-          </div>
-        </div>
-
-        {/* Offers */}
-        <div style={{ padding:'30px 32px 8px' }}>
-          {PROMO.offers.map((o,i)=>(
-            <div key={i} style={{ display:'flex', gap:18, padding:'18px 0', borderBottom:i<PROMO.offers.length-1?`1px solid ${BORDER}`:'none', alignItems:'flex-start' }}>
-              <div style={{ fontSize:28, flexShrink:0, lineHeight:1.1 }}>{o.icon}</div>
-              <div>
-                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:6 }}>{o.title}</div>
-                <p style={{ fontFamily:'Georgia,serif', fontSize:13.5, color:MUTED, fontStyle:'italic', lineHeight:1.65 }}>{o.text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Ends banner + CTA */}
-        <div style={{ padding:'20px 32px 34px' }}>
-          <div style={{ textAlign:'center', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:RUST, marginBottom:22 }}>{PROMO.ends}</div>
-          <button onClick={onReserve}
-            style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            Reserve a Table
-          </button>
-          <button onClick={onClose}
-            style={{ display:'block', margin:'16px auto 0', background:'none', border:'none', fontFamily:'DM Sans', fontSize:10, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:MUTED, cursor:'pointer' }}>
-            Maybe Later
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Single-location action links (Order / Reserve) ──────────
-// One location, so Order/Reserve/Happy Hour open the right link directly.
-function openAction(type) {
-  const url = type === 'order' ? MEMORIAL.order : MEMORIAL.resy
-  window.open(url, '_blank', 'noopener,noreferrer')
-}
-
-// ─── Row 1: About (left) | food collage (right) ──────────────
-function KpsAbout({ onMenuOpen, onPick, onSpecials }) {
-  return (
-    <section style={{ background:'#fff' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
-        <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
-          <div style={{ fontFamily:'DM Sans', fontSize:10, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:20, opacity:0.6 }}>Houston, Texas</div>
-          <h1 style={{ fontFamily:'DM Sans', fontSize:'clamp(15px,2vw,20px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:24 }}>KP's Kitchen & Bar</h1>
-          <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, marginBottom:36, opacity:0.85, maxWidth:380 }}>
-            Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
-          </p>
-          <div style={{ display:'flex', gap:10, flexWrap:'nowrap', justifyContent:'center' }}>
-            <button onClick={()=>onPick('reserve')} style={PILL_BTN}
-              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-              Reserve
-            </button>
-            <button onClick={onMenuOpen} style={PILL_BTN}
-              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
-              <span className="kps-btn-full">View </span>Menus
-            </button>
-            <button onClick={onSpecials} style={{...PILL_BTN, borderColor:GOLD, color:GOLD}}
-              onMouseOver={e=>{e.currentTarget.style.background=GOLD;e.currentTarget.style.color='#fff'}}
-              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=GOLD}}>
-              Specials
-            </button>
-          </div>
-        </div>
-        <CollageBlock photos={COLLAGE_FOOD} slot={1} eyebrow="From Our Kitchen" title="Scratch-made comfort classics" cta="Order Online" onCta={()=>onPick('order')} />
-      </div>
-    </section>
-  )
-}
-
-// ─── Row 2: Menus (left) | Locations (right) ─────────────────
-function KpsHoursSection({ onMenuOpen, onPick }) {
-  const MENU_TABS = ['Lunch','Brunch','Happy Hour','Dinner','Specials']
-  return (
-    <section id="kps-menu" style={{ background:'#fff' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
-        <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
-          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:36, opacity:0.6 }}>Menus</div>
-          <div style={{ width:'100%', maxWidth:320 }}>
-            {[
-              { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM', tab:'Lunch' },
-              { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM', tab:'Brunch' },
-              { label:'Happy Hour', sub:'Tue – Fri 3–6PM · $7 for 7', tab:'Happy Hour' },
-              { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close', tab:'Dinner' },
-              { label:'Specials', sub:'Daily deals you don\'t want to miss', tab:'Specials' },
-            ].map((h,i)=>(
-              <button key={i} onClick={()=>onMenuOpen(null, h.tab)}
-                style={{ background:'none', border:'none', cursor:'pointer', padding:'14px 0', width:'100%', textAlign:'center', display:'block', transition:'opacity 0.2s' }}
-                onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, marginBottom:3 }}>{h.label}</div>
-                <div style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic' }}>{h.sub}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-        <CollageBlock id="kps-happyhour" photos={COLLAGE_DRINKS} slot={2} eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour · $7 for 7" cta="Reserve a Table" onCta={()=>onPick('reserve')} />
-      </div>
-    </section>
-  )
-}
-
-// ─── Locations ────────────────────────────────────────────────
-function HoursDropdown({ hours }) {
-  const [open, setOpen] = useState(false)
+// ─── Shared: hours dropdown ───────────────────────────────────
+function HoursDropdown({ hours, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen)
   const status = getHoursStatus(hours)
   const today = new Date().getDay()
   const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
@@ -613,48 +291,286 @@ function HoursDropdown({ hours }) {
   )
 }
 
-function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
+// ─── Shared: inquiry form (private events / catering) ─────────
+function InquiryForm({ subject, successMsg, cta = 'Send Inquiry' }) {
+  const [form, setForm] = useState({ name:'', email:'', phone:'', date:'', guests:'', message:'' })
+  const [sent, setSent] = useState(false)
+  const set = k => e => setForm(f=>({ ...f, [k]:e.target.value }))
+  const handleSubmit = () => {
+    const body = `Name: ${form.name}%0AEmail: ${form.email}%0APhone: ${form.phone}%0ADate: ${form.date}%0AGuests: ${form.guests}%0AMessage: ${form.message}`
+    window.location.href = `mailto:${MEMORIAL.email}?subject=${encodeURIComponent(subject)}&body=${body}`
+    setSent(true)
+  }
+  const input = { width:'100%', fontFamily:'Georgia,serif', fontSize:14, color:NAVY, background:'#fff', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'10px 0', outline:'none', marginBottom:20 }
+  if (sent) return (
+    <div style={{ textAlign:'center', padding:'24px 0' }}>
+      <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, marginBottom:12 }}>Thank You</div>
+      <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', lineHeight:1.8 }}>{successMsg}</p>
+    </div>
+  )
   return (
-    <section id="kps-locations" style={{ background:'#fff' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+    <>
+      <input style={input} placeholder="Your Name" value={form.name} onChange={set('name')}/>
+      <input style={input} placeholder="Email Address" value={form.email} onChange={set('email')}/>
+      <input style={input} placeholder="Phone Number" value={form.phone} onChange={set('phone')}/>
+      <input style={input} placeholder="Preferred Date" value={form.date} onChange={set('date')}/>
+      <input style={input} placeholder="Number of Guests" value={form.guests} onChange={set('guests')}/>
+      <textarea style={{ ...input, resize:'vertical', minHeight:90, marginBottom:32 }} placeholder="Tell us about your event" value={form.message} onChange={set('message')}/>
+      <button onClick={handleSubmit}
+        style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
+        onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+        {cta}
+      </button>
+    </>
+  )
+}
 
-        {/* Left — private dining / catering collage */}
-        <div className="kps-padded-img-col kps-loc-photo">
+// ─── Nav ──────────────────────────────────────────────────────
+const NAV_LINKS = [
+  ['/menu','Menu'], ['/happy-hour','Happy Hour'],
+  ['/private-events','Private Events'], ['/catering','Catering'], ['/contact','Contact'],
+]
+const MOBILE_LINKS = [
+  ['/menu','Menu'], ['/happy-hour','Happy Hour'], ['/specials','Specials'],
+  ['/private-events','Private Events'], ['/catering','Catering'],
+  ['/about','Our Story'], ['/contact','Contact'],
+]
+
+function KpsNav({ solid }) {
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40)
+    fn()
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
+  const show = solid || scrolled || menuOpen
+  const goto = to => e => { e.preventDefault(); setMenuOpen(false); navigate(to) }
+
+  return (
+    <>
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
+        height: 72, display: 'flex', alignItems: 'center',
+        padding: '0 48px', justifyContent: 'space-between',
+        background: show ? 'rgba(250,250,248,0.97)' : 'transparent',
+        borderBottom: show ? `1px solid ${BORDER}` : 'none',
+        transition: 'background 0.4s ease, border-color 0.4s ease',
+      }}>
+        {/* Logo — links home; visible when nav is solid */}
+        <a href="/" onClick={goto('/')} style={{ flexShrink: 0, width: 64, height: 52, display:'flex', alignItems:'center', opacity: show ? 1 : 0, transition: 'opacity 0.4s ease', pointerEvents: show ? 'auto' : 'none' }}>
+          <img src={LOGO_BLUE} alt="KP's Kitchen"
+            style={{ height: 52, width: 'auto', objectFit: 'contain' }}
+            onError={e => { e.target.style.display='none' }}/>
+        </a>
+
+        {/* Desktop nav */}
+        <div className="kps-nav-links" style={{ display:'flex', gap:28, alignItems:'center' }}>
+          {NAV_LINKS.map(([to,label])=>(
+            <a key={to} href={to} onClick={goto(to)} style={{ fontSize:13, color:NAVY, cursor:'pointer', fontFamily:'DM Sans', fontWeight:500, textDecoration:'none', transition:'opacity 0.2s', opacity:0.85 }}
+              onMouseOver={e=>e.currentTarget.style.opacity='1'} onMouseOut={e=>e.currentTarget.style.opacity='0.85'}>
+              {label}
+            </a>
+          ))}
+        </div>
+
+        {/* CTAs */}
+        <div className="kps-nav-cta" style={{ display:'flex', gap:10, alignItems:'center' }}>
+          <button onClick={()=>openAction('order')} style={{ padding:'8px 18px', background:'none', border:`1px solid ${NAVY}`, color:NAVY, fontSize:12, fontFamily:'DM Sans', fontWeight:500, cursor:'pointer', transition:'all 0.2s' }}
+            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+            Order
+          </button>
+          <button onClick={()=>openAction('reserve')} style={{ padding:'8px 20px', background:NAVY, border:`1px solid ${NAVY}`, color:'#fff', fontSize:12, fontFamily:'DM Sans', fontWeight:600, cursor:'pointer', transition:'all 0.2s' }}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            Reserve
+          </button>
+        </div>
+
+        {/* Hamburger */}
+        <button className="kps-ham" onClick={()=>setMenuOpen(!menuOpen)} style={{ display:'none', background:'none', border:'none', flexDirection:'column', gap:5, cursor:'pointer', padding:4 }}>
+          {[0,1,2].map(i=><span key={i} style={{ display:'block', width:24, height:2, background:NAVY, transition:'0.3s', transform:i===0&&menuOpen?'rotate(45deg) translate(5px,5px)':i===2&&menuOpen?'rotate(-45deg) translate(5px,-5px)':'none', opacity:i===1&&menuOpen?0:1 }}/>)}
+        </button>
+      </nav>
+
+      {menuOpen && (
+        <div style={{ position:'fixed', inset:0, background:'#fff', zIndex:199, paddingTop:72, display:'flex', flexDirection:'column', overflowY:'auto' }}>
+          {MOBILE_LINKS.map(([to,label])=>(
+            <a key={to} href={to} onClick={goto(to)}
+              style={{ textDecoration:'none', borderBottom:`1px solid ${BORDER}`, padding:'20px 32px', display:'flex', justifyContent:'space-between', alignItems:'center', transition:'opacity 0.2s' }}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              <span style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY }}>{label}</span>
+              <span style={{ color:MUTED, fontSize:16, opacity:0.4 }}>→</span>
+            </a>
+          ))}
+          <div style={{ display:'flex', gap:10, padding:'24px 32px' }}>
+            <button onClick={()=>openAction('reserve')} style={{ ...SOLID_BTN, flex:1 }}>Reserve</button>
+            <button onClick={()=>openAction('order')} style={{ ...PILL_BTN, flex:1 }}>Order</button>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @media(max-width:960px){
+          .kps-nav-links{display:none!important}
+          .kps-nav-cta{display:none!important}
+          .kps-ham{display:flex!important}
+          nav{padding:0 24px!important}
+        }
+      `}</style>
+    </>
+  )
+}
+
+// ─── Home Hero Slideshow ──────────────────────────────────────
+const HERO_PHOTOS = ['/kps/hero-patio.jpg', '/kps/hero-table.jpg', '/kps/hero-room.jpg']
+
+function KpsHero() {
+  const [current, setCurrent] = useState(0)
+  useEffect(() => {
+    const t = setInterval(() => setCurrent(c => (c+1) % HERO_PHOTOS.length), 5000)
+    return () => clearInterval(t)
+  }, [])
+  return (
+    <div className="kps-hero" style={{ height:'100vh', minHeight:600, position:'relative', overflow:'hidden', background:CREAM, paddingTop:72 }}>
+      {HERO_PHOTOS.map((src,i) => (
+        <img key={i} src={src} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', opacity:i===current?1:0, transition:'opacity 1.2s ease' }}/>
+      ))}
+      <div style={{ position:'absolute', top:0, left:0, right:0, height:160, background:'linear-gradient(to bottom, rgba(250,250,248,1) 0%, rgba(250,250,248,0.6) 50%, transparent 100%)', pointerEvents:'none' }}/>
+      <div style={{ position:'relative', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
+        <img src={LOGO_WHITE} alt="KP's Kitchen"
+          style={{ width:'clamp(200px,28vw,340px)', height:'auto', objectFit:'contain', filter:'drop-shadow(0 4px 24px rgba(0,0,0,0.55)) drop-shadow(0 1px 6px rgba(0,0,0,0.4))' }}
+          onError={e=>e.target.style.display='none'}/>
+      </div>
+    </div>
+  )
+}
+
+// ─── Interior page header ─────────────────────────────────────
+function PageHero({ eyebrow, title, subtitle }) {
+  return (
+    <div style={{ position:'relative', background:NAVY, padding:'140px 32px 68px', textAlign:'center', overflow:'hidden' }}>
+      <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.06 }}/>
+      <div style={{ position:'relative' }}>
+        {eyebrow && <div style={{ ...EYEBROW_STYLE, color:GOLD, marginBottom:14 }}>{eyebrow}</div>}
+        <h1 style={{ fontFamily:'Playfair Display,serif', fontStyle:'italic', fontWeight:400, fontSize:'clamp(30px,5vw,48px)', color:'#fff', lineHeight:1.15 }}>{title}</h1>
+        {subtitle && <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:'rgba(255,255,255,0.75)', fontStyle:'italic', margin:'16px auto 0', maxWidth:560, lineHeight:1.7 }}>{subtitle}</p>}
+      </div>
+    </div>
+  )
+}
+
+// Bottom order/reserve CTA row used on interior pages
+function CtaRow({ children }) {
+  return (
+    <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap', marginTop:44 }}>
+      <button onClick={()=>openAction('reserve')} style={SOLID_BTN}
+        onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>Reserve a Table</button>
+      <button onClick={()=>openAction('order')} style={PILL_BTN}
+        onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+        onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>Order Online</button>
+      {children}
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════
+// HOME PAGE SECTIONS
+// ══════════════════════════════════════════════════════════════
+
+// Row 1: About (left) | food collage (right)
+function KpsAbout() {
+  return (
+    <section style={{ background:'#fff' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
+          <a href="/about" onClick={go('/about')} style={{ ...EYEBROW_STYLE, marginBottom:20, textDecoration:'none' }}>Our Story</a>
+          <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(15px,2vw,20px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:24 }}>KP's Kitchen &amp; Bar</h2>
+          <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, marginBottom:36, opacity:0.85, maxWidth:380 }}>
+            Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
+          </p>
+          <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center' }}>
+            <button onClick={()=>openAction('reserve')} style={PILL_BTN}
+              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+              Reserve
+            </button>
+            <PillLink to="/menu"><span className="kps-btn-full">View </span>Menu</PillLink>
+            <PillLink to="/about">Our Story</PillLink>
+          </div>
+        </div>
+        <CollageBlock photos={COLLAGE_FOOD} slot={1} eyebrow="From Our Kitchen" title="Scratch-made comfort classics" cta="Order Online" onCta={()=>openAction('order')} />
+      </div>
+    </section>
+  )
+}
+
+// Row 2: Menus sneak-peek (left) | happy hour collage (right)
+function KpsMenusTeaser() {
+  const rows = [
+    { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM', to:'/menu' },
+    { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM', to:'/menu' },
+    { label:'Happy Hour', sub:'Tue – Sun 3–6PM · $7 for 7', to:'/happy-hour' },
+    { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close', to:'/menu' },
+    { label:'Specials', sub:'Daily deals you don\'t want to miss', to:'/specials' },
+  ]
+  return (
+    <section style={{ background:'#fff' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
+          <a href="/menu" onClick={go('/menu')} style={{ ...EYEBROW_STYLE, letterSpacing:'5px', marginBottom:36, textDecoration:'none' }}>Menus</a>
+          <div style={{ width:'100%', maxWidth:320 }}>
+            {rows.map((h,i)=>(
+              <a key={i} href={h.to} onClick={go(h.to)}
+                style={{ textDecoration:'none', cursor:'pointer', padding:'14px 0', width:'100%', textAlign:'center', display:'block', transition:'opacity 0.2s' }}
+                onMouseOver={e=>e.currentTarget.style.opacity='0.5'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:NAVY, marginBottom:3 }}>{h.label}</div>
+                <div style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic' }}>{h.sub}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour · $7 for 7" cta="See Happy Hour" ctaTo="/happy-hour" />
+      </div>
+    </section>
+  )
+}
+
+// Row 3: events collage (left) | location sneak-peek (right)
+function KpsLocationTeaser() {
+  return (
+    <section style={{ background:'#fff' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
+        <div className="kps-loc-photo">
           <CollageBlock
-            id="kps-private"
             photos={COLLAGE_EVENTS}
             slot={3}
             eyebrow="Private Dining & Catering"
             title="Office lunches, celebrations & events"
-            cta="Inquire About Events"
-            onCta={onEventsOpen}
+            cta="Private Events"
+            ctaTo="/private-events"
+            sub="Catering & drop-off"
+            subTo="/catering"
           />
         </div>
-
-        {/* Right — location info */}
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text kps-loc-text">
-          <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:MUTED, marginBottom:48, opacity:0.6 }}>Visit Us</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:48, width:'100%', maxWidth:340 }}>
-            {[MEMORIAL].map((loc,i)=>(
-              <div key={i}>
-                <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8, opacity:0.6 }}>{loc.name}</div>
-                <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.8, marginBottom:2, fontStyle:'italic' }}>{loc.address}</p>
-                <a href={`tel:${loc.phone}`} style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', textDecoration:'none', display:'block', marginBottom:12, transition:'color 0.2s' }}
-                  onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{loc.phone}</a>
-                <HoursDropdown hours={loc.hours}/>
-                <div style={{ display:'flex', gap:8, justifyContent:'center', flexWrap:'wrap' }}>
-                  <button onClick={()=>onPick('reserve')} style={PILL_BTN}
-                    onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
-                    onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>Reserve</button>
-                  <button onClick={()=>onPick('order')} style={{...PILL_BTN, color:MUTED, borderColor:MUTED}}
-                    onMouseOver={e=>{e.currentTarget.style.background=MUTED;e.currentTarget.style.color='#fff'}}
-                    onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=MUTED}}>Order</button>
-                  <button onClick={()=>onMenuOpen(loc)} style={{...PILL_BTN, color:MUTED, borderColor:MUTED}}
-                    onMouseOver={e=>{e.currentTarget.style.background=MUTED;e.currentTarget.style.color='#fff'}}
-                    onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=MUTED}}>Menu</button>
-                </div>
-              </div>
-            ))}
+          <a href="/contact" onClick={go('/contact')} style={{ ...EYEBROW_STYLE, letterSpacing:'5px', marginBottom:40, textDecoration:'none' }}>Visit Us</a>
+          <div style={{ width:'100%', maxWidth:340 }}>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8, opacity:0.6 }}>{MEMORIAL.name}</div>
+            <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, lineHeight:1.8, marginBottom:2, fontStyle:'italic' }}>{MEMORIAL.address}</p>
+            <a href={`tel:${MEMORIAL.phone}`} style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', textDecoration:'none', display:'block', marginBottom:12 }}
+              onMouseOver={e=>e.target.style.color=NAVY} onMouseOut={e=>e.target.style.color=MUTED}>{MEMORIAL.phone}</a>
+            <HoursDropdown hours={MEMORIAL.hours}/>
+            <div style={{ display:'flex', gap:8, justifyContent:'center', flexWrap:'wrap' }}>
+              <button onClick={()=>openAction('reserve')} style={PILL_BTN}
+                onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+                onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>Reserve</button>
+              <PillLink to="/contact" style={{ color:MUTED, borderColor:MUTED }}>Hours &amp; Map</PillLink>
+              <PillLink to="/menu" style={{ color:MUTED, borderColor:MUTED }}>Menu</PillLink>
+            </div>
           </div>
         </div>
       </div>
@@ -662,58 +578,242 @@ function KpsLocations({ onEventsOpen, onMenuOpen, onPick }) {
   )
 }
 
-// ─── Events Form Modal ────────────────────────────────────────
-function EventsModal({ onClose }) {
-  const [form, setForm] = useState({ name:'', email:'', phone:'', date:'', guests:'', message:'' })
-  const [sent, setSent] = useState(false)
-  const set = k => e => setForm(f=>({...f,[k]:e.target.value}))
-
-  const handleSubmit = () => {
-    const body = `Name: ${form.name}%0AEmail: ${form.email}%0APhone: ${form.phone}%0ADate: ${form.date}%0AGuests: ${form.guests}%0AMessage: ${form.message}`
-    window.location.href = `mailto:events@kps-kitchen.com?subject=Private Event Inquiry&body=${body}`
-    setSent(true)
-  }
-
-  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
-
-  const input = { width:'100%', fontFamily:'Georgia,serif', fontSize:14, color:NAVY, background:'#fff', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'10px 0', outline:'none', marginBottom:20 }
-
+function HomePage() {
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(4px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', background:'#fff', width:'min(540px,100vw)', maxHeight:'90vh', overflowY:'auto', padding:'48px 40px' }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:32 }}>
-          <div>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:8 }}>Entertain</div>
-            <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(16px,2vw,20px)', fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:NAVY }}>Private Events & Catering</h2>
-            <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', marginTop:8, lineHeight:1.6 }}>Office lunches, client meetings, celebrations & holiday gatherings</p>
-          </div>
-          <button onClick={onClose} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:MUTED, lineHeight:1, flexShrink:0 }}>✕</button>
-        </div>
+    <>
+      <KpsHero />
+      <KpsAbout />
+      <KpsLocationTeaser />
+      <KpsMenusTeaser />
+    </>
+  )
+}
 
-        {sent ? (
-          <div style={{ textAlign:'center', padding:'24px 0' }}>
-            <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, marginBottom:12 }}>Thank You</div>
-            <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', lineHeight:1.8 }}>
-              Your inquiry has been sent. We'll be in touch shortly to discuss your event.
-            </p>
-            <button onClick={onClose} style={{ marginTop:24, background:'none', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, cursor:'pointer', borderBottom:`1px solid ${NAVY}`, paddingBottom:3 }}>Close</button>
+// ══════════════════════════════════════════════════════════════
+// INTERIOR PAGES
+// ══════════════════════════════════════════════════════════════
+
+function MenuPage() {
+  return (
+    <>
+      <PageHero eyebrow="KP's Kitchen &amp; Bar" title="Our Menu"
+        subtitle="Scratch-made American comfort classics, craft cocktails, and a $7-for-7 happy hour — served all week in Memorial." />
+      <div style={{ maxWidth:720, margin:'0 auto', padding:'64px 24px 88px' }}>
+        {MEMORIAL_MENU.map((s,i)=>(
+          <div key={i} style={{ marginBottom:56 }}>
+            <h2 style={{ ...H2_STYLE, textAlign:'center', marginBottom:s.note?6:22 }}>{s.name}</h2>
+            <ItemList items={s.items} note={s.note} link={s.link}/>
           </div>
-        ) : (
-          <>
-            <input style={input} placeholder="Your Name" value={form.name} onChange={set('name')}/>
-            <input style={input} placeholder="Email Address" value={form.email} onChange={set('email')}/>
-            <input style={input} placeholder="Phone Number" value={form.phone} onChange={set('phone')}/>
-            <input style={input} placeholder="Event Date" value={form.date} onChange={set('date')}/>
-            <input style={input} placeholder="Number of Guests" value={form.guests} onChange={set('guests')}/>
-            <textarea style={{...input, resize:'vertical', minHeight:80, marginBottom:32}} placeholder="Tell us about your event" value={form.message} onChange={set('message')}/>
-            <button onClick={handleSubmit}
-              style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
-              onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-              Send Inquiry
-            </button>
-          </>
-        )}
+        ))}
+        <CtaRow/>
+      </div>
+    </>
+  )
+}
+
+function HappyHourPage() {
+  const hh = MEMORIAL_MENU.find(s => s.name === 'Happy Hour')
+  return (
+    <>
+      <PageHero eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour"
+        subtitle="Seven drinks. Seven bites. $7 each. Our neighborhood's favorite way to unwind — from Grey Goose martinis to Mama Pauly's meatballs." />
+      <div style={{ maxWidth:900, margin:'0 auto', padding:'56px 24px 88px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, alignItems:'center' }} className="kps-split">
+          <div style={{ padding:'8px 24px' }}>
+            <PhotoCollage photos={COLLAGE_DRINKS} slot={2} />
+          </div>
+          <div style={{ padding:'8px 24px' }}>
+            <ItemList items={hh.items} note={hh.note}/>
+          </div>
+        </div>
+        <CtaRow/>
+      </div>
+    </>
+  )
+}
+
+function SpecialsPage() {
+  const dayMap = { 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 0:'Sunday' }
+  const todayName = dayMap[new Date().getDay()]
+  return (
+    <>
+      <PageHero eyebrow="Every Week at KP's" title="Weekly Specials"
+        subtitle="A different reason to come in every day — from $12 Burger Tuesdays to Prime Rib Wednesdays and Sunday family meals." />
+      <div style={{ maxWidth:620, margin:'0 auto', padding:'56px 24px 88px' }}>
+        {SPECIALS_LIST.map((s,i)=>(
+          <div key={i} style={{ display:'flex', gap:20, padding:'18px 0', borderBottom:`1px solid ${BORDER}`, alignItems:'flex-start' }}>
+            <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:s.day===todayName?GOLD:NAVY, minWidth:100, paddingTop:2, opacity:s.day===todayName?1:0.75 }}>
+              {s.day}
+              {s.day===todayName && <div style={{ fontSize:9, letterSpacing:'1px', color:GOLD, marginTop:2 }}>TODAY</div>}
+            </div>
+            <div style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.7, fontStyle:'italic' }}>{s.deal}</div>
+          </div>
+        ))}
+        <CtaRow/>
+      </div>
+    </>
+  )
+}
+
+function InquiryPage({ eyebrow, title, subtitle, blurb, photos, slot, subject, successMsg }) {
+  return (
+    <>
+      <PageHero eyebrow={eyebrow} title={title} subtitle={subtitle} />
+      <div style={{ maxWidth:1000, margin:'0 auto', padding:'56px 24px 88px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:40, alignItems:'center' }} className="kps-split">
+          <div style={{ padding:'8px 16px' }}>
+            <PhotoCollage photos={photos} slot={slot} />
+            <p style={{ fontFamily:'Georgia,serif', fontSize:14.5, color:NAVY, lineHeight:1.9, opacity:0.85, marginTop:28, textAlign:'center' }}>{blurb}</p>
+          </div>
+          <div style={{ padding:'8px 16px' }}>
+            <div style={{ ...EYEBROW_STYLE, marginBottom:10 }}>Tell Us About Your Event</div>
+            <p style={{ fontFamily:'Georgia,serif', fontSize:13, color:MUTED, fontStyle:'italic', marginBottom:28, lineHeight:1.6 }}>
+              Fill out the form below and our team will be in touch, or email <a href={`mailto:${MEMORIAL.email}`} style={{ color:NAVY }}>{MEMORIAL.email}</a> directly.
+            </p>
+            <InquiryForm subject={subject} successMsg={successMsg}/>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function PrivateEventsPage() {
+  return (
+    <InquiryPage
+      eyebrow="Entertain at KP's"
+      title="Private Events"
+      subtitle="Rehearsal dinners, birthdays, corporate gatherings and holiday parties — hosted with the warmth KP's is known for."
+      blurb="From intimate dinners to full buyouts, our team handles every detail — custom menus, wine pairings, and service that makes your guests feel at home."
+      photos={COLLAGE_EVENTS}
+      slot={3}
+      subject="Private Event Inquiry"
+      successMsg="Your private event inquiry has been sent. We'll be in touch shortly to plan the details."
+    />
+  )
+}
+
+function CateringPage() {
+  return (
+    <InquiryPage
+      eyebrow="KP's To Go"
+      title="Catering"
+      subtitle="Office lunches, client meetings, and celebrations — KP's comfort classics delivered and set up wherever you gather."
+      blurb="Drop-off and full-service catering for groups of every size. Crowd-favorite spreads, breakfast to dinner, made from scratch and ready to impress."
+      photos={['/kps/catering-breakfast.jpg', '/kps/catering-party.jpg', '/kps/food-cobb.jpg']}
+      slot={1}
+      subject="Catering Inquiry"
+      successMsg="Your catering inquiry has been sent. We'll be in touch shortly to build your order."
+    />
+  )
+}
+
+function AboutPage() {
+  return (
+    <>
+      <PageHero eyebrow="Houston, Texas" title="Our Story"
+        subtitle="A neighborhood kitchen built on scratch-made comfort food and genuine hospitality." />
+      <div style={{ maxWidth:680, margin:'0 auto', padding:'64px 24px 40px', textAlign:'center' }}>
+        <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, marginBottom:28 }}>
+          KP's Kitchen &amp; Bar is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics — Mama Pauly's meatballs, smashed cheeseburgers, shrimp &amp; grits — with a thoughtfully built bar and a $7-for-7 happy hour that keeps regulars coming back.
+        </p>
+        <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, opacity:0.85 }}>
+          What began as a single Houston dining room has grown into a local institution for people who want an elevated experience without the pretense — the kind of place where the team knows your name and the kitchen never cuts a corner.
+        </p>
+      </div>
+      <div style={{ maxWidth:560, margin:'0 auto', padding:'0 24px' }}>
+        <PhotoCollage photos={['/kps/hero-room.jpg', '/kps/food-burger.jpg', '/kps/int-overhead.jpg']} slot={2} />
+      </div>
+      <div style={{ maxWidth:820, margin:'0 auto', padding:'56px 24px 88px' }}>
+        <div style={{ ...EYEBROW_STYLE, textAlign:'center', marginBottom:28 }}>In the Press</div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:24 }}>
+          {PRESS_ITEMS.map((p,i)=>(
+            <a key={i} href={p.url} target="_blank" rel="noreferrer"
+              style={{ textDecoration:'none', border:`1px solid ${BORDER}`, padding:'28px 24px', textAlign:'center', transition:'box-shadow 0.2s', display:'block' }}
+              onMouseOver={e=>e.currentTarget.style.boxShadow='0 8px 30px rgba(0,0,0,0.08)'} onMouseOut={e=>e.currentTarget.style.boxShadow='none'}>
+              <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD, marginBottom:12 }}>{p.label}</div>
+              <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:NAVY, fontStyle:'italic', lineHeight:1.6 }}>"{p.quote}"</p>
+            </a>
+          ))}
+        </div>
+        <CtaRow/>
+      </div>
+    </>
+  )
+}
+
+function ContactPage() {
+  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(MEMORIAL.address)}&output=embed`
+  return (
+    <>
+      <PageHero eyebrow="Visit Us" title="Contact &amp; Hours"
+        subtitle="Find us in Memorial, off the I-10 frontage road. Walk-ins welcome, reservations recommended." />
+      <div style={{ maxWidth:1000, margin:'0 auto', padding:'56px 24px 88px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:40, alignItems:'start' }} className="kps-split">
+          <div style={{ textAlign:'center', padding:'8px 16px' }}>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', color:MUTED, marginBottom:10, opacity:0.6 }}>{MEMORIAL.name}</div>
+            <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.8, fontStyle:'italic', marginBottom:14 }}>{MEMORIAL.address}</p>
+            <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:15, color:NAVY, fontStyle:'italic', textDecoration:'none', marginBottom:6 }}>{MEMORIAL.phone}</a>
+            <a href={`mailto:${MEMORIAL.email}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:15, color:MUTED, fontStyle:'italic', textDecoration:'none', marginBottom:24 }}>{MEMORIAL.email}</a>
+            <div style={{ maxWidth:300, margin:'0 auto', textAlign:'left' }}>
+              <HoursDropdown hours={MEMORIAL.hours} defaultOpen/>
+            </div>
+            <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap', marginTop:8 }}>
+              <button onClick={()=>openAction('reserve')} style={SOLID_BTN}
+                onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>Reserve</button>
+              <a href={`https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`} target="_blank" rel="noreferrer" style={{ ...PILL_BTN, textDecoration:'none' }}
+                onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+                onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>Get Directions</a>
+            </div>
+          </div>
+          <div style={{ padding:'8px 16px' }}>
+            <iframe title="KP's Kitchen map" src={mapSrc} width="100%" height="380" style={{ border:0, display:'block' }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"/>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+// ─── Christmas in July Promo Popup (temporary) ────────────────
+function HolidayPromoPopup({ onClose }) {
+  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
+      <div style={{ position:'relative', background:CREAM, width:'min(500px,92vw)', maxHeight:'90vh', overflowY:'auto', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
+        <div style={{ position:'relative', background:NAVY, padding:'40px 32px 34px', textAlign:'center', overflow:'hidden' }}>
+          <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.08 }}/>
+          <button onClick={onClose} style={{ position:'absolute', top:16, right:18, background:'none', border:'none', fontSize:22, cursor:'pointer', color:'rgba(255,255,255,0.7)', lineHeight:1, zIndex:2 }}>✕</button>
+          <div style={{ position:'relative' }}>
+            <div style={{ fontSize:34, marginBottom:10 }}>❄️ 🎄 ❄️</div>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:GOLD, marginBottom:12 }}>Limited-Time Celebration</div>
+            <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(28px,5vw,40px)', fontWeight:400, fontStyle:'italic', color:'#fff', lineHeight:1.15 }}>Christmas in July</h2>
+          </div>
+        </div>
+        <div style={{ padding:'30px 32px 8px' }}>
+          {PROMO.offers.map((o,i)=>(
+            <div key={i} style={{ display:'flex', gap:18, padding:'18px 0', borderBottom:i<PROMO.offers.length-1?`1px solid ${BORDER}`:'none', alignItems:'flex-start' }}>
+              <div style={{ fontSize:28, flexShrink:0, lineHeight:1.1 }}>{o.icon}</div>
+              <div>
+                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:6 }}>{o.title}</div>
+                <p style={{ fontFamily:'Georgia,serif', fontSize:13.5, color:MUTED, fontStyle:'italic', lineHeight:1.65 }}>{o.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ padding:'20px 32px 34px' }}>
+          <div style={{ textAlign:'center', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:RUST, marginBottom:22 }}>{PROMO.ends}</div>
+          <button onClick={()=>{ onClose(); openAction('reserve') }}
+            style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            Reserve a Table
+          </button>
+          <button onClick={onClose}
+            style={{ display:'block', margin:'16px auto 0', background:'none', border:'none', fontFamily:'DM Sans', fontSize:10, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:MUTED, cursor:'pointer' }}>
+            Maybe Later
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -721,38 +821,51 @@ function EventsModal({ onClose }) {
 
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
+  const cols = [
+    { head:'Explore', links:[['/menu','Menu'],['/happy-hour','Happy Hour'],['/specials','Specials'],['/about','Our Story']] },
+    { head:'Events', links:[['/private-events','Private Events'],['/catering','Catering'],['/contact','Contact & Hours']] },
+  ]
   return (
-    <footer style={{ background:NAVY, padding:'56px 48px 40px', textAlign:'center' }}>
-      <div style={{ maxWidth:640, margin:'0 auto' }}>
-        <div style={{ display:'flex', gap:24, justifyContent:'center', flexWrap:'wrap', marginBottom:16 }}>
-          <a href={`https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`} target="_blank" rel="noreferrer"
-            style={{ fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', transition:'color 0.2s' }}
-            onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>
-            8412 I-10 Frontage Rd, Houston TX
-          </a>
+    <footer style={{ background:NAVY, padding:'56px 48px 40px', color:'#fff' }}>
+      <div style={{ maxWidth:900, margin:'0 auto' }}>
+        <div style={{ display:'flex', gap:48, justifyContent:'center', flexWrap:'wrap', marginBottom:40, textAlign:'center' }}>
+          {cols.map((c,i)=>(
+            <div key={i}>
+              <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD, marginBottom:16 }}>{c.head}</div>
+              {c.links.map(([to,label])=>(
+                <a key={to} href={to} onClick={go(to)} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:14, color:'rgba(255,255,255,0.6)', fontStyle:'italic', textDecoration:'none', marginBottom:10, transition:'color 0.2s' }}
+                  onMouseOver={e=>e.currentTarget.style.color='#fff'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.6)'}>{label}</a>
+              ))}
+            </div>
+          ))}
+          <div>
+            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:GOLD, marginBottom:16 }}>Visit</div>
+            <a href={`https://maps.google.com?q=${encodeURIComponent(MEMORIAL.address)}`} target="_blank" rel="noreferrer" style={{ display:'block', fontFamily:'Georgia,serif', fontSize:14, color:'rgba(255,255,255,0.6)', fontStyle:'italic', textDecoration:'none', marginBottom:10, maxWidth:200 }}
+              onMouseOver={e=>e.currentTarget.style.color='#fff'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.6)'}>8412 I-10 Frontage Rd, Houston TX</a>
+            <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:14, color:'rgba(255,255,255,0.6)', fontStyle:'italic', textDecoration:'none', marginBottom:10 }}
+              onMouseOver={e=>e.currentTarget.style.color='#fff'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.6)'}>{MEMORIAL.phone}</a>
+            <a href={`mailto:${MEMORIAL.email}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:14, color:'rgba(255,255,255,0.6)', fontStyle:'italic', textDecoration:'none' }}
+              onMouseOver={e=>e.currentTarget.style.color='#fff'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.6)'}>{MEMORIAL.email}</a>
+          </div>
         </div>
-        <a href={`tel:${MEMORIAL.phone}`} style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:6, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>{MEMORIAL.phone}</a>
-        <a href="mailto:events@kps-kitchen.com" style={{ display:'block', fontFamily:'Georgia,serif', fontSize:13, color:'rgba(255,255,255,0.5)', fontStyle:'italic', textDecoration:'none', marginBottom:36, transition:'color 0.2s' }}
-          onMouseOver={e=>e.target.style.color='#fff'} onMouseOut={e=>e.target.style.color='rgba(255,255,255,0.5)'}>events@kps-kitchen.com</a>
-        <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
-          © {new Date().getFullYear()} KP's Kitchen & Bar · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
+        <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, textAlign:'center', fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
+          © {new Date().getFullYear()} KP's Kitchen &amp; Bar · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
         </div>
       </div>
     </footer>
   )
 }
 
-// ─── Sticky Bar ───────────────────────────────────────────────
-function KpsStickyBar({ onPick }) {
+// ─── Sticky Bar (mobile) ──────────────────────────────────────
+function KpsStickyBar() {
   return (
     <>
       <div className="kps-sticky" style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:200, display:'none', background:'#fff', borderTop:`1px solid ${BORDER}`, paddingBottom:'env(safe-area-inset-bottom)' }}>
-        <button onClick={()=>onPick('reserve')}
+        <button onClick={()=>openAction('reserve')}
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:NAVY, color:'#fff', border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:'1px solid rgba(255,255,255,0.1)' }}>
           Reserve
         </button>
-        <button onClick={()=>onPick('order')}
+        <button onClick={()=>openAction('order')}
           style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'14px 8px', background:'#fff', color:NAVY, border:'none', cursor:'pointer', fontFamily:'DM Sans', fontSize:11, fontWeight:500, letterSpacing:'0.5px', textTransform:'uppercase', borderRight:`1px solid ${BORDER}` }}>
           Order
         </button>
@@ -767,16 +880,27 @@ function KpsStickyBar({ onPick }) {
   )
 }
 
+// ─── Route table + document titles ────────────────────────────
+const PAGES = {
+  '/': { title: "KP's Kitchen | Your Go-To for Comfort Classics", render: () => <HomePage/> },
+  '/menu': { title: "Menu | KP's Kitchen & Bar", render: () => <MenuPage/> },
+  '/happy-hour': { title: "Happy Hour · $7 for 7 | KP's Kitchen & Bar", render: () => <HappyHourPage/> },
+  '/specials': { title: "Weekly Specials | KP's Kitchen & Bar", render: () => <SpecialsPage/> },
+  '/private-events': { title: "Private Events | KP's Kitchen & Bar", render: () => <PrivateEventsPage/> },
+  '/catering': { title: "Catering | KP's Kitchen & Bar", render: () => <CateringPage/> },
+  '/about': { title: "Our Story | KP's Kitchen & Bar", render: () => <AboutPage/> },
+  '/contact': { title: "Contact & Hours | KP's Kitchen & Bar", render: () => <ContactPage/> },
+}
+
 // ─── Main ─────────────────────────────────────────────────────
-export default function KpsLayout({ data }) {
-  const [activeLoc, setActiveLoc] = useState(MEMORIAL)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [menuLoc, setMenuLoc] = useState(MEMORIAL)
-  const [menuTab, setMenuTab] = useState(null)
-  const [eventsOpen, setEventsOpen] = useState(false)
-  const [specialsOpen, setSpecialsOpen] = useState(false)
+export default function KpsLayout() {
+  const route = useRoute()
   const [promoOpen, setPromoOpen] = useState(false)
-  const { sections } = data
+  const page = PAGES[route] || PAGES['/']
+  const isHome = route === '/'
+
+  useEffect(() => { document.title = page.title }, [page])
+  useEffect(() => { window.scrollTo(0, 0) }, [route])
 
   // Auto-show Christmas in July promo after 2s — once per browser session
   useEffect(() => {
@@ -788,21 +912,13 @@ export default function KpsLayout({ data }) {
     return () => clearTimeout(t)
   }, [])
 
-  const openMenu = (loc, tab) => { setMenuLoc(loc || activeLoc); setMenuTab(tab || null); setMenuOpen(true) }
-
   return (
     <div style={{ fontFamily:'DM Sans,sans-serif', background:'#fff', color:NAVY, overflowX:'hidden' }}>
-      <KpsNav activeLoc={activeLoc} setActiveLoc={setActiveLoc} onMenuOpen={()=>openMenu()} onPick={openAction}/>
-      <KpsHero />
-      <KpsAbout onMenuOpen={()=>openMenu()} onPick={openAction} onSpecials={()=>setSpecialsOpen(true)} />
-      <KpsLocations onEventsOpen={()=>setEventsOpen(true)} onMenuOpen={openMenu} onPick={openAction} />
-      <KpsHoursSection onMenuOpen={(loc,tab)=>openMenu(loc,tab)} onPick={openAction} />
+      <KpsNav solid={!isHome} />
+      {page.render()}
       <KpsFooter />
-      <KpsStickyBar onPick={openAction} />
-      {menuOpen && <MenuModal sections={sections} activeLoc={menuLoc} initialTab={menuTab} onClose={()=>setMenuOpen(false)}/>}
-      {eventsOpen && <EventsModal onClose={()=>setEventsOpen(false)}/>}
-      {specialsOpen && <SpecialsPopup onClose={()=>setSpecialsOpen(false)} onReserve={()=>{ setSpecialsOpen(false); openAction('reserve') }}/>}
-      {promoOpen && <HolidayPromoPopup onClose={()=>setPromoOpen(false)} onReserve={()=>{ setPromoOpen(false); openAction('reserve') }}/>}
+      <KpsStickyBar />
+      {promoOpen && <HolidayPromoPopup onClose={()=>setPromoOpen(false)} />}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
@@ -814,8 +930,6 @@ export default function KpsLayout({ data }) {
           .kps-split-text{padding:48px 24px!important}
           .kps-hero{height:75vh!important;padding-top:0!important}
           nav{padding:0 24px!important}
-          .kps-photo-first .kps-split-text{order:1}
-          .kps-photo-first .kps-padded-img{order:2}
           .kps-loc-text{order:1}
           .kps-loc-photo{order:2}
           .kps-btn-full{display:none}
