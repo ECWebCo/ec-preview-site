@@ -43,48 +43,97 @@ const PRESS_ITEMS = [
   { label:'SHOUTOUT HTX', quote:'Heartfelt service meets culinary excellence.', url:'https://shoutouthtx.com/meet-kerry-pauly-owner-kps-kitchen/' },
 ]
 
-// ─── Menu data ────────────────────────────────────────────────
-const SPECIALS = { name:'Specials', items:[
-  { name:'Tuesday', description:'$12 Burger Day + Kids Eat Free (with adult purchase)' },
-  { name:'Wednesday', description:'All Day Happy Hour + Prime Rib Night + $1 Red Wine' },
-  { name:'Thursday', description:'Steak Night + $1 Red Wine + $15 Caymus / Veuve Clicquot' },
-  { name:'Friday', description:'Fish & Chips Night + $1 Champagne' },
-  { name:'Saturday', description:'Brunch + All Day Happy Hour' },
-  { name:'Sunday', description:'Brunch + Fried Chicken Family Meal' },
-]}
-
+// ─── Menu data (lunch & dinner) ───────────────────────────────
 const MEMORIAL_MENU = [
-  { name:'Dinner', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
-    { name:"KP's Double Cheeseburger", description:'Two smashed patties, American cheese, house sauce, brioche bun', price:'12' },
-    { name:'Salmon', description:'Pan seared, seasonal vegetables, lemon butter', price:'28' },
-    { name:'Mama Pauly\'s Meatballs', description:'Braised in San Marzano tomato, fresh ricotta, grilled bread', price:'15' },
-    { name:'Chipotle Pimento Cheese Dip', description:'Served with grilled pita', price:'13' },
-    { name:'White Truffle Devil Eggs', description:'House deviled eggs, truffle oil, paprika', price:'12' },
-    { name:'Chicken Fried Artichoke Hearts', description:'Buttermilk battered, house ranch', price:'14' },
-    { name:'Parmesan Truffle Fries', description:'Shoestring fries, truffle oil, parmesan', price:'10' },
+  { name:'Starters', items:[
+    { name:'Cheese & Charcuterie Plate*', description:'Houston Dairymaids cheeses and charcuterie, fruit, nuts and toasted crostini', price:'19' },
+    { name:'Mama Pauly\'s Meatballs', description:'All beef meatballs, marinara and garlic bread', price:'16' },
+    { name:'Popcorn Chicken Bites', price:'12' },
+    { name:'Third-Coast Crab Cake*', price:'23' },
+    { name:'Pear & Hazelnut Burrata', price:'16' },
+    { name:"KP's Wicked Wings", description:'Buffalo, hot honey, bbq, lemon pepper', price:'12' },
+    { name:'Chipotle Pimento Cheese Dip', description:'Crostinis', price:'12' },
+    { name:'Spinach & Artichoke Dip', price:'14' },
+    { name:'White Truffle Devil Eggs*', description:'Chips', price:'15' },
+    { name:'Crispy Artichoke Hearts', price:'12' },
   ]},
-  { name:'Brunch', link:'https://www.kps-kitchen.com/spring-valley#our-menu', items:[
-    { name:'Shrimp & Grits', description:'Stone-ground grits, Gulf shrimp, tasso gravy', price:'22' },
-    { name:'French Toast', description:'Brioche, fresh berries, maple syrup', price:'14' },
-    { name:'Single Cheeseburger', description:'Classic cheeseburger, lettuce, tomato, pickles', price:'13' },
-    { name:'Buttermilk Popcorn Chicken Bites', description:'Served with honey sriracha dipping sauce', price:'13' },
+  { name:'Soup & Salads', note:'Add a protein: grilled chicken $6 · chicken tenders (2) $6 · grilled salmon $10', items:[
+    { name:'Simple House Salad', description:'Mixed greens, carrots, cucumbers and herb vinaigrette', price:'7' },
+    { name:'Classic Caesar*', description:'Chopped romaine, Caesar dressing, rustic croutons, parmesan', price:'14' },
+    { name:'Farro Salad', description:'Mixed greens, crispy artichokes, grapes, and herb vinaigrette', price:'16' },
+    { name:'Cobb Salad*', description:'Blue cheese, avocado, egg, roasted chicken, ham, bacon', price:'20' },
+    { name:'Crunchy Asian Salad*', description:'Mixed greens, wontons, snow peas, sprouts, sesame seeds', price:'16' },
   ]},
-  { name:'Happy Hour', link:'https://www.kps-kitchen.com/spring-valley#our-menu', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
-    { name:'Grey Goose Martini', description:'You call it · +$2', price:'7' },
-    { name:'Woodford Reserve Old Fashion', description:'+$2', price:'7' },
-    { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
-    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
-    { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
-    { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
-    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
-    { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
-    { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
-    { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
-    { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
-    { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+  { name:'Sides', note:'$12 each', items:[
+    { name:"'Elote' Mac N Cheese", description:'Cheesy mac loaded with corn, chile-lime and cilantro. A Mexican twist.' },
+    { name:'Fried Brussels Sprouts', description:'Fish sauce caramel' },
+    { name:'Crispy Cauliflower', description:'Marcona almonds, currants, basil' },
+    { name:'Braised Red Cabbage', description:'Goat cheese' },
+    { name:'Truffle-Parmesan Fries' },
+    { name:'Beans | Greens | Corn', description:'Fresh kale, sweet corn, and butter beans finished with fennel and rosemary' },
+    { name:'Potatoes Au Gratin' },
+    { name:'Market Veggie Medley', description:'Roasted broccoli, carrots and cauliflower with herb butter' },
   ]},
-  SPECIALS,
+  { name:'Handhelds', items:[
+    { name:"KP's Bacon Double Cheeseburger", description:'American cheese, dijonaise & brioche bun', price:'17' },
+    { name:'Sliders & Fries', description:'Pick two: classic burger, Italian meatball, hot chicken or steak sandwich (+$1)', price:'14' },
+    { name:'Veggie Burger', description:'Homemade veggie burger, red pepper aioli, lettuce, tomato, pickle, onions and toasted brioche', price:'16' },
+    { name:'Hot Chicken Sandwich', description:'Hot honey & ranch, coleslaw, on a brioche bun', price:'17' },
+    { name:'The Prime Drip Steak Sandwich*', description:'Shaved prime rib, Monterey Jack, red pepper aioli, & house made au jus', price:'23' },
+    { name:'Club Sandwich', description:'Ham, turkey and bacon with basil aioli, tomato and dueling cheeses', price:'19' },
+  ]},
+  { name:'Fire Grill Features', items:[
+    { name:"Today's Catch*", description:'Simply grilled and served over a savory succotash of sweet corn, gigante beans, and kale', price:'29' },
+    { name:'Twelve Hour Ribs', description:'Hand cut fries and slaw', price:'28' },
+    { name:'Grilled Salmon Plate*', description:'Atlantic Salmon, chimichurri, hazelnut vinegar, roasted veggies and pea puree', price:'26' },
+    { name:"Papa Fred's Pork Chop", description:'Braised red cabbage, mashed potatoes, and apricot glaze', price:'32' },
+    { name:'Steak Feature*', description:'Premium steak, expertly grilled and paired with gratin potatoes and grilled asparagus', price:'MKT' },
+  ]},
+  { name:'House Specialties', items:[
+    { name:'Rigatoni Bolognese', description:'100% beef bolognese with tomatoes, red wine, rigatoni and parmigiano reggiano', price:'26' },
+    { name:'Rosemary-Lemon Chicken', description:'Roasted half chicken over orzo, spinach and mushrooms', price:'26' },
+    { name:"Crispy Sweet n' Sour Shrimp", description:'Served with fries, slaw and ranch', price:'26' },
+    { name:'Buttermilk Chicken Platter', description:'Hand cut fries and ranch', price:'19' },
+    { name:'Butternut & Chickpea Masala', description:'Indian spices, tomatoes, and roasted butternut squash, served with basmati rice', price:'21' },
+  ]},
+  { name:'Lunch', note:'Available 11 – 3, weekdays', items:[
+    { name:'Seasonal Quiche*', description:'What is chef cooking in the kitchen? Order and find out. Served with house salad', price:'16' },
+    { name:"KP's 'One & Done' Burger", description:'Single patty burger, American cheese, bacon, Dijonnaise & fries', price:'12' },
+    { name:'Soup & Salad', description:'Soup of the day and your choice of house or caesar salad', price:'12' },
+    { name:'Grilled Salmon Plate*', description:'Grilled salmon filet, sweet peas and chimichurri, market veggies', price:'20' },
+    { name:'Hot Chicken Sandwich', description:'Crispy chicken breast, draped in hot honey with slaw, ranch & chips', price:'16' },
+    { name:'Grilled Chicken & Veggies', description:'Herb grilled chicken breast on a bed of seasonal market fresh veggies', price:'16' },
+  ]},
+  { name:'Kids', note:'$10 each', items:[
+    { name:'Cheeseburger', price:'10' },
+    { name:'Chicken Tenders', price:'10' },
+    { name:'Mac and Cheese and Corn', price:'10' },
+    { name:'Grilled Cheese | Chips', price:'10' },
+    { name:'Butter Pasta', price:'10' },
+  ]},
 ]
+
+// Menu-wide notes shown at the foot of the /menu page
+const MENU_NOTES = [
+  'All of our food is made from scratch. Some items will have limited availability. If you have allergies, please alert us — not all ingredients are listed. A 20% gratuity is added to parties of six or more.',
+  '*Consuming raw or undercooked meat, seafood or eggs may increase your risk of foodborne illness.',
+]
+
+// Happy Hour is a separate menu with its own page.
+const HAPPY_HOUR = { name:'Happy Hour', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
+  { name:'Grey Goose Martini', description:'You call it · +$2', price:'7' },
+  { name:'Woodford Reserve Old Fashion', description:'+$2', price:'7' },
+  { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
+  { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+  { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
+  { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
+  { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+  { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
+  { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
+  { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
+  { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
+  { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
+] }
 
 const SPECIALS_LIST = [
   { day:'Tuesday', deal:'$12 Burger Day + Kids Eat Free' },
@@ -256,7 +305,7 @@ function ItemList({ items, note, link }) {
             <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?3:0 }}>{item.name}</div>
             {item.description && <p style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic', lineHeight:1.5 }}>{item.description}</p>}
           </div>
-          {item.price && <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>${Number(item.price).toFixed(0)}</div>}
+          {item.price && <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>{/^\d+$/.test(String(item.price)) ? `$${item.price}` : item.price}</div>}
         </div>
       ))}
       {link && <a href={link} target="_blank" rel="noreferrer" style={{ display:'block', marginTop:20, fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, textDecoration:'none', borderBottom:`1px solid ${NAVY}`, paddingBottom:3, width:'fit-content' }}>View Full Menu →</a>}
@@ -511,10 +560,9 @@ function KpsAbout() {
 // Row 2: Menus sneak-peek (left) | happy hour collage (right)
 function KpsMenusTeaser() {
   const rows = [
-    { label:'Lunch', sub:'Tue – Fri · 11:00 AM – 4:00 PM', to:'/menu' },
-    { label:'Brunch', sub:'Sat – Sun · 10:00 AM – 3:00 PM', to:'/menu' },
+    { label:'Lunch', sub:'Available 11 – 3 · weekdays', to:'/menu' },
+    { label:'Dinner', sub:'Fire grill, handhelds & house specialties', to:'/menu' },
     { label:'Happy Hour', sub:'Tue – Sun 3–6PM · $7 for 7', to:'/happy-hour' },
-    { label:'Dinner', sub:'Tue – Sun · 5:00 PM – close', to:'/menu' },
     { label:'Specials', sub:'Daily deals you don\'t want to miss', to:'/specials' },
   ]
   return (
@@ -602,9 +650,15 @@ function MenuPage() {
         {MEMORIAL_MENU.map((s,i)=>(
           <div key={i} style={{ marginBottom:56 }}>
             <h2 style={{ ...H2_STYLE, textAlign:'center', marginBottom:s.note?6:22 }}>{s.name}</h2>
-            <ItemList items={s.items} note={s.note} link={s.link}/>
+            {s.note && <div style={{ textAlign:'center', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:GOLD, marginBottom:16 }}>{s.note}</div>}
+            <ItemList items={s.items} link={s.link}/>
           </div>
         ))}
+        <div style={{ marginTop:8 }}>
+          {MENU_NOTES.map((n,i)=>(
+            <p key={i} style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic', lineHeight:1.6, textAlign:'center', marginBottom:10 }}>{n}</p>
+          ))}
+        </div>
         <CtaRow/>
       </div>
     </>
@@ -612,7 +666,7 @@ function MenuPage() {
 }
 
 function HappyHourPage() {
-  const hh = MEMORIAL_MENU.find(s => s.name === 'Happy Hour')
+  const hh = HAPPY_HOUR
   return (
     <>
       <PageHero eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour"
