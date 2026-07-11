@@ -119,21 +119,64 @@ const MENU_NOTES = [
   '*Consuming raw or undercooked meat, seafood or eggs may increase your risk of foodborne illness.',
 ]
 
-// Happy Hour is a separate menu with its own page.
-const HAPPY_HOUR = { name:'Happy Hour', note:'Tue – Sun 3–6PM · 7 Drinks · 7 Bites · $7 each', items:[
-  { name:'Grey Goose Martini', description:'You call it · +$2', price:'7' },
-  { name:'Woodford Reserve Old Fashion', description:'+$2', price:'7' },
-  { name:'Gossip Girl Espresso Martini', description:'Katz espresso, vodka, Baileys', price:'7' },
-  { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
-  { name:'Yealands Sauvignon Blanc', description:'Dry, lime zest, mango, dill', price:'7' },
-  { name:'Man Family Chardonnay', description:'Pineapple, peaches, light oak', price:'7' },
-  { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
-  { name:'Bonanza by Caymus Cabernet', description:'California', price:'7' },
-  { name:'Mama Pauly\'s Meatballs', description:'Bar snack', price:'7' },
-  { name:'Chipotle Pimento Cheese Dip', description:'Bar snack', price:'7' },
-  { name:'Single Cheeseburger', description:'Bar snack', price:'7' },
-  { name:'Parmesan Truffle Fries', description:'Bar snack', price:'7' },
-] }
+// Happy Hour is a separate menu with its own page. Every item is $7.
+const HAPPY_HOUR = {
+  hours: 'Tuesday – Friday · 3–6PM',
+  drinks: [
+    { name:'Moscow Mule', description:'Ginger laced and made with sake-based vodka', price:'7' },
+    { name:'Grapefruit Paloma', description:'Tangy grapefruit, lime, Sabe tequila-sake', price:'7' },
+    { name:'Les Allies Brut, FR', description:'Dry, crispy, mineral', price:'7' },
+    { name:'Yealands Sauvignon Blanc, NZ', description:'Dry, lime zest, mango, dill', price:'7' },
+    { name:'Man Family Chardonnay, SA', description:'Pineapple, peaches, light oak', price:'7' },
+    { name:'La Meridiana Rosé, IT', description:'Dry rosé from the Lake Garda region, Italy', price:'7' },
+    { name:'Padrillos Malbec, AR', description:'Ripe plum, leather, pepper', price:'7' },
+  ],
+  bites: [
+    { name:'Mama Pauly\'s Meatballs', price:'7' },
+    { name:'Chipotle Pimento Cheese Dip', price:'7' },
+    { name:'White Truffle Devil Eggs', price:'7' },
+    { name:'Buttermilk Popcorn Chicken Bites', price:'7' },
+    { name:'Chicken Fried Artichoke Hearts', price:'7' },
+    { name:'Parmesan Truffle Fries', price:'7' },
+    { name:'Single Cheeseburger', description:'Classic cheeseburger with lettuce, tomatoes, pickles', price:'7' },
+  ],
+}
+
+// ─── Brunch menu (weekends) ───────────────────────────────────
+const BRUNCH_MENU = [
+  { name:'Priorities', note:'Our cocktails are made with ‘Sabe’ brand sake-based spirits', items:[
+    { name:'Lavender Lemonade Freeze', description:'Frozen lavender and lemon cocktail with a perfect balance of floral notes and fresh citrus', price:'10' },
+    { name:'Mimosas of the Moment', description:'Glass or carafe, pick your flavor', price:'$5 | $20' },
+    { name:'Espresso Martini', description:'Our twist on a classic espresso martini will take the edge off', price:'14' },
+  ]},
+  { name:'Hungry Classics', items:[
+    { name:'Crispy Fried Rice', description:'Crispy chicken, signature fried rice, hot honey & red pepper aioli, fried egg', price:'18', tag:'New' },
+    { name:'Crab Cake & Eggs Your Way', description:'Grilled asparagus, hollandaise', price:'25', tag:'New' },
+    { name:'French Toast Breakfast Sandwich', description:'Scrambled eggs, ham, American cheese, lettuce, tomato, breakfast potatoes', price:'21', tag:'New' },
+    { name:'Steak and Eggs', description:'Premium steak, roasted potatoes, eggs your way', price:'MKT', tag:'New' },
+    { name:'Chicken Benny Sliders', description:'Crispy chicken, poached eggs, topped with hollandaise, buffalo sauce and a drizzle of hot honey', price:'17' },
+    { name:'All American Breakfast', description:'Eggs your way, bacon, sausage and roasted potatoes. Choose a croissant or homemade buttermilk biscuit', price:'18' },
+    { name:'Classic Egg Benedict', description:'Buttermilk biscuit topped with smoked ham, poached egg, hollandaise and a side of crispy potatoes', price:'20' },
+    { name:'Seasonal Quiche*', description:'What is chef cooking in the kitchen? Order and find out. Served with house salad', price:'19' },
+    { name:'Brioche French Toast', description:'French toast, whipped cream, berries, maple syrup & bacon', price:'16' },
+    { name:'Buttermilk Pancakes & Bacon', description:'Homemade pancakes, whipped butter, and bacon', price:'17' },
+  ]},
+  { name:'Sundays Only · Fried Chicken Family Meal', items:[
+    { name:'Our Famous Fried Chicken', description:'Sundays all day! Buttermilk-brined fried chicken (half or whole) served with mashed potatoes, coleslaw, a giant buttermilk biscuit (or two), and housemade jelly', price:'$38 | $56' },
+  ]},
+  { name:'A La Carte', items:[
+    { name:'Mixed Fruit Bowl', price:'6' },
+    { name:'Sausage Patties', price:'5' },
+    { name:'Chicken Tenders (2)', price:'6' },
+    { name:'Side of Bacon', price:'6' },
+    { name:'Hand Cut Fries', price:'8' },
+    { name:'Single Pancake', price:'6' },
+    { name:'Two Eggs, Any Style', price:'6' },
+    { name:'Roasted Potatoes', price:'8' },
+    { name:'Baked Croissant', price:'5' },
+    { name:'Biscuits and Jelly', price:'5' },
+  ]},
+]
 
 const SPECIALS_LIST = [
   { day:'Tuesday', deal:'$12 Burger Day + Kids Eat Free' },
@@ -302,7 +345,10 @@ function ItemList({ items, note, link }) {
       {items.map((item,i)=>(
         <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:16, padding:'14px 0', borderBottom:`1px solid ${BORDER}` }}>
           <div>
-            <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?3:0 }}>{item.name}</div>
+            <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'1.5px', textTransform:'uppercase', color:NAVY, marginBottom:item.description?3:0 }}>
+              {item.name}
+              {item.tag && <span style={{ marginLeft:8, fontSize:8, fontWeight:700, letterSpacing:'1px', color:GOLD, border:`1px solid ${GOLD}`, borderRadius:3, padding:'1px 5px', verticalAlign:'middle', textTransform:'uppercase' }}>{item.tag}</span>}
+            </div>
             {item.description && <p style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic', lineHeight:1.5 }}>{item.description}</p>}
           </div>
           {item.price && <div style={{ fontFamily:'DM Sans', fontSize:12, color:MUTED, flexShrink:0, fontWeight:600 }}>{/^\d+$/.test(String(item.price)) ? `$${item.price}` : item.price}</div>}
@@ -376,11 +422,11 @@ function InquiryForm({ subject, successMsg, cta = 'Send Inquiry' }) {
 
 // ─── Nav ──────────────────────────────────────────────────────
 const NAV_LINKS = [
-  ['/menu','Menu'], ['/happy-hour','Happy Hour'],
+  ['/menu','Menu'], ['/brunch','Brunch'], ['/happy-hour','Happy Hour'],
   ['/private-events','Private Events'], ['/catering','Catering'], ['/contact','Contact'],
 ]
 const MOBILE_LINKS = [
-  ['/menu','Menu'], ['/happy-hour','Happy Hour'], ['/specials','Specials'],
+  ['/menu','Menu'], ['/brunch','Brunch'], ['/happy-hour','Happy Hour'], ['/specials','Specials'],
   ['/private-events','Private Events'], ['/catering','Catering'],
   ['/about','Our Story'], ['/contact','Contact'],
 ]
@@ -539,7 +585,7 @@ function KpsAbout() {
           <a href="/about" onClick={go('/about')} style={{ ...EYEBROW_STYLE, marginBottom:20, textDecoration:'none' }}>Our Story</a>
           <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(15px,2vw,20px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:24 }}>KP's Kitchen &amp; Bar</h2>
           <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, marginBottom:36, opacity:0.85, maxWidth:380 }}>
-            Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics and thoughtfully crafted cocktails — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
+            Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics to a curated beer and wine list — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
           </p>
           <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center' }}>
             <button onClick={()=>openAction('reserve')} style={PILL_BTN}
@@ -562,7 +608,8 @@ function KpsMenusTeaser() {
   const rows = [
     { label:'Lunch', sub:'Available 11 – 3 · weekdays', to:'/menu' },
     { label:'Dinner', sub:'Fire grill, handhelds & house specialties', to:'/menu' },
-    { label:'Happy Hour', sub:'Tue – Sun 3–6PM · $7 for 7', to:'/happy-hour' },
+    { label:'Brunch', sub:'Weekends · classics & Sunday fried chicken', to:'/brunch' },
+    { label:'Happy Hour', sub:'Tue – Fri · 3–6PM', to:'/happy-hour' },
     { label:'Specials', sub:'Daily deals you don\'t want to miss', to:'/specials' },
   ]
   return (
@@ -581,7 +628,7 @@ function KpsMenusTeaser() {
             ))}
           </div>
         </div>
-        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour · $7 for 7" cta="See Happy Hour" ctaTo="/happy-hour" />
+        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="Tuesday – Friday · 3–6PM" title="Happy Hour" cta="See Happy Hour" ctaTo="/happy-hour" />
       </div>
     </section>
   )
@@ -645,7 +692,7 @@ function MenuPage() {
   return (
     <>
       <PageHero eyebrow="KP's Kitchen &amp; Bar" title="Our Menu"
-        subtitle="Scratch-made American comfort classics, craft cocktails, and a $7-for-7 happy hour — served all week in Memorial." />
+        subtitle="Scratch-made American comfort classics, served all week in Memorial." />
       <div style={{ maxWidth:720, margin:'0 auto', padding:'64px 24px 88px' }}>
         {MEMORIAL_MENU.map((s,i)=>(
           <div key={i} style={{ marginBottom:56 }}>
@@ -667,18 +714,48 @@ function MenuPage() {
 
 function HappyHourPage() {
   const hh = HAPPY_HOUR
+  const subHead = { ...H2_STYLE, textAlign:'center', fontSize:'clamp(22px,2.8vw,30px)', marginBottom:18 }
   return (
     <>
-      <PageHero eyebrow="Tuesday – Sunday · 3–6PM" title="Happy Hour"
-        subtitle="Seven drinks. Seven bites. $7 each. Our neighborhood's favorite way to unwind — from Grey Goose martinis to Mama Pauly's meatballs." />
-      <div style={{ maxWidth:900, margin:'0 auto', padding:'56px 24px 88px' }}>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, alignItems:'center' }} className="kps-split">
-          <div style={{ padding:'8px 24px' }}>
-            <PhotoCollage photos={COLLAGE_DRINKS} slot={2} />
+      <PageHero eyebrow={hh.hours} title="Happy Hour"
+        subtitle="Our neighborhood's favorite way to unwind — a rotating list of wines and spritzes plus shareable bar snacks, every item just $7." />
+      <div style={{ maxWidth:920, margin:'0 auto', padding:'56px 24px 88px' }}>
+        <div style={{ maxWidth:480, margin:'0 auto 48px' }}>
+          <PhotoCollage photos={COLLAGE_DRINKS} slot={2} />
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:48 }} className="kps-split">
+          <div>
+            <h2 style={subHead}>Drinks</h2>
+            <ItemList items={hh.drinks}/>
           </div>
-          <div style={{ padding:'8px 24px' }}>
-            <ItemList items={hh.items} note={hh.note}/>
+          <div>
+            <h2 style={subHead}>Bar Snacks</h2>
+            <ItemList items={hh.bites}/>
           </div>
+        </div>
+        <CtaRow/>
+      </div>
+    </>
+  )
+}
+
+function BrunchPage() {
+  return (
+    <>
+      <PageHero eyebrow="Weekends at KP's" title="Brunch"
+        subtitle="Breakfast classics, mimosas by the glass or carafe, and our famous Sunday fried chicken family meal." />
+      <div style={{ maxWidth:720, margin:'0 auto', padding:'64px 24px 88px' }}>
+        {BRUNCH_MENU.map((s,i)=>(
+          <div key={i} style={{ marginBottom:56 }}>
+            <h2 style={{ ...H2_STYLE, textAlign:'center', marginBottom:s.note?6:22 }}>{s.name}</h2>
+            {s.note && <div style={{ textAlign:'center', fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:GOLD, marginBottom:16 }}>{s.note}</div>}
+            <ItemList items={s.items}/>
+          </div>
+        ))}
+        <div style={{ marginTop:8 }}>
+          {MENU_NOTES.map((n,i)=>(
+            <p key={i} style={{ fontFamily:'Georgia,serif', fontSize:12, color:MUTED, fontStyle:'italic', lineHeight:1.6, textAlign:'center', marginBottom:10 }}>{n}</p>
+          ))}
         </div>
         <CtaRow/>
       </div>
@@ -769,7 +846,7 @@ function AboutPage() {
         subtitle="A neighborhood kitchen built on scratch-made comfort food and genuine hospitality." />
       <div style={{ maxWidth:680, margin:'0 auto', padding:'64px 24px 40px', textAlign:'center' }}>
         <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, marginBottom:28 }}>
-          KP's Kitchen &amp; Bar is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics — Mama Pauly's meatballs, smashed cheeseburgers, shrimp &amp; grits — with a thoughtfully built bar and a $7-for-7 happy hour that keeps regulars coming back.
+          KP's Kitchen &amp; Bar is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics — Mama Pauly's meatballs, smashed cheeseburgers, shrimp &amp; grits — with a curated beer and wine list and weekly specials that keep regulars coming back.
         </p>
         <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, opacity:0.85 }}>
           What began as a single Houston dining room has grown into a local institution for people who want an elevated experience without the pretense — the kind of place where the team knows your name and the kitchen never cuts a corner.
@@ -876,7 +953,7 @@ function HolidayPromoPopup({ onClose }) {
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
   const cols = [
-    { head:'Explore', links:[['/menu','Menu'],['/happy-hour','Happy Hour'],['/specials','Specials'],['/about','Our Story']] },
+    { head:'Explore', links:[['/menu','Menu'],['/brunch','Brunch'],['/happy-hour','Happy Hour'],['/specials','Specials'],['/about','Our Story']] },
     { head:'Events', links:[['/private-events','Private Events'],['/catering','Catering'],['/contact','Contact & Hours']] },
   ]
   return (
@@ -938,7 +1015,8 @@ function KpsStickyBar() {
 const PAGES = {
   '/': { title: "KP's Kitchen | Your Go-To for Comfort Classics", render: () => <HomePage/> },
   '/menu': { title: "Menu | KP's Kitchen & Bar", render: () => <MenuPage/> },
-  '/happy-hour': { title: "Happy Hour · $7 for 7 | KP's Kitchen & Bar", render: () => <HappyHourPage/> },
+  '/brunch': { title: "Brunch | KP's Kitchen & Bar", render: () => <BrunchPage/> },
+  '/happy-hour': { title: "Happy Hour | KP's Kitchen & Bar", render: () => <HappyHourPage/> },
   '/specials': { title: "Weekly Specials | KP's Kitchen & Bar", render: () => <SpecialsPage/> },
   '/private-events': { title: "Private Events | KP's Kitchen & Bar", render: () => <PrivateEventsPage/> },
   '/catering': { title: "Catering | KP's Kitchen & Bar", render: () => <CateringPage/> },

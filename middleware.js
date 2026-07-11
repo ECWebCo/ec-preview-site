@@ -26,15 +26,19 @@ const KPS_HOST = 'kps-kitchen.com'
 const KPS_PAGES = {
   '/': {
     title: "KP's Kitchen | Your Go-To for Comfort Classics",
-    description: "Upscale American comfort food & craft cocktails in Houston's Memorial. Scratch-made classics, a $7-for-7 happy hour, brunch, private events & catering.",
+    description: "Upscale American comfort food in Houston's Memorial. Scratch-made classics, weekend brunch, happy hour, private events & catering.",
   },
   '/menu': {
     title: "Menu | KP's Kitchen & Bar",
-    description: "Explore KP's Kitchen's menu — smashed cheeseburgers, Mama Pauly's meatballs, shrimp & grits, brunch, and a $7-for-7 happy hour in Houston's Memorial.",
+    description: "Explore KP's Kitchen's menu — smashed cheeseburgers, Mama Pauly's meatballs, fire-grill features, salads and more in Houston's Memorial.",
+  },
+  '/brunch': {
+    title: "Brunch | KP's Kitchen & Bar",
+    description: "Weekend brunch at KP's Kitchen — breakfast classics, mimosas, and the famous Sunday fried chicken family meal in Houston's Memorial.",
   },
   '/happy-hour': {
-    title: "Happy Hour · $7 for 7 | KP's Kitchen & Bar",
-    description: "KP's Kitchen happy hour: 7 drinks, 7 bites, $7 each — Tuesday through Sunday, 3–6PM in Houston's Memorial.",
+    title: "Happy Hour | KP's Kitchen & Bar",
+    description: "KP's Kitchen happy hour — wines, spritzes and shareable bar snacks, every item $7, Tuesday through Friday 3–6PM in Houston's Memorial.",
   },
   '/specials': {
     title: "Weekly Specials | KP's Kitchen & Bar",
