@@ -583,7 +583,7 @@ function KpsAbout() {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr' }} className="kps-split">
         <div style={{ padding:'72px 56px', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', textAlign:'center' }} className="kps-split-text">
           <a href="/about" onClick={go('/about')} style={{ ...EYEBROW_STYLE, marginBottom:20, textDecoration:'none' }}>Our Story</a>
-          <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(15px,2vw,20px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:24 }}>KP's Kitchen &amp; Bar</h2>
+          <h2 style={{ fontFamily:'DM Sans', fontSize:'clamp(15px,2vw,20px)', fontWeight:700, letterSpacing:'7px', textTransform:'uppercase', color:NAVY, marginBottom:24 }}>KP's Kitchen</h2>
           <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.9, marginBottom:36, opacity:0.85, maxWidth:380 }}>
             Upscale American comfort food served with genuine neighborhood hospitality. From scratch-made classics to a curated beer and wine list — KP's Kitchen has become a Houston institution for those who want an elevated dining experience without the pretense.
           </p>
@@ -691,7 +691,7 @@ function HomePage() {
 function MenuPage() {
   return (
     <>
-      <PageHero eyebrow="KP's Kitchen &amp; Bar" title="Our Menu"
+      <PageHero eyebrow="KP's Kitchen" title="Our Menu"
         subtitle="Scratch-made American comfort classics, served all week in Memorial." />
       <div style={{ maxWidth:720, margin:'0 auto', padding:'64px 24px 88px' }}>
         {MEMORIAL_MENU.map((s,i)=>(
@@ -846,7 +846,7 @@ function AboutPage() {
         subtitle="A neighborhood kitchen built on scratch-made comfort food and genuine hospitality." />
       <div style={{ maxWidth:680, margin:'0 auto', padding:'64px 24px 40px', textAlign:'center' }}>
         <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, marginBottom:28 }}>
-          KP's Kitchen &amp; Bar is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics — Mama Pauly's meatballs, smashed cheeseburgers, shrimp &amp; grits — with a curated beer and wine list and weekly specials that keep regulars coming back.
+          KP's Kitchen is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics — Mama Pauly's meatballs, smashed cheeseburgers, shrimp &amp; grits — with a curated beer and wine list and weekly specials that keep regulars coming back.
         </p>
         <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, opacity:0.85 }}>
           What began as a single Houston dining room has grown into a local institution for people who want an elevated experience without the pretense — the kind of place where the team knows your name and the kitchen never cuts a corner.
@@ -980,7 +980,7 @@ function KpsFooter() {
           </div>
         </div>
         <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, textAlign:'center', fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
-          © {new Date().getFullYear()} KP's Kitchen &amp; Bar · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
+          © {new Date().getFullYear()} KP's Kitchen · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
         </div>
       </div>
     </footer>
@@ -1014,14 +1014,14 @@ function KpsStickyBar() {
 // ─── Route table + document titles ────────────────────────────
 const PAGES = {
   '/': { title: "KP's Kitchen | Your Go-To for Comfort Classics", render: () => <HomePage/> },
-  '/menu': { title: "Menu | KP's Kitchen & Bar", render: () => <MenuPage/> },
-  '/brunch': { title: "Brunch | KP's Kitchen & Bar", render: () => <BrunchPage/> },
-  '/happy-hour': { title: "Happy Hour | KP's Kitchen & Bar", render: () => <HappyHourPage/> },
-  '/specials': { title: "Weekly Specials | KP's Kitchen & Bar", render: () => <SpecialsPage/> },
-  '/private-events': { title: "Private Events | KP's Kitchen & Bar", render: () => <PrivateEventsPage/> },
-  '/catering': { title: "Catering | KP's Kitchen & Bar", render: () => <CateringPage/> },
-  '/about': { title: "Our Story | KP's Kitchen & Bar", render: () => <AboutPage/> },
-  '/contact': { title: "Contact & Hours | KP's Kitchen & Bar", render: () => <ContactPage/> },
+  '/menu': { title: "Menu | KP's Kitchen", render: () => <MenuPage/> },
+  '/brunch': { title: "Brunch | KP's Kitchen", render: () => <BrunchPage/> },
+  '/happy-hour': { title: "Happy Hour | KP's Kitchen", render: () => <HappyHourPage/> },
+  '/specials': { title: "Weekly Specials | KP's Kitchen", render: () => <SpecialsPage/> },
+  '/private-events': { title: "Private Events | KP's Kitchen", render: () => <PrivateEventsPage/> },
+  '/catering': { title: "Catering | KP's Kitchen", render: () => <CateringPage/> },
+  '/about': { title: "Our Story | KP's Kitchen", render: () => <AboutPage/> },
+  '/contact': { title: "Contact & Hours | KP's Kitchen", render: () => <ContactPage/> },
 }
 
 // ─── Main ─────────────────────────────────────────────────────

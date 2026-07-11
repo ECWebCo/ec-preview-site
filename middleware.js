@@ -29,36 +29,36 @@ const KPS_PAGES = {
     description: "Upscale American comfort food in Houston's Memorial. Scratch-made classics, weekend brunch, happy hour, private events & catering.",
   },
   '/menu': {
-    title: "Menu | KP's Kitchen & Bar",
+    title: "Menu | KP's Kitchen",
     description: "Explore KP's Kitchen's menu — smashed cheeseburgers, Mama Pauly's meatballs, fire-grill features, salads and more in Houston's Memorial.",
   },
   '/brunch': {
-    title: "Brunch | KP's Kitchen & Bar",
+    title: "Brunch | KP's Kitchen",
     description: "Weekend brunch at KP's Kitchen — breakfast classics, mimosas, and the famous Sunday fried chicken family meal in Houston's Memorial.",
   },
   '/happy-hour': {
-    title: "Happy Hour | KP's Kitchen & Bar",
+    title: "Happy Hour | KP's Kitchen",
     description: "KP's Kitchen happy hour — wines, spritzes and shareable bar snacks, every item $7, Tuesday through Friday 3–6PM in Houston's Memorial.",
   },
   '/specials': {
-    title: "Weekly Specials | KP's Kitchen & Bar",
+    title: "Weekly Specials | KP's Kitchen",
     description: "KP's Kitchen weekly specials — $12 Burger Tuesdays, Prime Rib Wednesdays, Steak Nights, Sunday family meals and more in Houston's Memorial.",
   },
   '/private-events': {
-    title: "Private Events | KP's Kitchen & Bar",
+    title: "Private Events | KP's Kitchen",
     description: "Host private events at KP's Kitchen — rehearsal dinners, birthdays, corporate gatherings & holiday parties with custom menus in Houston's Memorial.",
   },
   '/catering': {
-    title: "Catering | KP's Kitchen & Bar",
+    title: "Catering | KP's Kitchen",
     description: "Catering from KP's Kitchen — drop-off and full-service comfort food for offices, meetings & celebrations across Houston.",
   },
   '/about': {
-    title: "Our Story | KP's Kitchen & Bar",
-    description: "KP's Kitchen & Bar — Kerry Pauly's Houston institution for scratch-made comfort food and genuine neighborhood hospitality.",
+    title: "Our Story | KP's Kitchen",
+    description: "KP's Kitchen — Kerry Pauly's Houston institution for scratch-made comfort food and genuine neighborhood hospitality.",
   },
   '/contact': {
-    title: "Contact & Hours | KP's Kitchen & Bar",
-    description: "Visit KP's Kitchen & Bar in Houston's Memorial — 8412 I-10 Frontage Rd. Hours, directions, reservations & contact.",
+    title: "Contact & Hours | KP's Kitchen",
+    description: "Visit KP's Kitchen in Houston's Memorial — 8412 I-10 Frontage Rd. Hours, directions, reservations & contact.",
   },
 }
 const KPS_PATHS = Object.keys(KPS_PAGES)
