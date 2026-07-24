@@ -17,7 +17,7 @@ const MEMORIAL = {
   name: 'Memorial',
   address: '8412 Interstate 10 Frontage Rd #350, Houston, TX 77024',
   phone: '(713) 677-0921',
-  email: 'events@kps-kitchen.com',
+  email: 'kerrypauly@gmail.com',
   resy: 'https://resy.com/cities/houston-tx/venues/kps-kitchen',
   order: 'https://order.toasttab.com/online/kpskitchen-spring-valley?diningOption=takeout',
   hours: [
