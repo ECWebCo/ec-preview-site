@@ -187,14 +187,6 @@ const SPECIALS_LIST = [
   { day:'Sunday', deal:'Brunch + Fried Chicken Family Meal' },
 ]
 
-const PROMO = {
-  offers: [
-    { icon:'🎁', title:'A Gift at Every Table', text:'Dine in with us this July and every table receives a complimentary gift — our way of saying thank you.' },
-    { icon:'💳', title:'Buy $100, Get $25 Free', text:'Purchase a $100 gift card and we\'ll add a bonus $25 — perfect for the holidays or a treat for yourself.' },
-  ],
-  ends: 'Now through the end of July',
-}
-
 // ─── Router (tiny, dependency-free) ───────────────────────────
 // Every path serves index.html (vercel rewrite), so we just read the
 // pathname and render the matching page. ?site=kps is preserved in preview.
@@ -771,6 +763,18 @@ function SpecialsPage() {
       <PageHero eyebrow="Every Week at KP's" title="Weekly Specials"
         subtitle="A different reason to come in every day — from $12 Burger Tuesdays to Prime Rib Wednesdays and Sunday family meals." />
       <div style={{ maxWidth:620, margin:'0 auto', padding:'56px 24px 88px' }}>
+        {/* Featured: Summer Date Night */}
+        <div style={{ textAlign:'center', marginBottom:52 }}>
+          <div style={{ ...EYEBROW_STYLE, marginBottom:16 }}>Featured This Summer</div>
+          <img src="/kps/date-night-special.jpg"
+            alt="KP's Kitchen Summer Date Night — $49 for two: choose one appetizer, two entrées, and one dessert. Add a bottle of wine for just $20."
+            style={{ display:'block', width:'100%', maxWidth:480, margin:'0 auto', height:'auto', border:`1px solid ${BORDER}`, boxShadow:'0 14px 44px rgba(0,0,0,0.12)' }}/>
+          <button onClick={()=>openAction('reserve')} style={{ ...SOLID_BTN, marginTop:26 }}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            Reserve Your Table
+          </button>
+        </div>
+        <div style={{ ...EYEBROW_STYLE, textAlign:'center', marginBottom:10 }}>The Weekly Lineup</div>
         {SPECIALS_LIST.map((s,i)=>(
           <div key={i} style={{ display:'flex', gap:20, padding:'18px 0', borderBottom:`1px solid ${BORDER}`, alignItems:'flex-start' }}>
             <div style={{ fontFamily:'DM Sans', fontSize:12, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:s.day===todayName?GOLD:NAVY, minWidth:100, paddingTop:2, opacity:s.day===todayName?1:0.75 }}>
@@ -906,45 +910,36 @@ function ContactPage() {
   )
 }
 
-// ─── Christmas in July Promo Popup (temporary) ────────────────
-function HolidayPromoPopup({ onClose }) {
-  useEffect(() => { document.body.style.overflow='hidden'; return ()=>{ document.body.style.overflow='' } }, [])
+// ─── August Community Prix Fixe Promo (Steel Magnolia Moms) ───
+// The promo art is a single designed graphic (public/kps/august-promo.jpg,
+// 1402×1122). We overlay invisible, percentage-positioned hotspots so the
+// "Reserve Your Table" button, the Steel Magnolia Moms link, and the ✕ are
+// genuinely clickable and scale with the image.
+function PromoPopup({ onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const onKey = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) }
+  }, [onClose])
+
+  const hotspot = { position:'absolute', background:'none', border:'none', padding:0, margin:0, cursor:'pointer', WebkitAppearance:'none', appearance:'none' }
+
   return (
-    <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center' }}>
+    <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
       <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', background:CREAM, width:'min(500px,92vw)', maxHeight:'90vh', overflowY:'auto', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
-        <div style={{ position:'relative', background:NAVY, padding:'40px 32px 34px', textAlign:'center', overflow:'hidden' }}>
-          <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.08 }}/>
-          <button onClick={onClose} style={{ position:'absolute', top:16, right:18, background:'none', border:'none', fontSize:22, cursor:'pointer', color:'rgba(255,255,255,0.7)', lineHeight:1, zIndex:2 }}>✕</button>
-          <div style={{ position:'relative' }}>
-            <div style={{ fontSize:34, marginBottom:10 }}>❄️ 🎄 ❄️</div>
-            <div style={{ fontFamily:'DM Sans', fontSize:10, fontWeight:700, letterSpacing:'5px', textTransform:'uppercase', color:GOLD, marginBottom:12 }}>Limited-Time Celebration</div>
-            <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:'clamp(28px,5vw,40px)', fontWeight:400, fontStyle:'italic', color:'#fff', lineHeight:1.15 }}>Christmas in July</h2>
-          </div>
-        </div>
-        <div style={{ padding:'30px 32px 8px' }}>
-          {PROMO.offers.map((o,i)=>(
-            <div key={i} style={{ display:'flex', gap:18, padding:'18px 0', borderBottom:i<PROMO.offers.length-1?`1px solid ${BORDER}`:'none', alignItems:'flex-start' }}>
-              <div style={{ fontSize:28, flexShrink:0, lineHeight:1.1 }}>{o.icon}</div>
-              <div>
-                <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:6 }}>{o.title}</div>
-                <p style={{ fontFamily:'Georgia,serif', fontSize:13.5, color:MUTED, fontStyle:'italic', lineHeight:1.65 }}>{o.text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ padding:'20px 32px 34px' }}>
-          <div style={{ textAlign:'center', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:RUST, marginBottom:22 }}>{PROMO.ends}</div>
-          <button onClick={()=>{ onClose(); openAction('reserve') }}
-            style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            Reserve a Table
-          </button>
-          <button onClick={onClose}
-            style={{ display:'block', margin:'16px auto 0', background:'none', border:'none', fontFamily:'DM Sans', fontSize:10, fontWeight:600, letterSpacing:'2px', textTransform:'uppercase', color:MUTED, cursor:'pointer' }}>
-            Maybe Later
-          </button>
-        </div>
+      <div style={{ position:'relative', width:'min(760px, 94vw, calc(92vh * 1402 / 1122))', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
+        <img src="/kps/august-promo.jpg" alt="Meet Me at KP's — August Community Prix Fixe benefiting Steel Magnolia Moms"
+          style={{ display:'block', width:'100%', height:'auto' }}/>
+        {/* Close — over the drawn ✕, top-right */}
+        <button aria-label="Close" onClick={onClose}
+          style={{ ...hotspot, left:'91%', top:'0%', width:'9%', height:'12%' }}/>
+        {/* Reserve Your Table → Resy */}
+        <button aria-label="Reserve your table" onClick={()=>{ onClose(); openAction('reserve') }}
+          style={{ ...hotspot, left:'7%', top:'84%', width:'38%', height:'8%' }}/>
+        {/* Steel Magnolia Moms link */}
+        <button aria-label="Learn more at steelmagnoliamoms.com" onClick={()=>window.open('https://steelmagnoliamoms.com', '_blank', 'noopener,noreferrer')}
+          style={{ ...hotspot, left:'58%', top:'90%', width:'36%', height:'9%' }}/>
       </div>
     </div>
   )
@@ -1034,12 +1029,12 @@ export default function KpsLayout() {
   useEffect(() => { document.title = page.title }, [page])
   useEffect(() => { window.scrollTo(0, 0) }, [route])
 
-  // Auto-show Christmas in July promo after 2s — once per browser session
+  // Auto-show the August community prix fixe promo after 2s — once per session
   useEffect(() => {
-    if (sessionStorage.getItem('kps-promo-seen')) return
+    if (sessionStorage.getItem('kps-promo-aug25-seen')) return
     const t = setTimeout(() => {
       setPromoOpen(true)
-      sessionStorage.setItem('kps-promo-seen', '1')
+      sessionStorage.setItem('kps-promo-aug25-seen', '1')
     }, 2000)
     return () => clearTimeout(t)
   }, [])
@@ -1050,7 +1045,7 @@ export default function KpsLayout() {
       {page.render()}
       <KpsFooter />
       <KpsStickyBar />
-      {promoOpen && <HolidayPromoPopup onClose={()=>setPromoOpen(false)} />}
+      {promoOpen && <PromoPopup onClose={()=>setPromoOpen(false)} />}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
