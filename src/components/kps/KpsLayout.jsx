@@ -763,16 +763,29 @@ function SpecialsPage() {
       <PageHero eyebrow="Every Week at KP's" title="Weekly Specials"
         subtitle="A different reason to come in every day — from $12 Burger Tuesdays to Prime Rib Wednesdays and Sunday family meals." />
       <div style={{ maxWidth:620, margin:'0 auto', padding:'56px 24px 88px' }}>
-        {/* Featured: Summer Date Night */}
+        {/* Featured: August Community Prix Fixe (benefits Steel Magnolia Moms) */}
         <div style={{ textAlign:'center', marginBottom:52 }}>
-          <div style={{ ...EYEBROW_STYLE, marginBottom:16 }}>Featured This Summer</div>
-          <img src="/kps/date-night-special.jpg"
-            alt="KP's Kitchen Summer Date Night — $49 for two: choose one appetizer, two entrées, and one dessert. Add a bottle of wine for just $20."
-            style={{ display:'block', width:'100%', maxWidth:480, margin:'0 auto', height:'auto', border:`1px solid ${BORDER}`, boxShadow:'0 14px 44px rgba(0,0,0,0.12)' }}/>
-          <button onClick={()=>openAction('reserve')} style={{ ...SOLID_BTN, marginTop:26 }}
-            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-            Reserve Your Table
-          </button>
+          <div style={{ ...EYEBROW_STYLE, marginBottom:16 }}>This Month at KP's · Community Prix Fixe</div>
+          <a href="/kps/august-prix-fixe-menu.pdf" target="_blank" rel="noreferrer" aria-label="Open the August Community Prix Fixe menu (PDF)"
+            style={{ display:'block', maxWidth:480, margin:'0 auto' }}>
+            <img src="/kps/august-prix-fixe-menu.jpg"
+              alt="KP's Kitchen August Community Prix Fixe — three courses, $42 per person, available for lunch and dinner August 1–31. Every prix fixe helps support Steel Magnolia Moms."
+              style={{ display:'block', width:'100%', height:'auto', border:`1px solid ${BORDER}`, boxShadow:'0 14px 44px rgba(0,0,0,0.12)' }}/>
+          </a>
+          <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', lineHeight:1.7, maxWidth:440, margin:'22px auto 0' }}>
+            Three courses, $42 per person, all August long. 10% of every Community Prix Fixe helps support Steel Magnolia Moms.
+          </p>
+          <div style={{ display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap', marginTop:24 }}>
+            <button onClick={()=>openAction('reserve')} style={SOLID_BTN}
+              onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+              Reserve Your Table
+            </button>
+            <a href="/kps/august-prix-fixe-menu.pdf" target="_blank" rel="noreferrer" style={{ ...PILL_BTN, textDecoration:'none' }}
+              onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+              onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+              View Full Menu
+            </a>
+          </div>
         </div>
         <div style={{ ...EYEBROW_STYLE, textAlign:'center', marginBottom:10 }}>The Weekly Lineup</div>
         {SPECIALS_LIST.map((s,i)=>(
@@ -928,18 +941,33 @@ function PromoPopup({ onClose }) {
   return (
     <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
       <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', width:'min(760px, 94vw, calc(92vh * 1402 / 1122))', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
-        <img src="/kps/august-promo.jpg" alt="Meet Me at KP's — August Community Prix Fixe benefiting Steel Magnolia Moms"
-          style={{ display:'block', width:'100%', height:'auto' }}/>
-        {/* Close — over the drawn ✕, top-right */}
-        <button aria-label="Close" onClick={onClose}
-          style={{ ...hotspot, left:'91%', top:'0%', width:'9%', height:'12%' }}/>
-        {/* Reserve Your Table → Resy */}
-        <button aria-label="Reserve your table" onClick={()=>{ onClose(); openAction('reserve') }}
-          style={{ ...hotspot, left:'7%', top:'84%', width:'38%', height:'8%' }}/>
-        {/* Steel Magnolia Moms link */}
-        <button aria-label="Learn more at steelmagnoliamoms.com" onClick={()=>window.open('https://steelmagnoliamoms.com', '_blank', 'noopener,noreferrer')}
-          style={{ ...hotspot, left:'58%', top:'90%', width:'36%', height:'9%' }}/>
+      <div style={{ position:'relative', width:'min(720px, 94vw)', maxHeight:'92vh', overflowY:'auto', background:'#fff', animation:'fadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
+        {/* Graphic + invisible hotspots (all sized relative to this box) */}
+        <div style={{ position:'relative' }}>
+          <img src="/kps/august-promo.jpg" alt="Meet Me at KP's — August Community Prix Fixe benefiting Steel Magnolia Moms"
+            style={{ display:'block', width:'100%', height:'auto' }}/>
+          {/* Close — over the drawn ✕, top-right */}
+          <button aria-label="Close" onClick={onClose}
+            style={{ ...hotspot, left:'91%', top:'0%', width:'9%', height:'12%' }}/>
+          {/* Reserve Your Table → Resy */}
+          <button aria-label="Reserve your table" onClick={()=>{ onClose(); openAction('reserve') }}
+            style={{ ...hotspot, left:'7%', top:'84%', width:'38%', height:'8%' }}/>
+          {/* Steel Magnolia Moms link */}
+          <button aria-label="Learn more at steelmagnoliamoms.com" onClick={()=>window.open('https://steelmagnoliamoms.com', '_blank', 'noopener,noreferrer')}
+            style={{ ...hotspot, left:'58%', top:'90%', width:'36%', height:'9%' }}/>
+        </div>
+        {/* Action bar — Reserve is the priority; menu is secondary */}
+        <div style={{ display:'flex', gap:12, justifyContent:'center', alignItems:'center', flexWrap:'wrap', padding:'20px 24px 26px', borderTop:`1px solid ${BORDER}` }}>
+          <button onClick={()=>{ onClose(); openAction('reserve') }} style={SOLID_BTN}
+            onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
+            Reserve a Table
+          </button>
+          <a href="/kps/august-prix-fixe-menu.pdf" target="_blank" rel="noreferrer" style={{ ...PILL_BTN, textDecoration:'none' }}
+            onMouseOver={e=>{e.currentTarget.style.background=NAVY;e.currentTarget.style.color='#fff'}}
+            onMouseOut={e=>{e.currentTarget.style.background='none';e.currentTarget.style.color=NAVY}}>
+            View the Menu
+          </a>
+        </div>
       </div>
     </div>
   )
