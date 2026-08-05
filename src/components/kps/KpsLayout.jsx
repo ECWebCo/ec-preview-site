@@ -381,17 +381,37 @@ function HoursDropdown({ hours, defaultOpen = false }) {
 
 // ─── Shared: inquiry form (private events / catering) ─────────
 function InquiryForm({ subject, successMsg, cta = 'Send Inquiry' }) {
-  const [form, setForm] = useState({ name:'', email:'', phone:'', date:'', guests:'', message:'' })
-  const [sent, setSent] = useState(false)
+  const [form, setForm] = useState({ name:'', email:'', phone:'', date:'', guests:'', message:'', company:'' })
+  const [status, setStatus] = useState('idle') // idle | sending | sent | error
+  const [fieldError, setFieldError] = useState('')
   const set = k => e => setForm(f=>({ ...f, [k]:e.target.value }))
-  const handleSubmit = () => {
-    trackLead(subject)
-    const body = `Name: ${form.name}%0AEmail: ${form.email}%0APhone: ${form.phone}%0ADate: ${form.date}%0AGuests: ${form.guests}%0AMessage: ${form.message}`
-    window.location.href = `mailto:${MEMORIAL.email}?subject=${encodeURIComponent(subject)}&body=${body}`
-    setSent(true)
+  const handleSubmit = async () => {
+    if (status === 'sending') return
+    if (!form.name.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setFieldError('Please fill in your name and a valid email address.')
+      return
+    }
+    setFieldError('')
+    setStatus('sending')
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, ...form }),
+      })
+      const data = await res.json().catch(() => null)
+      if (res.ok && data && data.success) {
+        trackLead(subject)
+        setStatus('sent')
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
   }
   const input = { width:'100%', fontFamily:'Georgia,serif', fontSize:14, color:NAVY, background:'#fff', border:'none', borderBottom:`1px solid ${BORDER}`, padding:'10px 0', outline:'none', marginBottom:20 }
-  if (sent) return (
+  if (status === 'sent') return (
     <div style={{ textAlign:'center', padding:'24px 0' }}>
       <div style={{ fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', color:NAVY, marginBottom:12 }}>Thank You</div>
       <p style={{ fontFamily:'Georgia,serif', fontSize:14, color:MUTED, fontStyle:'italic', lineHeight:1.8 }}>{successMsg}</p>
@@ -400,15 +420,25 @@ function InquiryForm({ subject, successMsg, cta = 'Send Inquiry' }) {
   return (
     <>
       <input style={input} placeholder="Your Name" value={form.name} onChange={set('name')}/>
-      <input style={input} placeholder="Email Address" value={form.email} onChange={set('email')}/>
+      <input style={input} placeholder="Email Address" type="email" value={form.email} onChange={set('email')}/>
       <input style={input} placeholder="Phone Number" value={form.phone} onChange={set('phone')}/>
       <input style={input} placeholder="Preferred Date" value={form.date} onChange={set('date')}/>
       <input style={input} placeholder="Number of Guests" value={form.guests} onChange={set('guests')}/>
       <textarea style={{ ...input, resize:'vertical', minHeight:90, marginBottom:32 }} placeholder="Tell us about your event" value={form.message} onChange={set('message')}/>
-      <button onClick={handleSubmit}
-        style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor:'pointer', transition:'opacity 0.2s' }}
-        onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
-        {cta}
+      {/* Honeypot — hidden from humans, bots fill it and get silently dropped */}
+      <input style={{ position:'absolute', left:'-9999px', width:1, height:1, opacity:0 }} tabIndex={-1} autoComplete="off" aria-hidden="true" placeholder="Company" value={form.company} onChange={set('company')}/>
+      {fieldError && (
+        <p style={{ fontFamily:'Georgia,serif', fontSize:13, fontStyle:'italic', color:RUST, margin:'-12px 0 20px' }}>{fieldError}</p>
+      )}
+      {status === 'error' && (
+        <p style={{ fontFamily:'Georgia,serif', fontSize:13, fontStyle:'italic', color:RUST, margin:'-12px 0 20px' }}>
+          Something went wrong sending your inquiry. Please try again, or email us directly at <a href={`mailto:${MEMORIAL.email}?subject=${encodeURIComponent(subject)}`} style={{ color:NAVY }}>{MEMORIAL.email}</a>.
+        </p>
+      )}
+      <button onClick={handleSubmit} disabled={status === 'sending'}
+        style={{ width:'100%', padding:'16px', background:NAVY, color:'#fff', border:'none', fontFamily:'DM Sans', fontSize:11, fontWeight:700, letterSpacing:'4px', textTransform:'uppercase', cursor: status==='sending'?'wait':'pointer', opacity: status==='sending'?0.7:1, transition:'opacity 0.2s' }}
+        onMouseOver={e=>{ if(status!=='sending') e.currentTarget.style.opacity='0.85' }} onMouseOut={e=>{ if(status!=='sending') e.currentTarget.style.opacity='1' }}>
+        {status === 'sending' ? 'Sending…' : cta}
       </button>
     </>
   )
