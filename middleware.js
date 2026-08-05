@@ -63,7 +63,7 @@ const KPS_PAGES = {
 }
 const KPS_PATHS = Object.keys(KPS_PAGES)
 
-function buildMetaBlock({ title, description, url, image, favicon }) {
+function buildMetaBlock({ title, description, url, image, favicon, appleTouchIcon }) {
   return `
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
@@ -77,7 +77,8 @@ function buildMetaBlock({ title, description, url, image, favicon }) {
     <meta name="twitter:title" content="${escapeHtml(title)}" />
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}" />` : ''}
-    ${favicon ? `<link rel="icon" href="${escapeHtml(favicon)}" />` : ''}`
+    ${favicon ? `<link rel="icon" type="image/png" href="${escapeHtml(favicon)}" />` : ''}
+    ${appleTouchIcon ? `<link rel="apple-touch-icon" href="${escapeHtml(appleTouchIcon)}" />` : ''}`
 }
 
 function injectMeta(html, meta) {
@@ -162,6 +163,13 @@ export default async function middleware(request) {
     if (url.pathname === '/sitemap.xml') return kpsSitemap(url.origin)
     if (url.pathname === '/robots.txt') return kpsRobots(url.origin)
 
+    // Root favicon requests (browsers/crawlers ask for these regardless of
+    // link tags) — serve the KPS assets instead of the SPA rewrite's HTML.
+    if (url.pathname === '/favicon.ico') return fetch(`${url.origin}/kps/favicon.ico`)
+    if (url.pathname === '/favicon.png') return fetch(`${url.origin}/kps/favicon.png`)
+    if (url.pathname === '/apple-touch-icon.png' || url.pathname === '/apple-touch-icon-precomposed.png')
+      return fetch(`${url.origin}/kps/apple-touch-icon.png`)
+
     if (KPS_PAGES[path]) {
       const original = await fetch(request)
       const contentType = original.headers.get('content-type') || ''
@@ -173,6 +181,8 @@ export default async function middleware(request) {
         description: p.description,
         url: `${url.origin}${path === '/' ? '' : path}`,
         image: `${url.origin}/kps/hero-patio.jpg`,
+        favicon: '/kps/favicon.png',
+        appleTouchIcon: '/kps/apple-touch-icon.png',
       }))
     }
     // Unknown KPS path (e.g. /bellaire handled by redirect) — pass through

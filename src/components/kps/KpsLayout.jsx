@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { initPixel, trackPageView, trackLead } from './metaPixel'
 
 const NAVY   = '#1B2B4B'
 const CREAM  = '#FAFAF8'
@@ -384,6 +385,7 @@ function InquiryForm({ subject, successMsg, cta = 'Send Inquiry' }) {
   const [sent, setSent] = useState(false)
   const set = k => e => setForm(f=>({ ...f, [k]:e.target.value }))
   const handleSubmit = () => {
+    trackLead(subject)
     const body = `Name: ${form.name}%0AEmail: ${form.email}%0APhone: ${form.phone}%0ADate: ${form.date}%0AGuests: ${form.guests}%0AMessage: ${form.message}`
     window.location.href = `mailto:${MEMORIAL.email}?subject=${encodeURIComponent(subject)}&body=${body}`
     setSent(true)
@@ -1056,6 +1058,14 @@ export default function KpsLayout() {
 
   useEffect(() => { document.title = page.title }, [page])
   useEffect(() => { window.scrollTo(0, 0) }, [route])
+
+  // Meta Pixel: init fires the first PageView; SPA route changes fire the rest
+  useEffect(() => { initPixel() }, [])
+  const firstRoute = useRef(true)
+  useEffect(() => {
+    if (firstRoute.current) { firstRoute.current = false; return }
+    trackPageView()
+  }, [route])
 
   // Auto-show the August community prix fixe promo after 2s — once per session
   useEffect(() => {
