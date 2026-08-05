@@ -73,11 +73,19 @@ export default async function handler(req, res) {
     message && `\n${message}`,
   ].filter(Boolean).join('\n')
 
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.error('RESEND_API_KEY is not set in this environment')
+    return res.status(500).json({ error: 'Email service not configured' })
+  }
+  // Shape check only — never log the key itself
+  console.log(`RESEND_API_KEY present: prefix=${apiKey.slice(0, 3)} length=${apiKey.length} trimmed=${apiKey === apiKey.trim()}`)
+
   try {
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
