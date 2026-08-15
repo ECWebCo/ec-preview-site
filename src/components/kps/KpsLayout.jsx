@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { initPixel, trackPageView, trackLead } from './metaPixel'
+import { initGA } from './googleAnalytics'
 
 const NAVY   = '#1B2B4B'
 const CREAM  = '#FAFAF8'
@@ -1090,7 +1091,7 @@ export default function KpsLayout() {
   useEffect(() => { window.scrollTo(0, 0) }, [route])
 
   // Meta Pixel: init fires the first PageView; SPA route changes fire the rest
-  useEffect(() => { initPixel() }, [])
+  useEffect(() => { initPixel(); initGA() }, [])
   const firstRoute = useRef(true)
   useEffect(() => {
     if (firstRoute.current) { firstRoute.current = false; return }
