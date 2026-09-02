@@ -122,7 +122,7 @@ const MENU_NOTES = [
 
 // Happy Hour is a separate menu with its own page. Every item is $7.
 const HAPPY_HOUR = {
-  hours: 'Tuesday–Friday 3–6 PM · All Day Wednesday & Saturday',
+  hours: 'All Day Wednesday & Saturday · Tuesday, Thursday & Friday 3–6 PM',
   drinks: [
     { name:'Moscow Mule', description:'Ginger laced and made with sake-based vodka', price:'7' },
     { name:'Grapefruit Paloma', description:'Tangy grapefruit, lime, Sabe tequila-sake', price:'7' },
@@ -569,13 +569,14 @@ function KpsHero() {
 }
 
 // ─── Interior page header ─────────────────────────────────────
-function PageHero({ eyebrow, title, subtitle }) {
+function PageHero({ eyebrow, title, subtitle, children }) {
   return (
     <div style={{ position:'relative', background:NAVY, padding:'140px 32px 68px', textAlign:'center', overflow:'hidden' }}>
       <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.06 }}/>
       <div style={{ position:'relative' }}>
         {eyebrow && <div style={{ ...EYEBROW_STYLE, color:GOLD, marginBottom:14 }}>{eyebrow}</div>}
         <h1 style={{ fontFamily:'Playfair Display,serif', fontStyle:'italic', fontWeight:400, fontSize:'clamp(30px,5vw,48px)', color:'#fff', lineHeight:1.15 }}>{title}</h1>
+        {children}
         {subtitle && <p style={{ fontFamily:'Georgia,serif', fontSize:15, color:'rgba(255,255,255,0.75)', fontStyle:'italic', margin:'16px auto 0', maxWidth:560, lineHeight:1.7 }}>{subtitle}</p>}
       </div>
     </div>
@@ -633,7 +634,7 @@ function KpsMenusTeaser() {
     { label:'Lunch', sub:'Available 11 – 3 · weekdays', to:'/menu' },
     { label:'Dinner', sub:'Fire grill, handhelds & house specialties', to:'/menu' },
     { label:'Brunch', sub:'Weekends · classics & Sunday fried chicken', to:'/brunch' },
-    { label:'Happy Hour', sub:'Tue–Fri 3–6 PM · All Day Wed & Sat', to:'/happy-hour' },
+    { label:'Happy Hour', sub:'All Day Wed & Sat · Tue, Thu & Fri 3–6 PM', to:'/happy-hour' },
     { label:'Specials', sub:'Daily deals you don\'t want to miss', to:'/specials' },
   ]
   return (
@@ -652,7 +653,7 @@ function KpsMenusTeaser() {
             ))}
           </div>
         </div>
-        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="Tue–Fri 3–6 PM · All Day Wed & Sat" title="Happy Hour" cta="See Happy Hour" ctaTo="/happy-hour" />
+        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="All Day Wed & Sat · Tue, Thu & Fri 3–6 PM" title="Happy Hour" cta="See Happy Hour" ctaTo="/happy-hour" />
       </div>
     </section>
   )
@@ -741,8 +742,12 @@ function HappyHourPage() {
   const subHead = { ...H2_STYLE, textAlign:'center', fontSize:'clamp(22px,2.8vw,30px)', marginBottom:18 }
   return (
     <>
-      <PageHero eyebrow={hh.hours} title="Happy Hour"
-        subtitle="$7 drinks + $7 food at KP's Kitchen in Memorial. Join us Tuesday–Friday from 3–6 PM, with Happy Hour all day Wednesday and Saturday." />
+      <PageHero title="Happy Hour at KP's Kitchen"
+        subtitle="Join us for one of Memorial and Spring Valley's best-value happy hours, featuring $7 drinks and $7 bites. Happy Hour is available all day every Wednesday and Saturday, and Tuesday, Thursday and Friday from 3–6 PM.">
+        <div style={{ ...EYEBROW_STYLE, color:GOLD, fontSize:12, marginTop:20, marginBottom:10 }}>All Day Wednesday &amp; Saturday</div>
+        <div style={{ ...EYEBROW_STYLE, color:'rgba(255,255,255,0.85)', marginBottom:14 }}>Tuesday, Thursday &amp; Friday · 3–6 PM</div>
+        <div style={{ fontFamily:'Georgia,serif', fontSize:17, fontStyle:'italic', color:'#fff' }}>$7 drinks &amp; $7 bites</div>
+      </PageHero>
       <div style={{ maxWidth:920, margin:'0 auto', padding:'56px 24px 88px' }}>
         <div style={{ maxWidth:480, margin:'0 auto 48px' }}>
           <PhotoCollage photos={COLLAGE_DRINKS} slot={2} />

@@ -38,7 +38,7 @@ const KPS_PAGES = {
   },
   '/happy-hour': {
     title: "Happy Hour in Memorial Houston | KP's Kitchen",
-    description: "$7 drinks and $7 food at KP's Kitchen near Memorial Houston. Happy Hour Tuesday–Friday 3–6 PM, plus all day Wednesday and Saturday.",
+    description: "Happy Hour at KP's Kitchen near Memorial and Spring Valley. Enjoy $7 drinks and $7 bites, all day Wednesday and Saturday, plus Tuesday, Thursday and Friday from 3–6 PM.",
   },
   '/specials': {
     title: "Weekly Specials | KP's Kitchen",
