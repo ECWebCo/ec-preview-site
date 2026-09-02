@@ -1,7 +1,20 @@
 {
   "redirects": [
     { "source": "/bellaire", "destination": "/", "permanent": true },
-    { "source": "/bellaire/:path*", "destination": "/", "permanent": true }
+    { "source": "/bellaire/:path*", "destination": "/", "permanent": true },
+    { "source": "/locations", "destination": "/contact", "permanent": true },
+    { "source": "/locations/:path*", "destination": "/contact", "permanent": true },
+    { "source": "/location", "destination": "/contact", "permanent": true },
+    { "source": "/reservations", "destination": "/contact", "permanent": true },
+    { "source": "/reservations/:path*", "destination": "/contact", "permanent": true },
+    { "source": "/reservation", "destination": "/contact", "permanent": true },
+    { "source": "/town-and-country", "destination": "/", "permanent": true },
+    { "source": "/town-and-country/:path*", "destination": "/", "permanent": true },
+    { "source": "/menus", "destination": "/menu", "permanent": true },
+    { "source": "/menus/:path*", "destination": "/menu", "permanent": true },
+    { "source": "/popmenu-order", "destination": "https://order.toasttab.com/online/kpskitchen-spring-valley?diningOption=takeout", "permanent": true },
+    { "source": "/in-the-know", "destination": "/", "permanent": true },
+    { "source": "/in-the-know/:path*", "destination": "/", "permanent": true }
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }

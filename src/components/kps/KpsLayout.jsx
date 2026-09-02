@@ -41,7 +41,6 @@ const SOLID_BTN = { background:NAVY, border:`1px solid ${NAVY}`, borderRadius:99
 
 const PRESS_ITEMS = [
   { label:'EATER', quote:"One of Houston's best hidden gem restaurants.", url:'https://houston.eater.com/maps/best-hidden-gem-underrated-restaurants-houston' },
-  { label:'BIZ JOURNAL', quote:"KP's Kitchen expands to a second Houston location.", url:'https://www.bizjournals.com/houston/news/2024/04/05/kps-kitchen-second-location-bellaire.html' },
   { label:'SHOUTOUT HTX', quote:'Heartfelt service meets culinary excellence.', url:'https://shoutouthtx.com/meet-kerry-pauly-owner-kps-kitchen/' },
 ]
 
@@ -123,7 +122,7 @@ const MENU_NOTES = [
 
 // Happy Hour is a separate menu with its own page. Every item is $7.
 const HAPPY_HOUR = {
-  hours: 'Tuesday – Friday · 3–6PM',
+  hours: 'Tuesday–Friday 3–6 PM · All Day Wednesday & Saturday',
   drinks: [
     { name:'Moscow Mule', description:'Ginger laced and made with sake-based vodka', price:'7' },
     { name:'Grapefruit Paloma', description:'Tangy grapefruit, lime, Sabe tequila-sake', price:'7' },
@@ -634,7 +633,7 @@ function KpsMenusTeaser() {
     { label:'Lunch', sub:'Available 11 – 3 · weekdays', to:'/menu' },
     { label:'Dinner', sub:'Fire grill, handhelds & house specialties', to:'/menu' },
     { label:'Brunch', sub:'Weekends · classics & Sunday fried chicken', to:'/brunch' },
-    { label:'Happy Hour', sub:'Tue – Fri · 3–6PM', to:'/happy-hour' },
+    { label:'Happy Hour', sub:'Tue–Fri 3–6 PM · All Day Wed & Sat', to:'/happy-hour' },
     { label:'Specials', sub:'Daily deals you don\'t want to miss', to:'/specials' },
   ]
   return (
@@ -653,7 +652,7 @@ function KpsMenusTeaser() {
             ))}
           </div>
         </div>
-        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="Tuesday – Friday · 3–6PM" title="Happy Hour" cta="See Happy Hour" ctaTo="/happy-hour" />
+        <CollageBlock photos={COLLAGE_DRINKS} slot={2} eyebrow="Tue–Fri 3–6 PM · All Day Wed & Sat" title="Happy Hour" cta="See Happy Hour" ctaTo="/happy-hour" />
       </div>
     </section>
   )
@@ -743,7 +742,7 @@ function HappyHourPage() {
   return (
     <>
       <PageHero eyebrow={hh.hours} title="Happy Hour"
-        subtitle="Our neighborhood's favorite way to unwind — a rotating list of wines and spritzes plus shareable bar snacks, every item just $7." />
+        subtitle="$7 drinks + $7 food at KP's Kitchen in Memorial. Join us Tuesday–Friday from 3–6 PM, with Happy Hour all day Wednesday and Saturday." />
       <div style={{ maxWidth:920, margin:'0 auto', padding:'56px 24px 88px' }}>
         <div style={{ maxWidth:480, margin:'0 auto 48px' }}>
           <PhotoCollage photos={COLLAGE_DRINKS} slot={2} />
@@ -896,7 +895,7 @@ function AboutPage() {
         subtitle="A neighborhood kitchen built on scratch-made comfort food and genuine hospitality." />
       <div style={{ maxWidth:680, margin:'0 auto', padding:'64px 24px 40px', textAlign:'center' }}>
         <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, marginBottom:28 }}>
-          KP's Kitchen is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics — Mama Pauly's meatballs, smashed cheeseburgers, shrimp &amp; grits — with a curated beer and wine list and weekly specials that keep regulars coming back.
+          KP's Kitchen is upscale American comfort food served with the warmth of your favorite neighborhood spot. Founded by Kerry Pauly, KP's pairs scratch-made classics like Mama Pauly's meatballs, smashed cheeseburgers and Friday fish n' chips with a curated beer and wine list and weekly specials that keep regulars coming back.
         </p>
         <p style={{ fontFamily:'Georgia,serif', fontSize:16, color:NAVY, lineHeight:1.95, opacity:0.85 }}>
           What began as a single Houston dining room has grown into a local institution for people who want an elevated experience without the pretense — the kind of place where the team knows your name and the kitchen never cuts a corner.
@@ -1072,7 +1071,7 @@ const PAGES = {
   '/': { title: "KP's Kitchen | Your Go-To for Comfort Classics", render: () => <HomePage/> },
   '/menu': { title: "Menu | KP's Kitchen", render: () => <MenuPage/> },
   '/brunch': { title: "Brunch | KP's Kitchen", render: () => <BrunchPage/> },
-  '/happy-hour': { title: "Happy Hour | KP's Kitchen", render: () => <HappyHourPage/> },
+  '/happy-hour': { title: "Happy Hour in Memorial Houston | KP's Kitchen", render: () => <HappyHourPage/> },
   '/specials': { title: "Weekly Specials | KP's Kitchen", render: () => <SpecialsPage/> },
   '/private-events': { title: "Private Events | KP's Kitchen", render: () => <PrivateEventsPage/> },
   '/catering': { title: "Catering | KP's Kitchen", render: () => <CateringPage/> },

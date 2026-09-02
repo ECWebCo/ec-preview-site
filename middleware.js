@@ -37,8 +37,8 @@ const KPS_PAGES = {
     description: "Weekend brunch at KP's Kitchen — breakfast classics, mimosas, and the famous Sunday fried chicken family meal in Houston's Memorial.",
   },
   '/happy-hour': {
-    title: "Happy Hour | KP's Kitchen",
-    description: "KP's Kitchen happy hour — wines, spritzes and shareable bar snacks, every item $7, Tuesday through Friday 3–6PM in Houston's Memorial.",
+    title: "Happy Hour in Memorial Houston | KP's Kitchen",
+    description: "$7 drinks and $7 food at KP's Kitchen near Memorial Houston. Happy Hour Tuesday–Friday 3–6 PM, plus all day Wednesday and Saturday.",
   },
   '/specials': {
     title: "Weekly Specials | KP's Kitchen",
@@ -63,7 +63,34 @@ const KPS_PAGES = {
 }
 const KPS_PATHS = Object.keys(KPS_PAGES)
 
-function buildMetaBlock({ title, description, url, image, favicon, appleTouchIcon }) {
+// Restaurant schema — current Memorial location ONLY
+const KPS_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: "KP's Kitchen",
+  url: 'https://www.kps-kitchen.com',
+  image: 'https://www.kps-kitchen.com/kps/hero-patio.jpg',
+  logo: 'https://www.kps-kitchen.com/kps/logo-blue.png',
+  telephone: '(713) 677-0921',
+  servesCuisine: 'American',
+  priceRange: '$$',
+  acceptsReservations: 'https://resy.com/cities/houston-tx/venues/kps-kitchen',
+  menu: 'https://www.kps-kitchen.com/menu',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '8412 Interstate 10 Frontage Rd #350',
+    addressLocality: 'Houston',
+    addressRegion: 'TX',
+    postalCode: '77024',
+    addressCountry: 'US',
+  },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '11:00', closes: '21:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '10:00', closes: '20:00' },
+  ],
+}
+
+function buildMetaBlock({ title, description, url, image, favicon, appleTouchIcon, schema }) {
   return `
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
@@ -78,7 +105,8 @@ function buildMetaBlock({ title, description, url, image, favicon, appleTouchIco
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     ${image ? `<meta name="twitter:image" content="${escapeHtml(image)}" />` : ''}
     ${favicon ? `<link rel="icon" type="image/png" href="${escapeHtml(favicon)}" />` : ''}
-    ${appleTouchIcon ? `<link rel="apple-touch-icon" href="${escapeHtml(appleTouchIcon)}" />` : ''}`
+    ${appleTouchIcon ? `<link rel="apple-touch-icon" href="${escapeHtml(appleTouchIcon)}" />` : ''}
+    ${schema ? `<script type="application/ld+json">${JSON.stringify(schema)}</script>` : ''}`
 }
 
 function injectMeta(html, meta) {
@@ -183,6 +211,7 @@ export default async function middleware(request) {
         image: `${url.origin}/kps/hero-patio.jpg`,
         favicon: '/kps/favicon.png',
         appleTouchIcon: '/kps/apple-touch-icon.png',
+        schema: KPS_SCHEMA,
       }))
     }
     // Unknown KPS path (e.g. /bellaire handled by redirect) — pass through

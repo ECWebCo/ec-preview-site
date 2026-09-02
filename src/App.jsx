@@ -29,10 +29,7 @@ export default function App() {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    if (kps) {
-      document.title = "KP's Kitchen | Your Go-To for Comfort Classics"
-      return
-    }
+    if (kps) return // KpsLayout owns document.title per page
     getRestaurantData().then(d => {
       if (d) {
         setData(d)
