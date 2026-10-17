@@ -998,13 +998,10 @@ function KpsStickyBar() {
 }
 
 // ─── Thanksgiving 2026 Take-Home Feast Promo ──────────────────
-// Auto-shows once per session through pickup day (Nov 25, 2026), then
-// self-expires. Full menu PDF: public/kps/thanksgiving-2026-menu.pdf.
+// Shows the client's flyer (public/kps/thanksgiving-2026-menu.jpg, rendered
+// from their PDF). Auto-shows once per session through pickup day
+// (Nov 25, 2026), then self-expires. PDF: thanksgiving-2026-menu.pdf.
 const THX_PDF = '/kps/thanksgiving-2026-menu.pdf'
-const THX_FEAST = [
-  'Turkey & Dressing', 'Cranberry Sauce & Gravy', 'Green Beans', 'Squash Casserole',
-  'Cauliflower & Sweet Potato Salad', 'Rolls', 'Pumpkin Pie',
-]
 
 function ThanksgivingPopup({ onClose }) {
   useEffect(() => {
@@ -1017,40 +1014,19 @@ function ThanksgivingPopup({ onClose }) {
   return (
     <div style={{ position:'fixed', inset:0, zIndex:800, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
       <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(6px)' }} onClick={onClose}/>
-      <div style={{ position:'relative', width:'min(520px, 94vw)', maxHeight:'92vh', overflowY:'auto', background:'#fff', animation:'kpsFadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
+      <div style={{ position:'relative', width:'min(480px, 94vw)', maxHeight:'92vh', overflowY:'auto', background:'#fff', animation:'kpsFadeUp 0.3s ease', boxShadow:'0 24px 70px rgba(0,0,0,0.4)' }}>
+        <button aria-label="Close" onClick={onClose}
+          style={{ position:'absolute', top:6, right:8, zIndex:1, background:'#fff', border:'none', borderRadius:'50%', color:NAVY, fontSize:18, lineHeight:1, cursor:'pointer', padding:8, boxShadow:'0 2px 10px rgba(0,0,0,0.15)' }}>✕</button>
 
-        {/* Navy header */}
-        <div style={{ position:'relative', background:NAVY, textAlign:'center', padding:'36px 28px 28px', overflow:'hidden' }}>
-          <div style={{ position:'absolute', inset:0, backgroundImage:`url(${PATTERN_URL})`, backgroundRepeat:'repeat', backgroundSize:'auto 100px', opacity:0.06 }}/>
-          <button aria-label="Close" onClick={onClose}
-            style={{ position:'absolute', top:10, right:14, background:'none', border:'none', color:'rgba(255,255,255,0.7)', fontSize:22, lineHeight:1, cursor:'pointer', padding:6 }}>✕</button>
-          <div style={{ position:'relative' }}>
-            <div style={{ ...EYEBROW_STYLE, color:GOLD, marginBottom:12 }}>Let Us Do the Cooking</div>
-            <div style={{ fontFamily:'Playfair Display,serif', fontStyle:'italic', fontWeight:400, fontSize:'clamp(26px,5vw,34px)', color:'#fff', lineHeight:1.15 }}>Thanksgiving<br/>Take-Home Feast</div>
-            <div style={{ ...EYEBROW_STYLE, color:'rgba(255,255,255,0.85)', marginTop:14, marginBottom:0 }}>$185 + Tax · Serves 4</div>
-          </div>
-        </div>
-
-        {/* Feast menu */}
-        <div style={{ padding:'26px 28px 8px', textAlign:'center' }}>
-          <div style={{ ...EYEBROW_STYLE, marginBottom:14 }}>Your Feast Includes</div>
-          {THX_FEAST.map((item,i)=>(
-            <div key={i} style={{ fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:2 }}>{item}</div>
-          ))}
-          <div style={{ fontFamily:'Georgia,serif', fontSize:13, fontStyle:'italic', color:MUTED, marginTop:10 }}>All items available à la carte</div>
-        </div>
-
-        {/* Pre-order details */}
-        <div style={{ margin:'20px 28px 0', borderTop:`1px solid ${BORDER}`, padding:'20px 0 0', textAlign:'center' }}>
-          <div style={{ ...EYEBROW_STYLE, color:GOLD, marginBottom:8 }}>Call to Pre-Order by November 19</div>
-          <a href="tel:7136770921" style={{ fontFamily:'DM Sans', fontSize:24, fontWeight:700, letterSpacing:'2px', color:NAVY, textDecoration:'none' }}>713-677-0921</a>
-          <p style={{ fontFamily:'Georgia,serif', fontSize:13, fontStyle:'italic', color:MUTED, lineHeight:1.7, margin:'12px auto 0', maxWidth:360 }}>
-            Full payment required when ordering. Pickup Wednesday, November 25, 11 AM - 4 PM, chilled with reheating instructions. Closed Thanksgiving Day.
-          </p>
-        </div>
+        {/* The client's flyer — opens the PDF */}
+        <a href={THX_PDF} target="_blank" rel="noreferrer" aria-label="Open the Thanksgiving Take-Home Feast menu (PDF)">
+          <img src="/kps/thanksgiving-2026-menu.jpg"
+            alt="KP's Kitchen Thanksgiving Take-Home Feast 2026 — $185 plus tax, serves 4: turkey & dressing, cranberry sauce & gravy, green beans, squash casserole, cauliflower & sweet potato salad, rolls, pumpkin pie. Call 713-677-0921 to pre-order by November 19; pickup Wednesday, November 25, 11 AM to 4 PM."
+            style={{ display:'block', width:'100%', height:'auto' }}/>
+        </a>
 
         {/* Actions */}
-        <div style={{ display:'flex', gap:12, justifyContent:'center', alignItems:'center', flexWrap:'wrap', padding:'22px 24px 26px' }}>
+        <div style={{ display:'flex', gap:12, justifyContent:'center', alignItems:'center', flexWrap:'wrap', padding:'16px 24px 22px', borderTop:`1px solid ${BORDER}` }}>
           <a href="tel:7136770921" style={{ ...SOLID_BTN, textDecoration:'none' }}
             onMouseOver={e=>e.currentTarget.style.opacity='0.85'} onMouseOut={e=>e.currentTarget.style.opacity='1'}>
             Call to Pre-Order
