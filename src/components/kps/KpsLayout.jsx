@@ -936,6 +936,114 @@ function ContactPage() {
   )
 }
 
+// ─── Legal pages (Privacy Policy / Terms of Service) ──────────
+const LEGAL_EFFECTIVE = 'November 10, 2026'
+
+function LegalPage({ title, intro, sections }) {
+  const proseP = { fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.85, marginTop:14, opacity:0.9 }
+  const h2 = { fontFamily:'DM Sans', fontSize:13, fontWeight:700, letterSpacing:'2px', textTransform:'uppercase', color:NAVY, marginBottom:2 }
+  const li = { fontFamily:'Georgia,serif', fontSize:15, color:NAVY, lineHeight:1.75, opacity:0.9, marginTop:8 }
+  return (
+    <>
+      <PageHero eyebrow="KP's Kitchen" title={title} />
+      <div style={{ maxWidth:760, margin:'0 auto', padding:'52px 24px 88px' }}>
+        <div style={{ ...EYEBROW_STYLE, textAlign:'center', marginBottom:30 }}>Effective {LEGAL_EFFECTIVE}</div>
+        {intro && <p style={proseP}>{intro}</p>}
+        {sections.map((s,i)=>(
+          <div key={i} style={{ marginTop:36 }}>
+            <h2 style={h2}>{s.h}</h2>
+            {s.body.map((b,j)=> Array.isArray(b)
+              ? <ul key={j} style={{ margin:'4px 0 0', paddingLeft:22 }}>{b.map((it,k)=><li key={k} style={li}>{it}</li>)}</ul>
+              : <p key={j} style={proseP}>{b}</p>
+            )}
+          </div>
+        ))}
+        <CtaRow/>
+      </div>
+    </>
+  )
+}
+
+function PrivacyPage() {
+  return (
+    <LegalPage
+      title="Privacy Policy"
+      intro={'This Privacy Policy explains how KP’s Kitchen ("KP’s Kitchen," "we," "us," or "our") collects, uses, and shares information when you visit www.kps-kitchen.com (the "Site") or contact us. By using the Site or communicating with us, you agree to the practices described in this policy.'}
+      sections={[
+        { h:'Who We Are', body:['KP’s Kitchen is a restaurant located at 8412 Interstate 10 Frontage Road, Suite 350, Houston, Texas 77024. You can reach us at (713) 677-0921 or kerrypauly@gmail.com.'] },
+        { h:'Information You Provide', body:[
+          'When you use our catering or private event inquiry forms, the form opens your own email application with the details you choose to include, such as your name, email address, phone number, event date, number of guests, and your message. We receive that information only if you send the email.',
+          'We also receive information when you contact us directly by phone, email, text message, social media, or a messaging channel such as Google Business messages.' ] },
+        { h:'Information Collected Automatically', body:[
+          'When you visit the Site, some information is collected automatically through cookies and similar technologies, including your device and browser type, the pages you view, the website that referred you, a general location derived from your IP address, and how you interact with the Site.',
+          'We use the following analytics and advertising technologies:',
+          ['Google Analytics 4, which helps us understand how visitors use the Site. Google may set cookies and process usage data under Google’s own privacy policy.',
+           'Meta (Facebook) Pixel, which measures the performance of our advertising and may be used to show you relevant ads on Meta platforms.'] ] },
+        { h:'Reservations and Online Ordering', body:[
+          'Table reservations are handled by Resy and online ordering is handled by Toast. When you follow those links you leave our Site and interact with those providers directly. Any information you enter is collected and governed by their own privacy policies, not ours.' ] },
+        { h:'Messaging and Communications', body:[
+          'If you message us through Google Business messages, text message, social media, email, or our forms, we receive the content of your message and the contact details you use. We use this information to respond to you and to provide the service or information you request. Standard message and data rates from your carrier may apply, and you can opt out of text messages at any time by replying STOP.' ] },
+        { h:'How We Use Information', body:[
+          ['Respond to inquiries and requests for catering, private events, reservations, and general questions',
+           'Operate, maintain, and improve the Site',
+           'Measure and improve our marketing and advertising',
+           'Protect the Site and our guests, and comply with legal obligations'] ] },
+        { h:'How We Share Information', body:[
+          'We do not sell your personal information. We share information with service providers that help us operate, including Google (analytics), Meta (advertising), Resy (reservations), Toast (online ordering), and our website and messaging providers. We may also disclose information when required by law or to protect our rights, our guests, or our business.' ] },
+        { h:'Cookies and Your Choices', body:[
+          'Most browsers let you refuse or delete cookies through their settings. You can opt out of Google Analytics using Google’s browser add-on at tools.google.com/dlpage/gaoptout, and you can manage ad preferences in your Meta account settings. Blocking some cookies may affect how the Site works.' ] },
+        { h:'Data Retention', body:[
+          'We keep inquiry and contact information for as long as we need it to respond to you and for our ordinary business and legal purposes, then we delete or de-identify it.' ] },
+        { h:'Your Rights', body:[
+          'Depending on where you live, you may have the right to request access to, correction of, or deletion of the personal information we hold about you, and to opt out of certain uses. Texas residents may have rights under the Texas Data Privacy and Security Act. To make a request, contact us at kerrypauly@gmail.com, and we will respond as required by applicable law.' ] },
+        { h:'Children’s Privacy', body:[
+          'The Site is not directed to children under 13, and we do not knowingly collect personal information from children under 13.' ] },
+        { h:'Third-Party Links', body:[
+          'The Site contains links to third-party websites and services. We are not responsible for the content or privacy practices of those sites, and we encourage you to review their policies.' ] },
+        { h:'Changes to This Policy', body:[
+          'We may update this Privacy Policy from time to time. When we do, we will revise the effective date shown above. Your continued use of the Site means you accept the updated policy.' ] },
+        { h:'Contact Us', body:[
+          'If you have questions about this Privacy Policy or our data practices, contact KP’s Kitchen at kerrypauly@gmail.com or (713) 677-0921.' ] },
+      ]}
+    />
+  )
+}
+
+function TermsPage() {
+  return (
+    <LegalPage
+      title="Terms of Service"
+      intro={'These Terms of Service ("Terms") govern your use of www.kps-kitchen.com (the "Site"), operated by KP’s Kitchen. By using the Site, you agree to these Terms. If you do not agree, please do not use the Site.'}
+      sections={[
+        { h:'Use of the Site', body:[
+          'The Site is provided for general information about KP’s Kitchen, including our menu, hours, location, events, and services. You agree to use the Site only for lawful purposes and not to interfere with its operation or security.' ] },
+        { h:'Menus, Prices, and Availability', body:[
+          'Menu items, pricing, hours, promotions, and availability are subject to change without notice and may contain errors. The information on the Site does not constitute an offer and may not be current or accurate at all times. Please contact us to confirm details.' ] },
+        { h:'Reservations and Online Ordering', body:[
+          'Reservations are provided through Resy and online ordering is provided through Toast. These services are operated by third parties and are subject to their own terms and policies. We are not responsible for transactions, charges, or issues that occur on those platforms.' ] },
+        { h:'Food Allergies and Dietary Needs', body:[
+          'If you have a food allergy or dietary restriction, please tell our staff before ordering. We prepare food in a kitchen that handles common allergens, and we cannot guarantee that any item is free of a particular allergen.' ] },
+        { h:'Communications and Messaging', body:[
+          'If you contact us through a form, email, text message, or a messaging channel such as Google Business messages, you consent to receive responses from us at the contact details you provide. Message and data rates may apply, and you can opt out of text messages by replying STOP. Messaging is intended for guest service and inquiries, not for emergencies.' ] },
+        { h:'Intellectual Property', body:[
+          'The content on the Site, including text, logos, graphics, photographs, and design, is owned by KP’s Kitchen or its licensors and is protected by law. You may not copy, reproduce, or use it without our permission, except as needed for your personal, non-commercial use of the Site.' ] },
+        { h:'Disclaimers', body:[
+          'The Site is provided on an "as is" and "as available" basis, without warranties of any kind, whether express or implied, including warranties of accuracy, merchantability, or fitness for a particular purpose. We do not warrant that the Site will be uninterrupted, secure, or error free.' ] },
+        { h:'Limitation of Liability', body:[
+          'To the fullest extent permitted by law, KP’s Kitchen and its owners, employees, and vendors will not be liable for any indirect, incidental, or consequential damages arising from your use of the Site or your reliance on its content. Our total liability for any claim relating to the Site will not exceed one hundred dollars.' ] },
+        { h:'Indemnification', body:[
+          'You agree to indemnify and hold harmless KP’s Kitchen and its owners and employees from any claims or expenses arising out of your misuse of the Site or your violation of these Terms.' ] },
+        { h:'Governing Law', body:[
+          'These Terms are governed by the laws of the State of Texas, without regard to its conflict of laws rules. Any dispute relating to the Site will be handled in the state or federal courts located in Harris County, Texas.' ] },
+        { h:'Changes to These Terms', body:[
+          'We may update these Terms from time to time. When we do, we will revise the effective date shown above. Your continued use of the Site means you accept the updated Terms.' ] },
+        { h:'Contact Us', body:[
+          'Questions about these Terms can be sent to KP’s Kitchen at kerrypauly@gmail.com or (713) 677-0921.' ] },
+      ]}
+    />
+  )
+}
+
 // ─── Footer ───────────────────────────────────────────────────
 function KpsFooter() {
   const cols = [
@@ -965,8 +1073,16 @@ function KpsFooter() {
               onMouseOver={e=>e.currentTarget.style.color='#fff'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.6)'}>{MEMORIAL.email}</a>
           </div>
         </div>
-        <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, textAlign:'center', fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
-          © {new Date().getFullYear()} KP's Kitchen · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
+        <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:24, textAlign:'center' }}>
+          <div style={{ display:'flex', gap:16, justifyContent:'center', flexWrap:'wrap', marginBottom:14 }}>
+            {[['/privacy','Privacy Policy'],['/terms','Terms of Service']].map(([to,label])=>(
+              <a key={to} href={to} onClick={go(to)} style={{ fontFamily:'DM Sans', fontSize:11, fontWeight:600, letterSpacing:'1px', textTransform:'uppercase', color:'rgba(255,255,255,0.5)', textDecoration:'none', transition:'color 0.2s' }}
+                onMouseOver={e=>e.currentTarget.style.color='#fff'} onMouseOut={e=>e.currentTarget.style.color='rgba(255,255,255,0.5)'}>{label}</a>
+            ))}
+          </div>
+          <div style={{ fontFamily:'DM Sans', fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'1px' }}>
+            © {new Date().getFullYear()} KP's Kitchen · <a href="https://ecwebco.com" target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.25)', textDecoration:'none' }}>Website by EC Web Co</a>
+          </div>
         </div>
       </div>
     </footer>
@@ -1053,6 +1169,8 @@ const PAGES = {
   '/catering': { title: "Catering | KP's Kitchen", render: () => <CateringPage/> },
   '/about': { title: "Our Story | KP's Kitchen", render: () => <AboutPage/> },
   '/contact': { title: "Contact & Hours | KP's Kitchen", render: () => <ContactPage/> },
+  '/privacy': { title: "Privacy Policy | KP's Kitchen", render: () => <PrivacyPage/> },
+  '/terms': { title: "Terms of Service | KP's Kitchen", render: () => <TermsPage/> },
 }
 
 // ─── Main ─────────────────────────────────────────────────────

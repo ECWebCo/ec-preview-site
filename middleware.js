@@ -60,6 +60,14 @@ const KPS_PAGES = {
     title: "Contact & Hours | KP's Kitchen",
     description: "Visit KP's Kitchen in Houston's Memorial — 8412 I-10 Frontage Rd. Hours, directions, reservations & contact.",
   },
+  '/privacy': {
+    title: "Privacy Policy | KP's Kitchen",
+    description: "How KP's Kitchen collects, uses, and shares information on www.kps-kitchen.com, including analytics, advertising, reservations, ordering, and messaging.",
+  },
+  '/terms': {
+    title: "Terms of Service | KP's Kitchen",
+    description: "The terms that govern your use of the KP's Kitchen website, including reservations, online ordering, messaging, and limitations of liability.",
+  },
 }
 const KPS_PATHS = Object.keys(KPS_PAGES)
 
