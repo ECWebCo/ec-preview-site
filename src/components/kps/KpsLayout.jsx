@@ -972,7 +972,7 @@ function PrivacyPage() {
       sections={[
         { h:'Who We Are', body:['KP’s Kitchen is a restaurant located at 8412 Interstate 10 Frontage Road, Suite 350, Houston, Texas 77024. You can reach us at (713) 677-0921 or kerrypauly@gmail.com.'] },
         { h:'Information You Provide', body:[
-          'When you use our catering or private event inquiry forms, the form opens your own email application with the details you choose to include, such as your name, email address, phone number, event date, number of guests, and your message. We receive that information only if you send the email.',
+          'When you submit our catering or private event inquiry forms, you send us the details you enter, such as your name, email address, phone number, event date, number of guests, and your message. This information is transmitted through the Site and delivered to us by email using our email service provider.',
           'We also receive information when you contact us directly by phone, email, text message, social media, or a messaging channel such as Google Business messages.' ] },
         { h:'Information Collected Automatically', body:[
           'When you visit the Site, some information is collected automatically through cookies and similar technologies, including your device and browser type, the pages you view, the website that referred you, a general location derived from your IP address, and how you interact with the Site.',
@@ -989,7 +989,7 @@ function PrivacyPage() {
            'Measure and improve our marketing and advertising',
            'Protect the Site and our guests, and comply with legal obligations'] ] },
         { h:'How We Share Information', body:[
-          'We do not sell your personal information. We share information with service providers that help us operate, including Google (analytics), Meta (advertising), Resy (reservations), Toast (online ordering), and our website and messaging providers. We may also disclose information when required by law or to protect our rights, our guests, or our business.' ] },
+          'We do not sell your personal information. We share information with service providers that help us operate, including Google (analytics), Meta (advertising), Resy (reservations), Toast (online ordering), and our website hosting, email delivery, and messaging providers. We may also disclose information when required by law or to protect our rights, our guests, or our business.' ] },
         { h:'Cookies and Your Choices', body:[
           'Most browsers let you refuse or delete cookies through their settings. You can opt out of Google Analytics using Google’s browser add-on at tools.google.com/dlpage/gaoptout, and you can manage ad preferences in your Meta account settings. Blocking some cookies may affect how the Site works.' ] },
         { h:'Data Retention', body:[
